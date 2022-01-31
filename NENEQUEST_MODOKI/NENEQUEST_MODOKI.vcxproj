@@ -18,6 +18,23 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\BaseScene.cpp" />
+    <ClCompile Include="src\ConfigScene.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MenuScene.cpp" />
+    <ClCompile Include="src\SceneMgr.cpp" />
+    <ClCompile Include="src\UpdateKey.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BaseScene.h" />
+    <ClInclude Include="src\BasicFunc.h" />
+    <ClInclude Include="src\ConfigScene.h" />
+    <ClInclude Include="src\MenuScene.h" />
+    <ClInclude Include="src\SceneChanger.h" />
+    <ClInclude Include="src\SceneMgr.h" />
+    <ClInclude Include="src\UpdateKey.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -150,9 +167,6 @@
       <AdditionalLibraryDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="dx_lib_sample.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
