@@ -1,6 +1,6 @@
 //#include "DxLib.h"
 #include "ConfigScene.h"
-//#include "Game.h"
+#include "GameScene.h"
 #include "MenuScene.h"
 //#include "GameOver.h"
 #include "SceneMgr.h"
@@ -34,7 +34,7 @@ void SceneMgr::Update() {
 				mScene = (BaseScene*) new MenuScene(this);
 				break;
 			case eSceneGame:
-				mScene = (BaseScene*) new ConfigScene(this);
+				mScene = (BaseScene*) new GameScene(this);
 				break;
 			case eSceneConfig:
 				mScene = (BaseScene*) new ConfigScene(this);
