@@ -20,17 +20,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseScene.cpp" />
+    <ClCompile Include="src\CharaGraphics.cpp" />
     <ClCompile Include="src\ConfigScene.cpp" />
+    <ClCompile Include="src\GameBack.cpp" />
+    <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MenuScene.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PlayerMgr.cpp" />
+    <ClCompile Include="src\Player1.cpp" />
     <ClCompile Include="src\SceneMgr.cpp" />
     <ClCompile Include="src\UpdateKey.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseScene.h" />
     <ClInclude Include="src\BasicFunc.h" />
+    <ClInclude Include="src\Chara.h" />
+    <ClInclude Include="src\CharaGraphics.h" />
     <ClInclude Include="src\ConfigScene.h" />
+    <ClInclude Include="src\GameBack.h" />
+    <ClInclude Include="src\GameScene.h" />
     <ClInclude Include="src\MenuScene.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\PlayerChanger.h" />
+    <ClInclude Include="src\PlayerMgr.h" />
+    <ClInclude Include="src\Player1.h" />
     <ClInclude Include="src\SceneChanger.h" />
     <ClInclude Include="src\SceneMgr.h" />
     <ClInclude Include="src\UpdateKey.h" />
