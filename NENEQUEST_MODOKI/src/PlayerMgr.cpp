@@ -1,9 +1,9 @@
 #include "PlayerMgr.h"
 #include "DxLib.h"
 #include "Player1.h"
-//#include "Player_2.h"
-//#include "Player_3.h"
-//#include "Player_4.h"
+#include "Player2.h"
+#include "Player3.h"
+#include "Player4.h"
 //#include "HitJudge0.h"
 //#include "HitJudge1.h"
 //#include "HitJudge2.h"
@@ -18,11 +18,8 @@
 PlayerMgr* PlayerMgr::mPlayerMgr;
 
 
-PlayerMgr::PlayerMgr() :
-	mPlayerNext(ePlayerNone)
-{
+PlayerMgr::PlayerMgr() : mPlayerNext(ePlayerNone) {
 	//PlInitialize::SetPlayer(290, 500, 10, -1, -1, 0, 0, false); //Player‚Ì‰Šúó‘Ô‚ÌÝ’è
-	
 }
 
 
@@ -42,7 +39,7 @@ PlayerMgr* PlayerMgr::GetInstance() {
 
 
 void PlayerMgr::Initialize() {
-	mPlayer = (Player*)Player1::GetInstance();
+	mPlayer = (Player*)Player4::GetInstance();
 	mPlayer->SetPlParams(290, 500, 10, 0, 0, 0, 0, 0, false);
 	mPlayer->Initialize();
 
@@ -68,13 +65,13 @@ void PlayerMgr::Update() {
 			case ePlayer1:
 				mPlayer = (Player*) Player1::GetInstance();
 				break;
-			/*case ePlayer2:
-				mPlayer = (Player*) new Player_2(this);
+			case ePlayer2:
+				mPlayer = (Player*) Player2::GetInstance();
 				break;
 			case ePlayer3:
-				mPlayer = (Player*) new Player_3(this);
+				mPlayer = (Player*) Player3::GetInstance();
 				break;
-			case ePlayer4:
+			/*case ePlayer4:
 				mPlayer = (Player*) new Player_4(this);
 				break;*/
 		}
