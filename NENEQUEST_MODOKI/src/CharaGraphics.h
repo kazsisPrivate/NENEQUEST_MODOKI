@@ -2,13 +2,11 @@
 
 static class CharaGraphics {	// 画像の読み込み時間削減のためのクラス
 public:
-	/*CharaGraphics();
-	~CharaGraphics();*/
 	static const int* GetGraHandle(const int type, const int charaId);	// type==0 ならPlayer，type==1ならEnemy．charaIdは各キャラのファイル名にある番号(Bossは8, Noneは9)
 	static void Initialize();
 	static void Finalize();
 
-//private:
+private:
     static int mPl1to3Handle[3][24];	// Player1～3
 	static int mPl4Handle[32];	// Player4
 	static int mEne1to2Handle[2][4];	// Enemy1～2
