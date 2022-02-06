@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "GameScene.h"
-#include "DxLib.h"
+#include "CharaGraphics.h"
+#include "ItemGraphics.h"
 //#include "CharaY.h"
 #include <mutex>
 #include <vector>
@@ -29,7 +30,8 @@ void GameScene::Initialize() {
 
 	//hpGauge = new HpGauge();
 
-	mCharaGraphics.Initialize();
+	CharaGraphics::Initialize();
+	ItemGraphics::Initialize();
 	mGameBack->Initialize();
 	mPlayerMgr->Initialize();
 	/*enemyMgr->Initialize();
@@ -45,7 +47,8 @@ void GameScene::Initialize() {
 
 void GameScene::Finalize() {
 	DeleteGraph(mImageHandle);
-	mCharaGraphics.Finalize();
+	CharaGraphics::Finalize();
+	ItemGraphics::Initialize();
 	mGameBack->Finalize();
 	mPlayerMgr->Finalize();
 	/*enemyMgr->Finalize();

@@ -10,7 +10,6 @@
 
 //#include "HpGauge.h"
 //#include "Appearance.h"
-#include "CharaGraphics.h"
 
 //#include "GameOver.h"
 
@@ -35,7 +34,7 @@ private:
 	ItemMgr* itemMgr;
 	HpGauge* hpGauge;
 	Appearance* appear;*/
-	CharaGraphics mCharaGraphics;
+	//CharaGraphics mCharaGraphics;
 	//GameCounters gameCtrs;
 	//GameOver gameOver;
 	//std::unique_ptr<GameClear> gameClear;
