@@ -3,6 +3,7 @@
 #include "Chara.h"
 #include "PlayerChanger.h"
 #include "CharaGraphics.h"
+#include "UpdateKey.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -11,25 +12,30 @@
 class PlayerMgr;
 
 
-class Player : public Chara {
+class Player : public Chara, public UpdateKey {
 public:
 	Player(PlayerChanger* changer, const int* graph);
 	//virtual void GetInstance() override {};
-	virtual void Walk() override {};
-	virtual void Jump() override {};
-	virtual void Attack() override {};
-	virtual void UpdateSAP() override {};
-	void UpdateHit() override;
-	void StartBossStage();	// bossStageに入ってからの一定時間の動き
+	virtual void Initialize() override;
+	virtual void Finalize() override;
+	virtual void Draw() override;
 	void SetPlParams(const int x, const int y, const int hp, const int iteSFrameCnt, 
 		const int iteAFrameCnt, const int bsStopFrameCnt, const int effectId, const int deadFrameCnt, const bool isDead);	// Playerを変更する際に呼び出される，前のPlayerの情報引継ぎで使用する
 	void GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap);	// Playerのデータを渡すために使用する(int, bool)
 	void GetPlIntDataMap(std::map<std::string, int>* plIntDataMap);	// Playerのデータを渡すために使用する(int)
 	
 protected:
+	virtual void Walk() override;
+	virtual void Jump() override;
+	virtual void Attack() override;
+	virtual void UpdateSAP() override;
+	void UpdateHit() override;
+	virtual void StartBossStage();	// bossStageに入ってからの一定時間の動き
+
 	PlayerChanger* mPlayerChanger;
 	const int* mPlHandle;	// Playerの画像
 	int mXFrameCnt, mYFrameCnt;	// x, yそれぞれにおいて押しつづけたフレーム数のカウント
+	int mAFrameNum;	// 攻撃の効果時間（1回の攻撃の持続時間）
 	int mEneAP;	// Enemyの1回の攻撃で受けるダメージ
 	int mIteAP;	// Itemによりかかる攻撃倍率
 	int mIteHP;	// Itemによる回復量

@@ -2,21 +2,21 @@
 
 #include "BasicFunc.h"
 
+
 class Chara : public BasicFunc { 
-public:
+protected:
 	virtual void Walk() {};	// 移動
 	virtual void Jump() {};	// ジャンプ
 	virtual void Attack() {};	// 攻撃
 	virtual void UpdateSAP() {};	// 移動速度と攻撃力の更新
 	virtual void UpdateHit() {};	// 当たり判定の更新
 
-protected:
 	int mHp;	// charaのHP, PlayerのHPは6
 	int mAttack;	/// charaの攻撃力
 	float mSpeed; // charaの移動速度
 	int mX, mY;	// charaの中心のx,y座標
 	int mAX, mAY;	// charaの攻撃の中心のxy座標
-	int mImgW, mImgH;	// charaHandle[]の画像の横(width)、縦のサイズ(height)
+	int mImgW, mImgH;	// キャラクターの画像の横(width)、縦のサイズ(height)
 	int mHitRangeW, mHitRangeH;	// charaの当たり判定の中心座標からの範囲(width, height)
 	int mHitRangeAW, mHitRangeAH; //charaの攻撃の当たり判定の中心座標からの範囲(width, height)
 	long long mFrameCnt; //時間の経過を計る

@@ -15,6 +15,301 @@ Player::Player(PlayerChanger* changer, const int* graph) : mPlHandle(graph) {
 }
 
 
+void Player::Initialize() {
+	// 位置，当たり判定の範囲関連設定
+	mAX = mX + 160;
+	mAY = mY + 20;
+	//mHitRangeW = 33, mHitRangeH = 60;
+	//mHitRangeAW = 50, mHitRangeAH = 60;
+	mImgW = 500, mImgH = 283;
+	mIsGod = false;
+	mGodFrameCnt = -1;
+
+	// Playerの攻撃，ジャンプなどの状態設定
+	mXFrameCnt = 0, mYFrameCnt = 0;
+	mAFrameCnt = 0;
+	mIsJumping = false;
+	mIsAttacking = false;
+	mHandleId = 0;
+	mSpeed = 1.0f;
+	//mAttack = 1;
+
+	// アイテムや使用武器の設定
+	mIteFrameCnt = 0;
+	//mIteKindId = 1;
+	mIteHP = 0;
+
+	if (mIteSFrameCnt > 0) {
+		mHasIteS = true;
+	}
+	else {
+		mHasIteS = false;
+	}
+
+	if (mIteAFrameCnt > 0) {
+		mHasIteA = true;
+	}
+	else {
+		mHasIteA = false;
+	}
+
+	if (mEffectId == 0) {
+		mIteSP = 1.0f;
+		mIteAP = 1;
+		mEffectHandle = NULL;
+	}
+	else if (mEffectId == 1) {
+		mIteSP = 2.0f;
+		mIteAP = 1;
+		mEffectHandle = LoadGraph("images/effect_1.png");
+	}
+	else if (mEffectId == 2) {
+		mIteSP = 0.5f;
+		mIteAP = 1;
+		mEffectHandle = LoadGraph("images/effect_2.png");
+	}
+	else {
+		mIteSP = 1.0f;
+		mIteAP = 2;
+		mEffectHandle = LoadGraph("images/effect_3.png");
+	}
+}
+
+
+void Player::Finalize() {
+	// 効果の画像を削除
+	DeleteGraph(mEffectHandle);
+}
+
+
+void Player::Draw() {
+	// Playerの画像表示
+	DrawGraph(mX - mImgW / 2, mY - mImgH / 2 - 13, mPlHandle[mHandleId], TRUE);
+
+	// Effectの画像表示
+	if (mHasIteS || mHasIteA) {	// Itemの効果中のとき
+		DrawGraph(mX - 114, mY - 113, mEffectHandle, TRUE);
+	}
+}
+
+
+void Player::UpdateSAP() {
+	// 移動速度の更新
+	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
+		if (mIsJumping == true) {	// ジャンプしているとき
+			mSpeed = 0.8f;
+		}
+		else if (mIsAttacking) {	// 攻撃しているとき
+			mSpeed = 0.5f;
+		}
+		else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
+			mSpeed = 0.625f;
+		}
+		else {
+			mSpeed = 1.0f;
+		}
+	}
+	else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
+		if (mIsAttacking) {	// 攻撃しているとき
+			mSpeed = 0.5f;
+		}
+		else {
+			mSpeed = 0.80f;
+		}
+	}
+
+	// 移動速度（アイテム効果）の更新
+	if (mHasIteS) {
+		if (mIteSFrameCnt != 0) {	// 効果中のとき
+			mSpeed *= mIteSP;
+			mIteSFrameCnt--;
+		}
+		else {	// 効果切れのとき
+			mIteSP = 1.0f;
+			mEffectHandle = 0;
+			mHasIteS = false;
+		}
+	}
+
+	// 攻撃力（アイテム効果）の更新
+	if (mHasIteA) {
+		if (mIteAFrameCnt != 0) {	// 効果中のとき
+			mAttack *= mIteAP;
+			mIteAFrameCnt--;
+		}
+		else {	// 効果切れのとき
+			mIteAP = 1;
+			mEffectHandle = 0;
+			mHasIteA = false;
+		}
+	}
+}
+
+
+void Player::Walk() {
+	// stageごとに構成が変わるため，stageの移動範囲に合わせたplayerの座標更新を行う
+	if (mIsAtBsSt == false) {	// boss stageではないとき
+		if (key[KEY_INPUT_LEFT] != 0) {
+			if (mX > X_MIN_N) {
+				mX -= (int)(4 * mSpeed);
+			}
+
+			if (mX < X_MIN_N) mX = X_MIN_N;
+
+			if (mXFrameCnt > 0) {
+				mXFrameCnt = 0;
+			}
+			--mXFrameCnt;
+		}
+		if (key[KEY_INPUT_RIGHT] != 0) {
+			if (mX < X_MAX_N) {
+				mX += (int)(4 * mSpeed);
+			}
+
+			if (mX > X_MAX_N) mX = X_MAX_N;
+
+			if (mXFrameCnt < 0) {
+				mXFrameCnt = 0;
+			}
+			++mXFrameCnt;
+		}
+		if (key[KEY_INPUT_UP] != 0 && mIsJumping == false) {
+			if (mY > Y_MIN_N) {
+				mY -= (int)(4 * mSpeed);
+			}
+
+			if (mY < Y_MIN_N) mY = Y_MIN_N;
+
+			if (mYFrameCnt > 0) {
+				mYFrameCnt = 0;
+			}
+			--mYFrameCnt;
+		}
+		if (key[KEY_INPUT_DOWN] != 0 && mIsJumping == false) {
+			if (mY < Y_MAX_N) {
+				mY += (int)(4 * mSpeed);
+			}
+
+			if (mY > Y_MAX_N) mY = Y_MAX_N;
+
+			if (mYFrameCnt < 0) {
+				mYFrameCnt = 0;
+			}
+			++mYFrameCnt;
+		}
+	}
+	else {	// boss stageのとき
+		if (key[KEY_INPUT_LEFT] != 0) {
+			if (mX > X_MIN_B) {
+				mX -= (int)(4 * mSpeed);
+			}
+
+			if (mX < X_MIN_B) mX = X_MIN_B;
+
+			if (mXFrameCnt > 0) {
+				mXFrameCnt = 0;
+			}
+			--mXFrameCnt;
+		}
+		if (key[KEY_INPUT_RIGHT] != 0) {
+			if (mX < X_MAX_B) {
+				mX += (int)(4 * mSpeed);
+
+				if (mX > X_MAX_B) mX = X_MAX_B;
+			}
+			else if (mX < X_MAX_BR && mY >= Y_MIN_BR && mY <= Y_MAX_BR) {
+				mX += (int)(4 * mSpeed);
+
+				if (mX > X_MAX_BR) mX = X_MAX_BR;
+			}
+
+			if (mXFrameCnt < 0) {
+				mXFrameCnt = 0;
+			}
+			++mXFrameCnt;
+		}
+		if (key[KEY_INPUT_UP] != 0 && mIsJumping == false) {
+			if (mY > Y_MIN_B && mX <= X_MAX_B) {
+				mY -= (int)(4 * mSpeed);
+
+				if (mY < Y_MIN_B) mY = Y_MIN_B;
+			}
+			else if (mY > Y_MIN_BR && mX <= X_MAX_BR) {
+				mY -= (int)(4 * mSpeed);
+
+				if (mY < Y_MIN_BR) mY = Y_MIN_BR;
+			}
+
+			if (mYFrameCnt > 0) {
+				mYFrameCnt = 0;
+			}
+			--mYFrameCnt;
+		}
+		if (key[KEY_INPUT_DOWN] != 0 && mIsJumping == false) {
+			if (mY < Y_MAX_B && mX <= X_MAX_B) {
+				mY += (int)(4 * mSpeed);
+
+				if (mY > Y_MAX_B) mY = Y_MAX_B;
+			}
+			else if (mY < Y_MAX_BR && mX <= X_MAX_BR) {
+				mY += (int)(4 * mSpeed);
+
+				if (mY > Y_MAX_BR) mY = Y_MAX_BR;
+			}
+
+			if (mYFrameCnt < 0) {
+				mYFrameCnt = 0;
+			}
+			++mYFrameCnt;
+		}
+	}
+}
+
+
+void Player::Jump() {
+	// playerの座標の更新を行う
+	if (mIsJumping == true) {
+		int yTemp = mY;
+		mY += (mY - mYPrev) + 1;
+		mYPrev = yTemp;
+
+		if (mY == mYStart) {
+			mIsJumping = false;
+		}
+	}
+	else {
+		mIsJumping = true;
+		mYStart = mY;
+		mYPrev = mY;
+		mY = mY - 17;
+	}
+}
+
+
+void Player::Attack() {
+	// Player4以外このAttack()使う
+	// 表示するplayerの画像番号の更新を行う
+	mHandleId += 2;
+
+	if (mIsAttacking) {	// 攻撃しているとき
+		if (mAFrameCnt > 0) --mAFrameCnt;
+		else mIsAttacking = false;
+	}
+	else {
+		mIsAttacking = true;
+		mAFrameCnt = mAFrameNum;
+		if ((mHandleId > 5 && mHandleId < 12) || mHandleId > 17) {	// 左を向いているとき
+			mAX = mX - 160;
+			mAY = mY + 20;
+		}
+		else {	// 右を向いているとき
+			mAX = mX + 160;
+			mAY = mY + 20;
+		}
+	}
+}
+
+
 void Player::UpdateHit() {
 	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
 	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
