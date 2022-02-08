@@ -37,7 +37,7 @@ void Arrow::StartArrow(const int x, const int y, const int type) {
 
 	// ‹|–î‚Ìí—Ş‚É‘Î‰‚µ‚½’l‚Ìİ’è
 	if (mType == 1 || mType == 3) {	// ‰EŒü‚«
-		mArrowHandle = ItemGraphics::GetGraHandle(16);
+		mArrowHandle = ItemGraphics::GetGraHandle(15);
 		mDX = 20;
 		
 		if (mType == 1) {	// ã‚¢‹|–î
@@ -52,7 +52,7 @@ void Arrow::StartArrow(const int x, const int y, const int type) {
 		}
 	}
 	else {	// ¶Œü‚«
-		mArrowHandle = ItemGraphics::GetGraHandle(17);
+		mArrowHandle = ItemGraphics::GetGraHandle(16);
 		mDX = -20;
 
 		if (mType == 2) {	// ã‚¢‹|–î
