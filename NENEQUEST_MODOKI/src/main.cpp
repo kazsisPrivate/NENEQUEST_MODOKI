@@ -6,17 +6,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SetBackgroundColor(255, 255, 255);
 
-	SceneMgr sceneMgr;
-	sceneMgr.Initialize();
+	SceneMgr* sceneMgr = SceneMgr::GetInstance();
 
 	// while(裏画面を表画面に反映, メッセージ処理, 画面クリア)
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0) {
 
-		sceneMgr.Update();
-		sceneMgr.Draw();
+		sceneMgr->Update();
+		sceneMgr->Draw();
 	}
 	
-	sceneMgr.Finalize();
+	sceneMgr->Finalize();
+
+	//delete sceneMgr;
 
 	// DXライブラリ終了処理
 	DxLib_End(); 
