@@ -1,5 +1,10 @@
 #include "MenuScene.h"
 #include "DxLib.h"
+#include "SceneMgr.h"
+
+
+MenuScene* MenuScene::mMenuScene;
+
 
 MenuScene::MenuScene(SceneChanger* changer) : BaseScene(changer) {
 	// 選択に使用する三角形の位置の初期設定
@@ -7,10 +12,29 @@ MenuScene::MenuScene(SceneChanger* changer) : BaseScene(changer) {
 	mTriY = mTriYs[mTriYId];
 }
 
+
+MenuScene* MenuScene::GetInstance() {
+	if (!MenuScene::mMenuScene) {
+		SceneMgr* sceneMgr = SceneMgr::GetInstance();
+		MenuScene::mMenuScene = new MenuScene(sceneMgr);
+		MenuScene::mMenuScene->Initialize();
+	}
+
+	return MenuScene::mMenuScene;
+}
+
+
 void MenuScene::Initialize() {
 	mImageHandle = 0;
 	mFontHandle = CreateFontToHandle(NULL, 50, 9);
 }
+
+
+void MenuScene::Finalize() {
+	delete mMenuScene;
+	mMenuScene = NULL;
+}
+
 
 void MenuScene::Update() {
 	// 入力キーを取得
@@ -35,6 +59,7 @@ void MenuScene::Update() {
 		}
 	}
 }
+
 
 void MenuScene::Draw() {
 	BaseScene::Draw();
