@@ -9,7 +9,7 @@ protected:
 	virtual void Jump() {};	// ジャンプ
 	virtual void Attack() {};	// 攻撃
 	virtual void UpdateSAP() {};	// 移動速度と攻撃力の更新
-	virtual void UpdateHit() {};	// 当たり判定の更新
+	//virtual void UpdateHit() {};	// 当たり判定の更新
 
 	int mHp;	// charaのHP, PlayerのHPは6
 	int mAttack;	/// charaの攻撃力

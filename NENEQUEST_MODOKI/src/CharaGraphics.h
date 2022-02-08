@@ -7,9 +7,9 @@ public:
 	static void Finalize();
 
 private:
-    static int mPl1to3Handle[3][24];	// Player1Å`3
+    static int mPl1to3Handles[3][24];	// Player1Å`3
 	static int mPl4Handle[32];	// Player4
-	static int mEne1to2Handle[2][4];	// Enemy1Å`2
-	static int mEne3to7Handle[5][8];	// Enemy3Å`7
+	static int mEne1to2Handles[2][4];	// Enemy1Å`2
+	static int mEne3to7Handles[5][8];	// Enemy3Å`7
 	static int mEneBossHandle[24];	// EnemyBoss
 };
