@@ -6,20 +6,34 @@
 #include "SceneMgr.h"
 
 
-SceneMgr::SceneMgr() :
-	mSceneNext(eSceneNone) //次のシーン管理変数
-{
-	mScene = (BaseScene*) new MenuScene(this);
+SceneMgr* SceneMgr::mSceneMgr;
+
+
+SceneMgr::SceneMgr() : mSceneNext(eSceneNone) {
+}
+
+
+SceneMgr* SceneMgr::GetInstance() {
+	if (!SceneMgr::mSceneMgr) {
+		SceneMgr::mSceneMgr = new SceneMgr();
+		SceneMgr::mSceneMgr->Initialize();
+	}
+
+	return SceneMgr::mSceneMgr;
 }
 
 
 void SceneMgr::Initialize() {
-	mScene->Initialize();
+	mScene = (BaseScene*)MenuScene::GetInstance();
+	//mScene->Initialize();
 }
 
 
 void SceneMgr::Finalize() {
 	mScene->Finalize();
+
+	delete mSceneMgr;
+	mSceneMgr = NULL;
 }
 
 
@@ -27,24 +41,24 @@ void SceneMgr::Update() {
 	if (mSceneNext != eSceneNone) { // 次のシーンがセットされているとき
 		// 現在のシーンの終了処理を実行
 		mScene->Finalize(); 
-		delete mScene;
+		//delete mScene;
 
 		switch (mSceneNext) { // mScenNextで指定されたシーンに変更
 			case eSceneMenu:
-				mScene = (BaseScene*) new MenuScene(this);
+				mScene = (BaseScene*) MenuScene::GetInstance();
 				break;
 			case eSceneGame:
-				mScene = (BaseScene*) new GameScene(this);
+				mScene = (BaseScene*) GameScene::GetInstance();
 				break;
 			case eSceneConfig:
-				mScene = (BaseScene*) new ConfigScene(this);
+				mScene = (BaseScene*) ConfigScene::GetInstance();
 				break;
 		}
 		// 次のシーン情報を空にする
 		mSceneNext = eSceneNone;    
 
 		// シーンを初期化
-		mScene->Initialize();    
+		//mScene->Initialize();    
 	}
 
 	// シーンの更新
