@@ -25,7 +25,10 @@
     <ClCompile Include="src\ConfigScene.cpp" />
     <ClCompile Include="src\GameBack.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
+    <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\ItemGraphics.cpp" />
+    <ClCompile Include="src\ItemMgr.cpp" />
+    <ClCompile Include="src\Item1.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MenuScene.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -46,7 +49,11 @@
     <ClInclude Include="src\ConfigScene.h" />
     <ClInclude Include="src\GameBack.h" />
     <ClInclude Include="src\GameScene.h" />
+    <ClInclude Include="src\Item.h" />
+    <ClInclude Include="src\ItemChanger.h" />
     <ClInclude Include="src\ItemGraphics.h" />
+    <ClInclude Include="src\ItemMgr.h" />
+    <ClInclude Include="src\Item1.h" />
     <ClInclude Include="src\MenuScene.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayerChanger.h" />
