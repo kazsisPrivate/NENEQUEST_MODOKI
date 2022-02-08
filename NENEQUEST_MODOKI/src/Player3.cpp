@@ -8,17 +8,12 @@ Player3* Player3::mPlayer3;
 
 
 Player3::Player3(PlayerChanger* changer) : Player(changer, CharaGraphics::GetGraHandle(0, 3)) {
-	mPlayerMgr = PlayerMgr::GetInstance();
-}
-
-
-Player3::~Player3() {
-	delete mPlayer3;
+	//mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
 Player3* Player3::GetInstance() {
-	if (mPlayer3 == NULL) {
+	if (!mPlayer3) {
 		PlayerMgr* playerMgr = PlayerMgr::GetInstance();
 		mPlayer3 = new Player3(playerMgr);
 		// InitializeはGetInstanceの呼び出し側にSetPlParamsとともに行ってもらう
@@ -36,7 +31,8 @@ void Player3::Initialize() {
 	mHitRangeAW = 35, mHitRangeAH = 60;
 
 	// Playerの攻撃の状態設定
-	mAttack = 1;
+	mAttackBase = 1;
+	mAttack = mAttackBase;
 	mAFrameNum = 30;
 
 	// アイテムや使用武器の設定
@@ -46,6 +42,9 @@ void Player3::Initialize() {
 
 void Player3::Finalize() {
 	Player::Finalize();
+
+	delete mPlayer3;
+	mPlayer3 = NULL;
 }
 
 
@@ -62,7 +61,14 @@ void Player3::Update() {
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
 
-		if (mIsAtBsSt == true && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
+		// アイテムとの当たり判定を考慮したアイテムの効果の更新
+		UpdateIteEffect();
+
+		// hpの更新
+		UpdateHp();
+
+
+		if (mIsAtBsSt && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
 			StartBossStage();
 		}
 		else {
@@ -134,14 +140,14 @@ void Player3::Update() {
 }
 
 
-void Player3::Draw() {
-	Player::Draw();
-}
-
-
-void Player3::UpdateSAP() {
-	Player::UpdateSAP();
-}
+//void Player3::Draw() {
+//	Player::Draw();
+//}
+//
+//
+//void Player3::UpdateSAP() {
+//	Player::UpdateSAP();
+//}
 
 
 void Player3::Walk() {
@@ -170,9 +176,9 @@ void Player3::Walk() {
 }
 
 
-void Player3::Attack() {
-	Player::Attack();
-}
+//void Player3::Attack() {
+//	Player::Attack();
+//}
 
 
 void Player3::Jump() {

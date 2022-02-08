@@ -8,18 +8,17 @@
 class Player3 : public Player {
 public:
 	Player3(PlayerChanger* changer);
-	~Player3();
 	static Player3* GetInstance();
 	void Initialize() override;
 	void Finalize() override;
 	void Update() override;
-	void Draw() override;
+	//void Draw() override;
 
 protected:
-	void UpdateSAP() override;
+	//void UpdateSAP() override;
 	void Walk() override;
 	void Jump() override;
-	void Attack() override;
+	//void Attack() override;
 
 private:
 	static Player3* mPlayer3;

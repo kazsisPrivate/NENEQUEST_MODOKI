@@ -8,7 +8,6 @@
 class Player4 : public Player {
 public:
 	Player4(PlayerChanger* changer);
-	~Player4();
 	static Player4* GetInstance();
 	void Initialize() override;
 	void Finalize() override;
@@ -20,7 +19,7 @@ protected:
 	void Walk() override;
 	void Jump() override;
 	void Attack() override;
-	void UpdateHit() override; //Player_4‚É‚¨‚¢‚Ä‚Ì‚İUŒ‚‚Ì“–‚½‚è”»’è‚Ìæ‚è•û‚ªˆÙ‚È‚é‚½‚ß
+	//void UpdateHit() override; //Player_4‚É‚¨‚¢‚Ä‚Ì‚İUŒ‚‚Ì“–‚½‚è”»’è‚Ìæ‚è•û‚ªˆÙ‚È‚é‚½‚ß
 	void StartBossStage() override;
 
 private:

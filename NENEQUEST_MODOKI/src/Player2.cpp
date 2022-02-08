@@ -8,17 +8,12 @@ Player2* Player2::mPlayer2;
 
 
 Player2::Player2(PlayerChanger* changer) : Player(changer, CharaGraphics::GetGraHandle(0, 2)) {
-	mPlayerMgr = PlayerMgr::GetInstance();
-}
-
-
-Player2::~Player2() {
-	delete mPlayer2;
+	//mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
 Player2* Player2::GetInstance() {
-	if (mPlayer2 == NULL) {
+	if (!mPlayer2) {
 		PlayerMgr* playerMgr = PlayerMgr::GetInstance();
 		mPlayer2 = new Player2(playerMgr);
 		// InitializeはGetInstanceの呼び出し側にSetPlParamsとともに行ってもらう
@@ -36,7 +31,8 @@ void Player2::Initialize() {
 	mHitRangeAW = 45, mHitRangeAH = 60;
 
 	// Playerの攻撃の状態設定
-	mAttack = 2;
+	mAttackBase = 2;
+	mAttack = mAttackBase;
 	mAFrameNum = 20;
 
 	// アイテムや使用武器の設定
@@ -46,6 +42,9 @@ void Player2::Initialize() {
 
 void Player2::Finalize() {
 	Player::Finalize();
+
+	delete mPlayer2;
+	mPlayer2 = NULL;
 }
 
 
@@ -134,14 +133,14 @@ void Player2::Update() {
 }
 
 
-void Player2::Draw() {
-	Player::Draw();
-}
-
-
-void Player2::UpdateSAP() {
-	Player::UpdateSAP();
-}
+//void Player2::Draw() {
+//	Player::Draw();
+//}
+//
+//
+//void Player2::UpdateSAP() {
+//	Player::UpdateSAP();
+//}
 
 
 void Player2::Walk() {
@@ -169,9 +168,9 @@ void Player2::Walk() {
 }
 
 
-void Player2::Attack() {
-	Player::Attack();
-}
+//void Player2::Attack() {
+//	Player::Attack();
+//}
 
 
 void Player2::Jump() {

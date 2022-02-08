@@ -8,17 +8,12 @@ Player4* Player4::mPlayer4;
 
 
 Player4::Player4(PlayerChanger* changer) : Player(changer, CharaGraphics::GetGraHandle(0, 4)) {
-	mPlayerMgr = PlayerMgr::GetInstance();
-}
-
-
-Player4::~Player4() {
-	delete mPlayer4;
+	//mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
 Player4* Player4::GetInstance() {
-	if (mPlayer4 == NULL) {
+	if (!mPlayer4) {
 		PlayerMgr* playerMgr = PlayerMgr::GetInstance();
 		mPlayer4 = new Player4(playerMgr);
 		// InitializeはGetInstanceの呼び出し側にSetPlParamsとともに行ってもらう
@@ -36,7 +31,8 @@ void Player4::Initialize() {
 	mHitRangeAW = 45, mHitRangeAH = 60;
 
 	// Playerの攻撃の状態設定
-	mAttack = 1;
+	mAttackBase = 1;
+	mAttack = mAttackBase;
 	// mAFrameNum は強い弓：120，弱い弓：90
 
 	// アイテムや使用武器の設定
@@ -54,7 +50,10 @@ void Player4::Finalize() {
 	Player::Finalize();
 
 	delete mArrow;
+	delete mPlayer4;
+	mPlayer4 = NULL;
 }
+
 
 void Player4::Update() {
 	if (mHp == 0) {	// 死んだときの処理（死んだことを認識させるための120フレームの硬直）
@@ -69,10 +68,16 @@ void Player4::Update() {
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
 
-		if (mIsAtBsSt == true && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
+		if (mIsAtBsSt && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
 			StartBossStage();
 		}
 		else {
+			// アイテムとの当たり判定を考慮したアイテムの効果の更新
+			UpdateIteEffect();
+
+			// hpの更新
+			UpdateHp();
+
 			// 武器交換をするとき
 			if (mIteKindId == 1) {
 				mPlayerChanger->ChangePlayer(ePlayer1);
@@ -117,7 +122,7 @@ void Player4::Update() {
 			mArrowExists = mArrow->GetArrowExists();
 
 			// ジャンプと攻撃の処理
-			if (!mIsAttacking && (mIsJumping == true || key[KEY_INPUT_A] == 1)) {	// 攻撃中でなく，かつジャンプ中，もしくはジャンプ入力キーを押しているとき
+			if (!mIsAttacking && (mIsJumping || key[KEY_INPUT_A] == 1)) {	// 攻撃中でなく，かつジャンプ中，もしくはジャンプ入力キーを押しているとき
 				Jump();
 			}
 			else if (mIsAttacking) {	// 攻撃中であるとき（弓矢を放ったあと）
@@ -142,7 +147,7 @@ void Player4::Update() {
 	}
 
 	// ダメージを受けた後の少しの間の無敵時間の処理
-	if (mIsGod == true) {
+	if (mIsGod) {
 		if (mGodFrameCnt == -1) {
 			mIsGod = false;
 		}
@@ -167,7 +172,7 @@ void Player4::Draw() {
 void Player4::UpdateSAP() {
 	// 移動速度の更新
 	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
-		if (mIsJumping == true) {	// ジャンプしているとき
+		if (mIsJumping) {	// ジャンプしているとき
 			mSpeed = 0.8f;
 		}
 		else if (mIsAttacking || mIsPreparingWA || mIsPreparingSA) {	// 攻撃しているときor攻撃準備中のとき
@@ -190,30 +195,35 @@ void Player4::UpdateSAP() {
 	}
 
 	// 移動速度（アイテム効果）の更新
-	if (mHasIteS) {
-		if (mIteSFrameCnt != 0) {	// 効果中のとき
-			mSpeed *= mIteSP;
-			mIteSFrameCnt--;
-		}
-		else {	// 効果切れのとき
-			mIteSP = 1.0f;
-			mEffectHandle = 0;
-			mHasIteS = false;
-		}
-	}
+	mSpeed *= mIteSP;
+	//if (mHasIteS) {
+	//	if (mIteSFrameCnt != 0) {	// 効果中のとき
+	//		mSpeed *= mIteSP;
+	//		mIteSFrameCnt--;
+	//	}
+	//	else {	// 効果切れのとき
+	//		mIteSP = 1.0f;
+	//		mEffectHandle = 0;
+	//		mHasIteS = false;
+	//	}
+	//}
+
+	// 攻撃力の更新
+	mAttack = mAttackBase;
 
 	// 攻撃力（アイテム効果）の更新
-	if (mHasIteA) {
-		if (mIteAFrameCnt != 0) {	// 効果中のとき
-			mAttack *= mIteAP;
-			mIteAFrameCnt--;
-		}
-		else {	// 効果切れのとき
-			mIteAP = 1;
-			mEffectHandle = 0;
-			mHasIteA = false;
-		}
-	}
+	mAttack *= mIteAP;
+	//if (mHasIteA) {
+	//	if (mIteAFrameCnt != 0) {	// 効果中のとき
+	//		mAttack *= mIteAP;
+	//		mIteAFrameCnt--;
+	//	}
+	//	else {	// 効果切れのとき
+	//		mIteAP = 0;
+	//		mEffectHandle = 0;
+	//		mHasIteA = false;
+	//	}
+	//}
 }
 
 void Player4::Walk() {
@@ -312,122 +322,122 @@ void Player4::PrepareSAttack() {	// 強い攻撃（弓矢が遠くまで飛ぶ，入力Sキー）
 	}
 }
 
-void Player4::UpdateHit() {
-	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
-	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
-	//HitJudge2::SetPlRange(x, y, hitRangeX, hitRangeY);
-
-	//if (godFlag == false) {
-	//	eneJudge0 = HitJudge0::PEJudge();
-	//	eneJudge1 = HitJudge1::PEJudge();
-	//	eneJudge2 = HitJudge2::PEJudge();
-	//	eneAJudge0 = HitJudge0::EaPJudge();
-	//	eneAJudge1 = HitJudge1::EaPJudge();
-	//	eneAJudge2 = HitJudge2::EaPJudge();
-	//}
-
-	//if (icount == 1) {
-	//	iJudge0 = false;
-	//	iJudge1 = false;
-	//	icount++;
-	//}
-	//else if (icount == 2) {
-	//	icount = 0;
-	//}
-	//else {
-	//	iJudge0 = HitJudge0::PIJudge();
-	//	iJudge1 = HitJudge1::PIJudge();
-	//}
-
-	//if (iJudge0 == true || iJudge1 == true) {
-	//	if (iJudge0 == true) {
-	//		weaponNum = PowerBox::GetWpn0Num();
-
-	//		if (weaponNum == 6) { //6は自強化系のItemを表す
-	//			iPower = PowerBox::GetIPower0();
-	//			isPower = PowerBox::GetISPower0();
-	//		}
-
-	//		ihPower = PowerBox::GetIHPower0();
-	//	}
-	//	else {
-	//		weaponNum = PowerBox::GetWpn1Num();
-
-	//		if (weaponNum == 6) { //6は自強化系のItemを表す
-	//			iPower = PowerBox::GetIPower1();
-	//			isPower = PowerBox::GetISPower1();
-	//		}
-
-	//		ihPower = PowerBox::GetIHPower1();
-	//	}
-
-	//	hp = hp + ihPower;
-	//	if (hp < 0) {
-	//		hp = 0;
-	//	}
-	//	else if (hp > 10) {
-	//		hp = 10;
-	//	}
-	//	PlayerData::SetPlayerHP(hp);
-
-	//	if (isPower != 1 && weaponNum == 6) {
-	//		iscount = 600;
-
-	//		if (isPower == 2) {
-	//			effectHandle = LoadGraph("images/effect_1.png");
-	//		}
-	//		else {
-	//			isPower = 0.5;
-	//			effectHandle = LoadGraph("images/effect_2.png");
-	//		}
-	//	}
-	//	else if (iPower != 1 && weaponNum == 6) {
-	//		ipcount = 600;
-	//		PowerBox::SetPlPower(iPower);
-	//		effectHandle = LoadGraph("images/effect_3.png");
-	//	}
-
-	//	icount++;
-	//}
-
-	//if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true || eneAJudge0 == true || eneAJudge1 == true || eneAJudge2 == true) {
-	//	if (eneJudge0 == true) {
-	//		enePower = PowerBox::GetEnePower0();
-	//		eneJudge0 = false;
-	//	}
-	//	else if (eneJudge1 == true) {
-	//		enePower = PowerBox::GetEnePower1();
-	//		eneJudge1 = false;
-	//	}
-	//	else if (eneJudge2 == true) {
-	//		enePower = PowerBox::GetEnePower2();
-	//		eneJudge2 = false;
-	//	}
-	//	else if (eneAJudge0 == true) {
-	//		enePower = PowerBox::GetEneAPower0();
-	//		eneAJudge0 = false;
-	//	}
-	//	else if (eneAJudge1 == true) {
-	//		enePower = PowerBox::GetEneAPower1();
-	//		eneAJudge1 = false;
-	//	}
-	//	else {
-	//		enePower = PowerBox::GetEneAPower2();
-	//		eneAJudge2 = false;
-	//	}
-
-	//	hp = hp - enePower;
-	//	if (hp < 0) {
-	//		hp = 0;
-	//	}
-	//	else if (hp > 10) {
-	//		hp = 10;
-	//	}
-	//	PlayerData::SetPlayerHP(hp);
-	//	godCount = 100;
-	//	godFlag = true;
-	//}
-}
+//void Player4::UpdateHit() {
+//	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
+//	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
+//	//HitJudge2::SetPlRange(x, y, hitRangeX, hitRangeY);
+//
+//	//if (godFlag == false) {
+//	//	eneJudge0 = HitJudge0::PEJudge();
+//	//	eneJudge1 = HitJudge1::PEJudge();
+//	//	eneJudge2 = HitJudge2::PEJudge();
+//	//	eneAJudge0 = HitJudge0::EaPJudge();
+//	//	eneAJudge1 = HitJudge1::EaPJudge();
+//	//	eneAJudge2 = HitJudge2::EaPJudge();
+//	//}
+//
+//	//if (icount == 1) {
+//	//	iJudge0 = false;
+//	//	iJudge1 = false;
+//	//	icount++;
+//	//}
+//	//else if (icount == 2) {
+//	//	icount = 0;
+//	//}
+//	//else {
+//	//	iJudge0 = HitJudge0::PIJudge();
+//	//	iJudge1 = HitJudge1::PIJudge();
+//	//}
+//
+//	//if (iJudge0 == true || iJudge1 == true) {
+//	//	if (iJudge0 == true) {
+//	//		weaponNum = PowerBox::GetWpn0Num();
+//
+//	//		if (weaponNum == 6) { //6は自強化系のItemを表す
+//	//			iPower = PowerBox::GetIPower0();
+//	//			isPower = PowerBox::GetISPower0();
+//	//		}
+//
+//	//		ihPower = PowerBox::GetIHPower0();
+//	//	}
+//	//	else {
+//	//		weaponNum = PowerBox::GetWpn1Num();
+//
+//	//		if (weaponNum == 6) { //6は自強化系のItemを表す
+//	//			iPower = PowerBox::GetIPower1();
+//	//			isPower = PowerBox::GetISPower1();
+//	//		}
+//
+//	//		ihPower = PowerBox::GetIHPower1();
+//	//	}
+//
+//	//	hp = hp + ihPower;
+//	//	if (hp < 0) {
+//	//		hp = 0;
+//	//	}
+//	//	else if (hp > 10) {
+//	//		hp = 10;
+//	//	}
+//	//	PlayerData::SetPlayerHP(hp);
+//
+//	//	if (isPower != 1 && weaponNum == 6) {
+//	//		iscount = 600;
+//
+//	//		if (isPower == 2) {
+//	//			effectHandle = LoadGraph("images/effect_1.png");
+//	//		}
+//	//		else {
+//	//			isPower = 0.5;
+//	//			effectHandle = LoadGraph("images/effect_2.png");
+//	//		}
+//	//	}
+//	//	else if (iPower != 1 && weaponNum == 6) {
+//	//		ipcount = 600;
+//	//		PowerBox::SetPlPower(iPower);
+//	//		effectHandle = LoadGraph("images/effect_3.png");
+//	//	}
+//
+//	//	icount++;
+//	//}
+//
+//	//if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true || eneAJudge0 == true || eneAJudge1 == true || eneAJudge2 == true) {
+//	//	if (eneJudge0 == true) {
+//	//		enePower = PowerBox::GetEnePower0();
+//	//		eneJudge0 = false;
+//	//	}
+//	//	else if (eneJudge1 == true) {
+//	//		enePower = PowerBox::GetEnePower1();
+//	//		eneJudge1 = false;
+//	//	}
+//	//	else if (eneJudge2 == true) {
+//	//		enePower = PowerBox::GetEnePower2();
+//	//		eneJudge2 = false;
+//	//	}
+//	//	else if (eneAJudge0 == true) {
+//	//		enePower = PowerBox::GetEneAPower0();
+//	//		eneAJudge0 = false;
+//	//	}
+//	//	else if (eneAJudge1 == true) {
+//	//		enePower = PowerBox::GetEneAPower1();
+//	//		eneAJudge1 = false;
+//	//	}
+//	//	else {
+//	//		enePower = PowerBox::GetEneAPower2();
+//	//		eneAJudge2 = false;
+//	//	}
+//
+//	//	hp = hp - enePower;
+//	//	if (hp < 0) {
+//	//		hp = 0;
+//	//	}
+//	//	else if (hp > 10) {
+//	//		hp = 10;
+//	//	}
+//	//	PlayerData::SetPlayerHP(hp);
+//	//	godCount = 100;
+//	//	godFlag = true;
+//	//}
+//}
 
 void Player4::StartBossStage() {
 

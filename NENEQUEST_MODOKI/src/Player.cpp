@@ -12,6 +12,7 @@
 
 Player::Player(PlayerChanger* changer, const int* graph) : mPlHandle(graph) {
 	mPlayerChanger = changer;
+	mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
@@ -35,22 +36,13 @@ void Player::Initialize() {
 	//mAttack = 1;
 
 	// アイテムや使用武器の設定
-	mIteFrameCnt = 0;
-	//mIteKindId = 1;
 	mIteHP = 0;
 
-	if (mIteSFrameCnt > 0) {
-		mHasIteS = true;
+	if (mEffectFrameCnt > 0) {
+		mIsEffected = true;
 	}
 	else {
-		mHasIteS = false;
-	}
-
-	if (mIteAFrameCnt > 0) {
-		mHasIteA = true;
-	}
-	else {
-		mHasIteA = false;
+		mIsEffected = false;
 	}
 
 	if (mEffectId == 0) {
@@ -73,6 +65,12 @@ void Player::Initialize() {
 		mIteAP = 2;
 		mEffectHandle = LoadGraph("images/effect_3.png");
 	}
+
+	// 情報保持に使用するmap(vector), 配列の初期化
+	for (int i = 0; i < ITEM_NUM; i++) {
+		mIteIsHits[i] = false;
+		mIteDataMaps.push_back({});
+	}
 }
 
 
@@ -87,7 +85,7 @@ void Player::Draw() {
 	DrawGraph(mX - mImgW / 2, mY - mImgH / 2 - 13, mPlHandle[mHandleId], TRUE);
 
 	// Effectの画像表示
-	if (mHasIteS || mHasIteA) {	// Itemの効果中のとき
+	if (mIsEffected) {	// Itemの効果中のとき
 		DrawGraph(mX - 114, mY - 113, mEffectHandle, TRUE);
 	}
 }
@@ -118,37 +116,42 @@ void Player::UpdateSAP() {
 		}
 	}
 
+	// 攻撃力の更新
+	mAttack = mAttackBase;
+
 	// 移動速度（アイテム効果）の更新
-	if (mHasIteS) {
-		if (mIteSFrameCnt != 0) {	// 効果中のとき
-			mSpeed *= mIteSP;
-			mIteSFrameCnt--;
-		}
-		else {	// 効果切れのとき
-			mIteSP = 1.0f;
-			mEffectHandle = 0;
-			mHasIteS = false;
-		}
-	}
+	mSpeed *= mIteSP;
+	//if (mHasIteS) {
+	//	if (mIteSFrameCnt != 0) {	// 効果中のとき
+	//		mSpeed *= mIteSP;
+	//		mIteSFrameCnt--;
+	//	}
+	//	else {	// 効果切れのとき
+	//		mIteSP = 1.0f;
+	//		mEffectHandle = 0;
+	//		mHasIteS = false;
+	//	}
+	//}
 
 	// 攻撃力（アイテム効果）の更新
-	if (mHasIteA) {
-		if (mIteAFrameCnt != 0) {	// 効果中のとき
-			mAttack *= mIteAP;
-			mIteAFrameCnt--;
-		}
-		else {	// 効果切れのとき
-			mIteAP = 1;
-			mEffectHandle = 0;
-			mHasIteA = false;
-		}
-	}
+	mAttack *= mIteAP;
+	//if (mHasIteA) {
+	//	if (mIteAFrameCnt != 0) {	// 効果中のとき
+	//		mAttack *= mIteAP;
+	//		mIteAFrameCnt--;
+	//	}
+	//	else {	// 効果切れのとき
+	//		mIteAP = 0;
+	//		mEffectHandle = 0;
+	//		mHasIteA = false;
+	//	}
+	//}
 }
 
 
 void Player::Walk() {
 	// stageごとに構成が変わるため，stageの移動範囲に合わせたplayerの座標更新を行う
-	if (mIsAtBsSt == false) {	// boss stageではないとき
+	if (!mIsAtBsSt) {	// boss stageではないとき
 		if (key[KEY_INPUT_LEFT] != 0) {
 			if (mX > X_MIN_N) {
 				mX -= (int)(4 * mSpeed);
@@ -173,7 +176,7 @@ void Player::Walk() {
 			}
 			++mXFrameCnt;
 		}
-		if (key[KEY_INPUT_UP] != 0 && mIsJumping == false) {
+		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {
 			if (mY > Y_MIN_N) {
 				mY -= (int)(4 * mSpeed);
 			}
@@ -185,7 +188,7 @@ void Player::Walk() {
 			}
 			--mYFrameCnt;
 		}
-		if (key[KEY_INPUT_DOWN] != 0 && mIsJumping == false) {
+		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {
 			if (mY < Y_MAX_N) {
 				mY += (int)(4 * mSpeed);
 			}
@@ -228,7 +231,7 @@ void Player::Walk() {
 			}
 			++mXFrameCnt;
 		}
-		if (key[KEY_INPUT_UP] != 0 && mIsJumping == false) {
+		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {
 			if (mY > Y_MIN_B && mX <= X_MAX_B) {
 				mY -= (int)(4 * mSpeed);
 
@@ -245,7 +248,7 @@ void Player::Walk() {
 			}
 			--mYFrameCnt;
 		}
-		if (key[KEY_INPUT_DOWN] != 0 && mIsJumping == false) {
+		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {
 			if (mY < Y_MAX_B && mX <= X_MAX_B) {
 				mY += (int)(4 * mSpeed);
 
@@ -268,7 +271,7 @@ void Player::Walk() {
 
 void Player::Jump() {
 	// playerの座標の更新を行う
-	if (mIsJumping == true) {
+	if (mIsJumping) {
 		int yTemp = mY;
 		mY += (mY - mYPrev) + 1;
 		mYPrev = yTemp;
@@ -310,151 +313,196 @@ void Player::Attack() {
 }
 
 
-void Player::UpdateHit() {
-	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
-	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
-	//HitJudge2::SetPlRange(x, y, hitRangeX, hitRangeY);
+//void Player::UpdateHit() {
+//	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
+//	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
+//	//HitJudge2::SetPlRange(x, y, hitRangeX, hitRangeY);
+//
+//	//if (mIsAttacking == true) {
+//	//	HitJudge0::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
+//	//	HitJudge1::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
+//	//	HitJudge2::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
+//	//	mIsAttacking = false;
+//	//}
+//	//else {
+//	//	HitJudge0::SetPlARange(-3000, -3000, 0, 0);
+//	//	HitJudge1::SetPlARange(-3000, -3000, 0, 0);
+//	//	HitJudge2::SetPlARange(-3000, -3000, 0, 0);
+//	//}
+//
+//	//if (mIsGod == false) {
+//	//	eneJudge0 = HitJudge0::PEJudge();
+//	//	eneJudge1 = HitJudge1::PEJudge();
+//	//	eneJudge2 = HitJudge2::PEJudge();
+//	//	eneAJudge0 = HitJudge0::EaPJudge();
+//	//	eneAJudge1 = HitJudge1::EaPJudge();
+//	//	eneAJudge2 = HitJudge2::EaPJudge();
+//	//}
+//	//
+//	//if (icount == 1) {
+//	//	iJudge0 = false;
+//	//	iJudge1 = false;
+//	//	icount++;
+//	//}
+//	//else if (icount == 2) {
+//	//	icount = 0;
+//	//}
+//	//else {
+//	//	iJudge0 = HitJudge0::PIJudge();
+//	//	iJudge1 = HitJudge1::PIJudge();
+//	//}
+//
+//	//if (iJudge0 == true || iJudge1 == true) {
+//	//	if (iJudge0 == true) {
+//	//		weaponNum = PowerBox::GetWpn0Num();
+//
+//	//		if (weaponNum == 6) { //6は自強化系のItemを表す
+//	//			iPower = PowerBox::GetIPower0();
+//	//			isPower = PowerBox::GetISPower0();
+//	//		}
+//	//		
+//	//		ihPower = PowerBox::GetIHPower0();
+//	//	}
+//	//	else {
+//	//		weaponNum = PowerBox::GetWpn1Num();
+//
+//	//		if (weaponNum == 6) { //4は自強化系のItemを表す
+//	//			iPower = PowerBox::GetIPower1();
+//	//			isPower = PowerBox::GetISPower1();
+//	//		}
+//
+//	//		ihPower = PowerBox::GetIHPower1();
+//	//	}
+//
+//	//	hp = hp + ihPower;
+//	//	if (hp < 0) {
+//	//		hp = 0;
+//	//	}
+//	//	else if (hp > 10) {
+//	//		hp = 10;
+//	//	}
+//	//	PlayerData::SetPlayerHP(hp);
+//
+//	//	if (isPower != 1 && weaponNum == 6) { //なにか効果を受けているときに武器をとってcountが600にリセットされないため
+//	//		iscount = 600;
+//	//		
+//	//		if (isPower == 2) {
+//	//			effectHandle = LoadGraph("images/effect_1.png");
+//	//			PlayerData::SetEffectNum(1);
+//	//		}
+//	//		else {
+//	//			isPower = 0.5;
+//	//			effectHandle = LoadGraph("images/effect_2.png");
+//	//			PlayerData::SetEffectNum(2);
+//	//		}
+//	//	}
+//	//	else if (iPower != 1 && weaponNum == 6) {
+//	//		ipcount = 600;
+//	//		PowerBox::SetPlPower(iPower);
+//	//		effectHandle = LoadGraph("images/effect_3.png");
+//	//		PlayerData::SetEffectNum(3);
+//	//	}
+//
+//	//	icount++;
+//	//}
+//
+//	//if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true || eneAJudge0 == true || eneAJudge1 == true || eneAJudge2 == true) {
+//	//	if (eneJudge0 == true) {
+//	//		enePower = PowerBox::GetEnePower0();
+//	//		eneJudge0 = false;
+//	//	}
+//	//	else if (eneJudge1 == true) {
+//	//		enePower = PowerBox::GetEnePower1();
+//	//		eneJudge1 = false;
+//	//	}
+//	//	else if (eneJudge2 == true) {
+//	//		enePower = PowerBox::GetEnePower2();
+//	//		eneJudge2 = false;
+//	//	}
+//	//	else if (eneAJudge0 == true) {
+//	//		enePower = PowerBox::GetEneAPower0();
+//	//		eneAJudge0 = false;
+//	//	}
+//	//	else if (eneAJudge1 == true) {
+//	//		enePower = PowerBox::GetEneAPower1();
+//	//		eneAJudge1 = false;
+//	//	}
+//	//	else {
+//	//		enePower = PowerBox::GetEneAPower2();
+//	//		eneAJudge2 = false;
+//	//	}
+//
+//	//	hp = hp - enePower;
+//	//	if (hp < 0) {
+//	//		hp = 0;
+//	//	}
+//	//	else if (hp > 10) {
+//	//		hp = 10;
+//	//	}
+//	//	PlayerData::SetPlayerHP(hp);
+//	//	godCount = 100;
+//	//	godFlag = true;
+//	//}
+//}
 
-	//if (mIsAttacking == true) {
-	//	HitJudge0::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
-	//	HitJudge1::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
-	//	HitJudge2::SetPlARange(ax, ay, hitRangeAX, hitRangeAY);
-	//	mIsAttacking = false;
-	//}
-	//else {
-	//	HitJudge0::SetPlARange(-3000, -3000, 0, 0);
-	//	HitJudge1::SetPlARange(-3000, -3000, 0, 0);
-	//	HitJudge2::SetPlARange(-3000, -3000, 0, 0);
-	//}
 
-	//if (mIsGod == false) {
-	//	eneJudge0 = HitJudge0::PEJudge();
-	//	eneJudge1 = HitJudge1::PEJudge();
-	//	eneJudge2 = HitJudge2::PEJudge();
-	//	eneAJudge0 = HitJudge0::EaPJudge();
-	//	eneAJudge1 = HitJudge1::EaPJudge();
-	//	eneAJudge2 = HitJudge2::EaPJudge();
-	//}
-	//
-	//if (icount == 1) {
-	//	iJudge0 = false;
-	//	iJudge1 = false;
-	//	icount++;
-	//}
-	//else if (icount == 2) {
-	//	icount = 0;
-	//}
-	//else {
-	//	iJudge0 = HitJudge0::PIJudge();
-	//	iJudge1 = HitJudge1::PIJudge();
-	//}
+void Player::UpdateIteEffect() {
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mIteIsHits[i]) {	// Itemに当たっていたら
+			int itemId = mIteDataMaps.at(i)["itemId"];
 
-	//if (iJudge0 == true || iJudge1 == true) {
-	//	if (iJudge0 == true) {
-	//		weaponNum = PowerBox::GetWpn0Num();
+			// 受け取ったItemの種類に合わせた更新を行う
+			if (itemId <= 4) {	// 回復系アイテム
+				mIteKindId = 5;
 
-	//		if (weaponNum == 6) { //6は自強化系のItemを表す
-	//			iPower = PowerBox::GetIPower0();
-	//			isPower = PowerBox::GetISPower0();
-	//		}
-	//		
-	//		ihPower = PowerBox::GetIHPower0();
-	//	}
-	//	else {
-	//		weaponNum = PowerBox::GetWpn1Num();
+				// 回復量の設定
+				mIteHP = mIteDataMaps.at(i)["healPower"];
+			}
+			else if (itemId <= 7) {	// 自強化系アイテム
+				mIteKindId = 5;
 
-	//		if (weaponNum == 6) { //4は自強化系のItemを表す
-	//			iPower = PowerBox::GetIPower1();
-	//			isPower = PowerBox::GetISPower1();
-	//		}
+				// 効果の所持情報の設定
+				mEffectId = itemId - 4;
+				mIsEffected = true;
+				mEffectFrameCnt = 0;
+					
+				// 自強化系Itemの効果の設定
+				mIteAP = mIteDataMaps.at(i)["attackPower"];
+				mIteSP = mIteDataMaps.at(i)["speedPower"];
+			}
+			else if (itemId <= 11) {	// 武器
+				mIteKindId = itemId - 7;
+			}
+			else {	// 箱
+				mIteKindId = 5;
+			}
+		}
+	}
 
-	//		ihPower = PowerBox::GetIHPower1();
-	//	}
-
-	//	hp = hp + ihPower;
-	//	if (hp < 0) {
-	//		hp = 0;
-	//	}
-	//	else if (hp > 10) {
-	//		hp = 10;
-	//	}
-	//	PlayerData::SetPlayerHP(hp);
-
-	//	if (isPower != 1 && weaponNum == 6) { //なにか効果を受けているときに武器をとってcountが600にリセットされないため
-	//		iscount = 600;
-	//		
-	//		if (isPower == 2) {
-	//			effectHandle = LoadGraph("images/effect_1.png");
-	//			PlayerData::SetEffectNum(1);
-	//		}
-	//		else {
-	//			isPower = 0.5;
-	//			effectHandle = LoadGraph("images/effect_2.png");
-	//			PlayerData::SetEffectNum(2);
-	//		}
-	//	}
-	//	else if (iPower != 1 && weaponNum == 6) {
-	//		ipcount = 600;
-	//		PowerBox::SetPlPower(iPower);
-	//		effectHandle = LoadGraph("images/effect_3.png");
-	//		PlayerData::SetEffectNum(3);
-	//	}
-
-	//	icount++;
-	//}
-
-	//if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true || eneAJudge0 == true || eneAJudge1 == true || eneAJudge2 == true) {
-	//	if (eneJudge0 == true) {
-	//		enePower = PowerBox::GetEnePower0();
-	//		eneJudge0 = false;
-	//	}
-	//	else if (eneJudge1 == true) {
-	//		enePower = PowerBox::GetEnePower1();
-	//		eneJudge1 = false;
-	//	}
-	//	else if (eneJudge2 == true) {
-	//		enePower = PowerBox::GetEnePower2();
-	//		eneJudge2 = false;
-	//	}
-	//	else if (eneAJudge0 == true) {
-	//		enePower = PowerBox::GetEneAPower0();
-	//		eneAJudge0 = false;
-	//	}
-	//	else if (eneAJudge1 == true) {
-	//		enePower = PowerBox::GetEneAPower1();
-	//		eneAJudge1 = false;
-	//	}
-	//	else {
-	//		enePower = PowerBox::GetEneAPower2();
-	//		eneAJudge2 = false;
-	//	}
-
-	//	hp = hp - enePower;
-	//	if (hp < 0) {
-	//		hp = 0;
-	//	}
-	//	else if (hp > 10) {
-	//		hp = 10;
-	//	}
-	//	PlayerData::SetPlayerHP(hp);
-	//	godCount = 100;
-	//	godFlag = true;
-	//}
+	// Itemの自強化系効果の更新
+	if (mIsEffected) {
+		if (mEffectFrameCnt <= EFFECT_FRAME_NUM) {
+			mEffectFrameCnt++;
+		}
+		else {
+			mIteAP = 1;
+			mIteSP = 1.0f;
+			mIsEffected = false;
+		}
+	}
 }
 
 
-void Player::SetPlParams(const int x, const int y, const int hp, const int iteSFrameCnt,
-	const int iteAFrameCnt, const int bsStopFrameCnt, const int effectId, const int deadFrameCnt, const bool isDead) {
-	// パラメータで受け取った値を代入する
-	mX = x;
-	mY = y;
-	mHp = hp;
-	mIteSFrameCnt = iteSFrameCnt;
-	mIteAFrameCnt = iteAFrameCnt;
-	mBsStopFrameCnt = bsStopFrameCnt;
-	mEffectId = effectId;
-	mDeadFrameCnt = deadFrameCnt;
-	mIsDead = isDead;
+void Player::UpdateHp() {
+	if (mIteHP != 0) {
+		mHp += mIteHP;
+
+		if (mHp > HP_MAX) {	// hpの上限を超えたとき
+			mHp = HP_MAX;
+		}
+
+		mIteHP = 0;
+	}
 }
 
 
@@ -530,28 +578,71 @@ void Player::StartBossStage() {
 }
 
 
-void Player::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
-	// ほんとはそれぞれしかるべき場所で更新し終えた瞬間にこれ書いたほうがいい（全体書き終わってから修正する）
-	mPlIntDataMap["x"] = mX;
-	mPlIntDataMap["y"] = mY;
-	mPlIntDataMap["hp"] = mHp;
-	mPlIntDataMap["iteFrameSCnt"] = mIteSFrameCnt;
-	mPlIntDataMap["iteFrameACnt"] = mIteAFrameCnt;
-	mPlIntDataMap["bsStopFrameCnt"] = mBsStopFrameCnt;
-	mPlBoolDataMap["isDead"] = mIsDead;
+void Player::SetPlParams(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
+	// パラメータで受け取った値を代入する
+	mX = (*plIntDataMap)["x"];
+	mY = (*plIntDataMap)["y"];
+	mHp = (*plIntDataMap)["hp"];
+	mEffectFrameCnt = (*plIntDataMap)["effectFrameCnt"];
+	//mIteAFrameCnt = (*plIntDataMap)["iteAFrameCnt"];
+	mBsStopFrameCnt = (*plIntDataMap)["bsStopFrameCnt"];
+	mEffectId = (*plIntDataMap)["effectId"];
+	mDeadFrameCnt = (*plIntDataMap)["deadFrameCnt"];
+	mIsDead = (*plBoolDataMap)["isDead"];
+}
 
-	plIntDataMap = &mPlIntDataMap;
-	plBoolDataMap = &mPlBoolDataMap;
+
+void Player::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
+	(*plIntDataMap)["x"] = mX;
+	(*plIntDataMap)["y"] = mY;
+	(*plIntDataMap)["ax"] = mAX;
+	(*plIntDataMap)["ay"] = mAY;
+	(*plIntDataMap)["hp"] = mHp;
+	(*plIntDataMap)["hitRangeW"] = mHitRangeW;
+	(*plIntDataMap)["hitRangeH"] = mHitRangeH;
+	(*plIntDataMap)["hitRangeAW"] = mHitRangeAW;
+	(*plIntDataMap)["hitRangeAH"] = mHitRangeAH;
+	(*plIntDataMap)["effectFrameCnt"] = mEffectFrameCnt;
+	(*plIntDataMap)["bsStopFrameCnt"] = mBsStopFrameCnt;
+	(*plIntDataMap)["effectId"] = mEffectId;
+	(*plIntDataMap)["attack"] = mAttack;
+
+	(*plBoolDataMap)["isDead"] = mIsDead;
+	(*plBoolDataMap)["isAttacking"] = mIsAttacking;
 }
 
 
 void Player::GetPlIntDataMap(std::map<std::string, int>* plIntDataMap) {
-	mPlIntDataMap["x"] = mX;
-	mPlIntDataMap["y"] = mY;
-	mPlIntDataMap["hp"] = mHp;
-	mPlIntDataMap["iteFrameSCnt"] = mIteSFrameCnt;
-	mPlIntDataMap["iteFrameACnt"] = mIteAFrameCnt;
-	mPlIntDataMap["bsStopFrameCnt"] = mBsStopFrameCnt;
+	(*plIntDataMap)["x"] = mX;
+	(*plIntDataMap)["y"] = mY;
+	(*plIntDataMap)["ax"] = mAX;
+	(*plIntDataMap)["ay"] = mAY;
+	(*plIntDataMap)["hp"] = mHp;
+	(*plIntDataMap)["hitRangeW"] = mHitRangeW;
+	(*plIntDataMap)["hitRangeH"] = mHitRangeH;
+	(*plIntDataMap)["hitRangeAW"] = mHitRangeAW;
+	(*plIntDataMap)["hitRangeAH"] = mHitRangeAH;
+	(*plIntDataMap)["effectFrameCnt"] = mEffectFrameCnt;
+	(*plIntDataMap)["bsStopFrameCnt"] = mBsStopFrameCnt;
+	(*plIntDataMap)["effectId"] = mEffectId;
+	(*plIntDataMap)["attack"] = mAttack;
+}
 
-	plIntDataMap = &mPlIntDataMap;
+
+void Player::SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap) {
+	// 各Itemとの当たり判定をセット
+	for (int i = 0; i < ITEM_NUM; i++) {
+		mIteIsHits[i] = (*isHitMap)["item"].at(i);
+	}
+}
+
+
+void Player::SetIteParams(std::vector<std::map<std::string, float>>& iteDataMaps) {
+	// 各Itemの効果の情報をセット
+	for (int i = 0; i < ITEM_NUM; i++) {
+		mIteDataMaps.at(i)["healPower"] = iteDataMaps.at(i)["healPower"];
+		mIteDataMaps.at(i)["speedPower"] = iteDataMaps.at(i)["speedPower"];
+		mIteDataMaps.at(i)["attackPower"] = iteDataMaps.at(i)["attackPower"];
+		mIteDataMaps.at(i)["itemId"] = iteDataMaps.at(i)["itemId"];
+	}
 }
