@@ -40,14 +40,14 @@ void PlayerMgr::Initialize() {
 	std::map<std::string, bool> plBoolDataMap;
 	plIntDataMap["x"] = 290;
 	plIntDataMap["y"] = 500;
-	plIntDataMap["hp"] = 5;
+	plIntDataMap["hp"] = 10;
 	plIntDataMap["effectFrameCnt"] = 0;
 	plIntDataMap["bsStopFrameCnt"] = 0;
 	plIntDataMap["effectId"] = 0;
 	plBoolDataMap["isDead"] = false;
 
 	// 最初に使用するPlayerの初期化
-	mPlayer = (Player*)Player1::GetInstance();
+	mPlayer = (Player*)Player3::GetInstance();
 	mPlayer->SetPlParams(&plIntDataMap, &plBoolDataMap);
 	mPlayer->Initialize();
 
@@ -75,13 +75,12 @@ void PlayerMgr::Finalize() {
 
 void PlayerMgr::Update() {
 	if (mPlayerNext != ePlayerNone) {
+		mPlayer->Finalize();
+
 		// データの引継ぎに使用するデータの取得
 		std::map<std::string, int> plIntDataMap;
 		std::map<std::string, bool> plBoolDataMap;
 		mPlayer->GetPlDataMap(&plIntDataMap, &plBoolDataMap);
-
-		// 終了処理
-		mPlayer->Finalize();
 
 		switch (mPlayerNext) {
 			case ePlayer1:
