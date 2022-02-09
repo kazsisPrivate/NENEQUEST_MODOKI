@@ -20,7 +20,6 @@ PlayerMgr* PlayerMgr::mPlayerMgr;
 
 
 PlayerMgr::PlayerMgr() : mPlayerNext(ePlayerNone) {
-	//PlInitialize::SetPlayer(290, 500, 10, -1, -1, 0, 0, false); //Player‚Ì‰Šúó‘Ô‚Ìİ’è
 }
 
 

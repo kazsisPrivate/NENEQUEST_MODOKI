@@ -2,6 +2,7 @@
 #include "GameScene.h"
 #include "CharaGraphics.h"
 #include "ItemGraphics.h"
+#include "EffectGraphics.h"
 #include "SceneMgr.h"
 #include "PlayerMgr.h"
 ////#include "EnemyMgr.h"
@@ -67,15 +68,16 @@ void GameScene::Initialize() {
 	
 	//iNum = appear->GetItNum();
 
-	//hpGauge = new HpGauge();
+	mPlHpGauge = new PlayerHpGauge();
 
 	CharaGraphics::Initialize();
 	ItemGraphics::Initialize();
+	EffectGraphics::Initialize();
 	mGameBack->Initialize();
 	mPlayerMgr->Initialize();
 	//enemyMgr->Initialize();
 	mItemMgr->Initialize();
-	//hpGauge->Initialize();
+	mPlHpGauge->Initialize();
 
 	/*m_plDeadFlag = false;
 	m_bsDeadFlag = false;*/
@@ -87,12 +89,13 @@ void GameScene::Initialize() {
 void GameScene::Finalize() {
 	DeleteGraph(mImageHandle);
 	CharaGraphics::Finalize();
-	ItemGraphics::Initialize();
+	ItemGraphics::Finalize();
+	EffectGraphics::Finalize();
 	mGameBack->Finalize();
 	mPlayerMgr->Finalize();
-	/*enemyMgr->Finalize();
-	itemMgr->Finalize();
-	hpGauge->Finalize();*/
+	//enemyMgr->Finalize();
+	mItemMgr->Finalize();
+	mPlHpGauge->Finalize();
 	//delete mCharaGraphics;
 	//delete mGameBack;
 	//delete mPlayerMgr;
@@ -157,10 +160,10 @@ void GameScene::Update() {
 
 	// Player, Enemy, Item間で使用する情報をお互いに渡す
 	mPlayerMgr->SetIteDataMaps(mIteDataMaps);
+	mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
 
 	// 各オブジェクトの当たり判定を確認
 	UpdateHit();
-
 
 	// 当たり判定の確認結果のデータを各オブジェクトに渡す
 	mPlayerMgr->SetIsHitMap(&mPlIsHitMap);
@@ -170,7 +173,7 @@ void GameScene::Update() {
 	mGameBack->Update();
 	mPlayerMgr->Update();
 	mItemMgr->Update();
-
+	mPlHpGauge->Update();
 	
 
 	if (CheckSoundMem(mSoundHandle) == 0) {
@@ -225,7 +228,7 @@ void GameScene::Draw() {
 
 
 	mGameBack->Draw();
-	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %f, %f, %f", mPlIntDataMap["hp"], mIteDataMaps.at(0)["healPower"], mIteDataMaps.at(1)["x"], 0);
+	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %f, %f, %d", mPlIntDataMap["hp"], mIteDataMaps.at(0)["healPower"], mIteDataMaps.at(1)["x"], mPlIntDataMap["attack"]);
 
 	/*for (int i = 1; i < 7; i++) {
 		if (drawNum[0] == i) {
@@ -250,6 +253,8 @@ void GameScene::Draw() {
 
 	mPlayerMgr->Draw();
 	mItemMgr->Draw();
+
+	mPlHpGauge->Draw();
 
 	//DrawFormatString(400, 500, GetColor(255, 255, 255), "eneapp = %d", iNum);
 }

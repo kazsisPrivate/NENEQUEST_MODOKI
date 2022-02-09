@@ -60,6 +60,12 @@ void Player1::Update() {
 	else {	// 生きているときの処理
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
+
+		// アイテムとの当たり判定を考慮したアイテムの効果の更新
+		UpdateIteEffect();
+
+		// hpの更新
+		UpdateHp();
 		
 		if (mIsAtBsSt == true && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
 			StartBossStage();

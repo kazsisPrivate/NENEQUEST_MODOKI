@@ -4,6 +4,7 @@
 #include "DxLib.h"
 #include "PlayerMgr.h"
 
+
 Player4* Player4::mPlayer4;
 
 
@@ -161,6 +162,7 @@ void Player4::Update() {
 	}
 }
 
+
 void Player4::Draw() {
 	Player::Draw();
 
@@ -168,6 +170,7 @@ void Player4::Draw() {
 		mArrow->Draw();
 	}
 }
+
 
 void Player4::UpdateSAP() {
 	// 移動速度の更新
@@ -226,6 +229,7 @@ void Player4::UpdateSAP() {
 	//}
 }
 
+
 void Player4::Walk() {
 	// stageごとに構成が変わるため，stageの移動範囲に合わせたplayerの座標更新を行う
 	Player::Walk();
@@ -251,11 +255,13 @@ void Player4::Walk() {
 	}
 }
 
+
 void Player4::Attack() {
 	mHandleId += 4;
 	
 	--mAFrameCnt;
 }
+
 
 void Player4::Jump() {
 	// 表示するplayerの画像番号の更新を行う
@@ -269,6 +275,7 @@ void Player4::Jump() {
 	// playerの座標の更新を行う
 	Player::Jump();
 }
+
 
 void Player4::PrepareWAttack() {	// 弱い攻撃（弓矢が近くに落ちる，入力Dキー）
 	mHandleId += 2;
@@ -438,6 +445,7 @@ void Player4::PrepareSAttack() {	// 強い攻撃（弓矢が遠くまで飛ぶ，入力Sキー）
 //	//	godFlag = true;
 //	//}
 //}
+
 
 void Player4::StartBossStage() {
 

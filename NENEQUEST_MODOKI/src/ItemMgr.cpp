@@ -1,19 +1,19 @@
 #include "DxLib.h"
 #include "Item.h"
-#include "Item1.h" //ここから回復系
-//#include "Item_2.h"
-//#include "Item_3.h"
-//#include "Item_4.h"
-//#include "Item_5.h" //ここからバフ系
-//#include "Item_6.h"
-//#include "Item_7.h"
-//#include "Item_8.h" 
-//#include "Item_9.h" //ここから武器系
-//#include "Item_10.h"
-//#include "Item_11.h"
-//#include "Item_12.h"
-//#include "Item_13.h"
-//#include "Item_14.h"
+#include "Item1.h" // ここから回復系
+#include "Item2.h"
+#include "Item3.h"
+#include "Item4.h"
+#include "Item5.h" // ここから自強化系
+#include "Item6.h"
+#include "Item7.h"
+#include "Item8.h" // ここから武器系
+#include "Item9.h" 
+#include "Item10.h"
+#include "Item11.h"
+#include "Item12.h"	// ここから箱系
+#include "Item13.h"
+#include "Item14.h"
 #include "ItemMgr.h"
 
 
@@ -39,6 +39,8 @@ void ItemMgr::Initialize() {
 		mItemNextX[i] = 1300 + 500 * i;
 		mItemNextY[i] = 300 + 150 * i;
 	}
+	mItemsNext[0] = eItem13;	// デバッグ用に入れいている
+	mItemsNext[1] = eItem14;	// デバッグ用に入れいている
 
 	/*ItemData::SetNextItem0(-1);
 
@@ -48,7 +50,9 @@ void ItemMgr::Initialize() {
 
 void ItemMgr::Finalize() {
 	for (int i = 0; i < ITEM_NUM; i++) {
-		mItems[i]->Finalize();
+		if (mItems[i]) {
+			mItems[i]->Finalize();
+		}
 	}
 
 	delete mItemMgr;
@@ -135,45 +139,45 @@ void ItemMgr::Update() {
 				case eItem1:
 					mItems[i] = (Item*) new Item1(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
-				/*case eItem2:
-					mItems[i] = (Item*) new Item2(this, i, mItemNextX, mItemNextY);
+				case eItem2:
+					mItems[i] = (Item*) new Item2(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem3:
-					mItems[i] = (Item*) new Item3(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item3(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem4:
-					mItems[i] = (Item*) new Item4(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item4(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem5:
-					mItems[i] = (Item*) new Item5(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item5(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem6:
-					mItems[i] = (Item*) new Item6(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item6(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem7:
-					mItems[i] = (Item*) new Item7(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item7(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem8:
-					mItems[i] = (Item*) new Item8(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item8(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem9:
-					mItems[i] = (Item*) new Item9(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item9(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem10:
-					mItems[i] = (Item*) new Item10(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item10(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem11:
-					mItems[i] = (Item*) new Item11(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item11(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem12:
-					mItems[i] = (Item*) new Item12(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item12(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem13:
-					mItems[i] = (Item*) new Item13(this, i, mItemNextX, mItemNextY);
+					mItems[i] = (Item*) new Item13(this, i, mItemNextX[i], mItemNextY[i]);
 					break;
 				case eItem14:
-					mItems[i] = (Item*) new Item14(this, i, mItemNextX, mItemNextY);
-					break;*/
+					mItems[i] = (Item*) new Item14(this, i, mItemNextX[i], mItemNextY[i]);
+					break;
 				case eItemNULL:
 					mItems[i] = NULL;
 					break;

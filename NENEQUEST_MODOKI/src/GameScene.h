@@ -5,7 +5,7 @@
 #include "GameBack.h"
 //#include "GameClear.h"
 
-//#include "HpGauge.h"
+#include "PlayerHpGauge.h"
 //#include "Appearance.h"
 
 //#include "GameOver.h"
@@ -45,7 +45,7 @@ private:
 	PlayerMgr* mPlayerMgr;
 	//EnemyMgr* enemyMgr;
 	ItemMgr* mItemMgr;
-	//HpGauge* hpGauge;
+	PlayerHpGauge* mPlHpGauge;
 	//Appearance* appear;
 	//CharaGraphics mCharaGraphics;
 	//GameCounters gameCtrs;

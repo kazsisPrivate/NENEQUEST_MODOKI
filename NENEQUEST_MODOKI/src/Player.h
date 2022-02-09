@@ -55,7 +55,7 @@ protected:
 	//int mIteSFrameCnt;	// Itemによりかか速度アップの時間経過に使用する
 	//bool mHasIteA;	// 攻撃力アップのItemを保持しているときtrue
 	//int mIteAFrameCnt;	// Itemによりかかる攻撃アップの時間経過に使用する
-	int mEffectHandle;	// Itemによりかかっている状態の画像の表示において使う
+	int* mEffectHandle;	// Itemによりかかっている状態の画像の表示において使う
 	int mEffectId;	// 効果を受けているItemのId（0: 何も受けていない状態, 1: 速度2倍, 2: 速度0.5倍, 3: 攻撃力2倍）
 	int mIteKindId;	// 一番最新に取得したitemの種類（1: player1の剣，2: player2の剣，3: player3の斧，4: player4の弓，5: 回復系のアイテム，自強化系のアイテム, 箱）
 	int mBsStopFrameCnt; //bossStageに入ってから少しの間動けなくするのに使う
