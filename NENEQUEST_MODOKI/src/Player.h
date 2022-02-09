@@ -21,7 +21,7 @@ public:
 	virtual void Finalize() override;
 	virtual void Draw() override;
 	void SetPlParams(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap);	// Playerを変更する際に呼び出される，前のPlayerの情報引継ぎで使用する
-	void GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap);	// Playerのデータを渡すために使用する(int, bool)
+	virtual void GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap);	// Playerのデータを渡すために使用する(int, bool)
 	//void GetPlIntDataMap(std::map<std::string, int>* plIntDataMap);	// Playerのデータを渡すために使用する(int)
 	void GetPlIntDataMap(std::map<std::string, int>* plIntDataMap);	// Playerのデータを渡すために使用する(int)
 	void SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap);	// Item, Enemy, EnemyAttackとの当たり判定の確認結果を受け取り，mPlIsHitとmPlAIsHitに代入する
@@ -73,6 +73,8 @@ protected:
 	bool mEneAIsHits[3];	// enemyの攻撃との当たり判定の配列
 	const int ITEM_NUM = 2;	// セットできるitemの数，mIteIsHitsの要素数
 	bool mIteIsHits[2];	// itemとの当たり判定の配列
+	std::map<std::string, std::vector<bool>> mPlAIsHitMap;	// itemとenemyをキーとして持ち，それぞれに対して攻撃が当たったかどうかを入れている
+															// Player4の弓矢の処理で使用する
 	bool mIsAtBsSt;	// bossStageに入っていればtrue
 	const int X_MIN_N = 53;	// normal stageの左端のx座標
 	const int X_MAX_N = 1147;	// normal stageの右端のx座標

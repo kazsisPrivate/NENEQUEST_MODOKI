@@ -71,6 +71,7 @@ void Player::Initialize() {
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mIteIsHits[i] = false;
 		mIteDataMaps.push_back({});
+		mPlAIsHitMap["item"].push_back(false);
 	}
 }
 
@@ -450,14 +451,14 @@ void Player::Attack() {
 void Player::UpdateIteEffect() {
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mIteIsHits[i]) {	// Itemに当たっていたら
-			int itemId = mIteDataMaps.at(i)["itemId"];
+			int itemId = (int)mIteDataMaps.at(i)["itemId"];
 
 			// 受け取ったItemの種類に合わせた更新を行う
 			if (itemId <= 4) {	// 回復系アイテム
 				mIteKindId = 5;
 
 				// 回復量の設定
-				mIteHP = mIteDataMaps.at(i)["healPower"];
+				mIteHP = (int)mIteDataMaps.at(i)["healPower"];
 			}
 			else if (itemId <= 7) {	// 自強化系アイテム
 				mIteKindId = 5;
@@ -468,7 +469,7 @@ void Player::UpdateIteEffect() {
 				mEffectFrameCnt = 0;
 					
 				// 自強化系Itemの効果の設定
-				mIteAP = mIteDataMaps.at(i)["attackPower"];
+				mIteAP = (int)mIteDataMaps.at(i)["attackPower"];
 				mIteSP = mIteDataMaps.at(i)["speedPower"];
 
 				// 画像の設定
@@ -643,6 +644,7 @@ void Player::SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap) {
 	// 各Itemとの当たり判定をセット
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mIteIsHits[i] = (*isHitMap)["item"].at(i);
+		mPlAIsHitMap["item"].at(i) = (*isHitMap)["plAToItem"].at(i);
 	}
 }
 
