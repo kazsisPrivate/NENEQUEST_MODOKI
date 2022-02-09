@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicFunc.h"
+#include <tuple>
 
 
 class Arrow : public BasicFunc {
@@ -11,6 +12,9 @@ public:
 	void Draw() override;
 	void StartArrow(const int x, const int y, const int moveType);
 	bool GetArrowExists() const;
+	bool GetIsMoving() const;	// ‹|–î‚ª“®‚¢‚Ä‚¢‚é‚Æ‚«‚©‚Ç‚¤‚©‚ğ“n‚·CUŒ‚‚Ì“–‚½‚è”»’è‚Åg—p‚·‚é
+	std::tuple<int, int> GetArrowXY();	// UŒ‚‚Ì“–‚½‚è”»’è‚ğŠm”F‚³‚¹‚é‚½‚ß‚É‹|–î‚ÌÀ•W‚ğ“n‚·
+	void SetIsHit(const bool isHit);	// Arrow‚ª‰½‚©‚É‚ ‚½‚Á‚½‚©‚Ç‚¤‚©‚ğ“ü‚ê‚é
 
 private:
 	void Move();	//	‹|–î‚ÌˆÚ“®

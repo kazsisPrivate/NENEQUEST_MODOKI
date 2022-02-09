@@ -44,6 +44,7 @@ void Player4::Initialize() {
 	mArrow = new Arrow();
 	mArrow->Initialize();
 	mArrowExists = false;
+	mArrowIsHit = false;
 }
 
 
@@ -131,10 +132,20 @@ void Player4::Update() {
 
 				if (mArrowExists) {	// ã|ñÓÇÃçUåÇÇ™écÇ¡ÇƒÇ¢ÇÈÇ∆Ç´
 					mArrow->Update();
+
+					// çUåÇç¿ïWÇÃçXêV
+					std::tie(mAX, mAY) = mArrow->GetArrowXY();
+
+					if (!mArrowIsHit) {	// ã|ñÓÇ™âΩÇ…Ç‡Ç†ÇΩÇ¡ÇƒÇ¢Ç»Ç¢Ç∆Ç´
+						UpdateArrowIsHit();
+					}
 				}
 
 				// çUåÇéûä‘Ç™èIÇÌÇ¡ÇΩÇÁéüÇÃçUåÇÇ™Ç≈Ç´ÇÈÇÊÇ§Ç…Ç∑ÇÈ
-				if (mAFrameCnt == 0) mIsAttacking = false;
+				if (mAFrameCnt == 0) {
+					mIsAttacking = false;
+					mArrowIsHit = false;
+				}
 			}
 			else if ((key[KEY_INPUT_S] == 1 || mIsPreparingWA) && !mIsPreparingSA) {	//	é„Ç¢ã|Çë≈Ç∆Ç§Ç∆ÇµÇƒÇ¢ÇÈÇ∆Ç´
 				PrepareWAttack();
@@ -329,122 +340,24 @@ void Player4::PrepareSAttack() {	// ã≠Ç¢çUåÇÅiã|ñÓÇ™âìÇ≠Ç‹Ç≈îÚÇ‘ÅCì¸óÕSÉLÅ[Åj
 	}
 }
 
-//void Player4::UpdateHit() {
-//	//HitJudge0::SetPlRange(x, y, hitRangeX, hitRangeY);
-//	//HitJudge1::SetPlRange(x, y, hitRangeX, hitRangeY);
-//	//HitJudge2::SetPlRange(x, y, hitRangeX, hitRangeY);
-//
-//	//if (godFlag == false) {
-//	//	eneJudge0 = HitJudge0::PEJudge();
-//	//	eneJudge1 = HitJudge1::PEJudge();
-//	//	eneJudge2 = HitJudge2::PEJudge();
-//	//	eneAJudge0 = HitJudge0::EaPJudge();
-//	//	eneAJudge1 = HitJudge1::EaPJudge();
-//	//	eneAJudge2 = HitJudge2::EaPJudge();
-//	//}
-//
-//	//if (icount == 1) {
-//	//	iJudge0 = false;
-//	//	iJudge1 = false;
-//	//	icount++;
-//	//}
-//	//else if (icount == 2) {
-//	//	icount = 0;
-//	//}
-//	//else {
-//	//	iJudge0 = HitJudge0::PIJudge();
-//	//	iJudge1 = HitJudge1::PIJudge();
-//	//}
-//
-//	//if (iJudge0 == true || iJudge1 == true) {
-//	//	if (iJudge0 == true) {
-//	//		weaponNum = PowerBox::GetWpn0Num();
-//
-//	//		if (weaponNum == 6) { //6ÇÕé©ã≠âªånÇÃItemÇï\Ç∑
-//	//			iPower = PowerBox::GetIPower0();
-//	//			isPower = PowerBox::GetISPower0();
-//	//		}
-//
-//	//		ihPower = PowerBox::GetIHPower0();
-//	//	}
-//	//	else {
-//	//		weaponNum = PowerBox::GetWpn1Num();
-//
-//	//		if (weaponNum == 6) { //6ÇÕé©ã≠âªånÇÃItemÇï\Ç∑
-//	//			iPower = PowerBox::GetIPower1();
-//	//			isPower = PowerBox::GetISPower1();
-//	//		}
-//
-//	//		ihPower = PowerBox::GetIHPower1();
-//	//	}
-//
-//	//	hp = hp + ihPower;
-//	//	if (hp < 0) {
-//	//		hp = 0;
-//	//	}
-//	//	else if (hp > 10) {
-//	//		hp = 10;
-//	//	}
-//	//	PlayerData::SetPlayerHP(hp);
-//
-//	//	if (isPower != 1 && weaponNum == 6) {
-//	//		iscount = 600;
-//
-//	//		if (isPower == 2) {
-//	//			effectHandle = LoadGraph("images/effect_1.png");
-//	//		}
-//	//		else {
-//	//			isPower = 0.5;
-//	//			effectHandle = LoadGraph("images/effect_2.png");
-//	//		}
-//	//	}
-//	//	else if (iPower != 1 && weaponNum == 6) {
-//	//		ipcount = 600;
-//	//		PowerBox::SetPlPower(iPower);
-//	//		effectHandle = LoadGraph("images/effect_3.png");
-//	//	}
-//
-//	//	icount++;
-//	//}
-//
-//	//if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true || eneAJudge0 == true || eneAJudge1 == true || eneAJudge2 == true) {
-//	//	if (eneJudge0 == true) {
-//	//		enePower = PowerBox::GetEnePower0();
-//	//		eneJudge0 = false;
-//	//	}
-//	//	else if (eneJudge1 == true) {
-//	//		enePower = PowerBox::GetEnePower1();
-//	//		eneJudge1 = false;
-//	//	}
-//	//	else if (eneJudge2 == true) {
-//	//		enePower = PowerBox::GetEnePower2();
-//	//		eneJudge2 = false;
-//	//	}
-//	//	else if (eneAJudge0 == true) {
-//	//		enePower = PowerBox::GetEneAPower0();
-//	//		eneAJudge0 = false;
-//	//	}
-//	//	else if (eneAJudge1 == true) {
-//	//		enePower = PowerBox::GetEneAPower1();
-//	//		eneAJudge1 = false;
-//	//	}
-//	//	else {
-//	//		enePower = PowerBox::GetEneAPower2();
-//	//		eneAJudge2 = false;
-//	//	}
-//
-//	//	hp = hp - enePower;
-//	//	if (hp < 0) {
-//	//		hp = 0;
-//	//	}
-//	//	else if (hp > 10) {
-//	//		hp = 10;
-//	//	}
-//	//	PlayerData::SetPlayerHP(hp);
-//	//	godCount = 100;
-//	//	godFlag = true;
-//	//}
-//}
+
+void Player4::UpdateArrowIsHit() {
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mPlAIsHitMap["item"].at(i)) {
+			mArrowIsHit = true;
+		}
+	}
+
+	mArrow->SetIsHit(mArrowIsHit);
+}
+
+
+void Player4::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
+	Player::GetPlDataMap(plIntDataMap, plBoolDataMap);
+
+	// ã|ñÓÇ™ìÆÇ¢ÇƒÇ¢ÇÈä‘ÇÃÇ›ìñÇΩÇËîªíËÇÃÇ†ÇÈçUåÇíÜÇ∆Ç›Ç»Ç∑
+	(*plBoolDataMap)["isAttacking"] = mArrow->GetIsMoving();
+}
 
 
 void Player4::StartBossStage() {

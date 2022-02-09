@@ -14,10 +14,12 @@ void Arrow::Initialize() {
 	// 弓矢の画像や当たったときのエフェクト画像の取得
 }
 
+
 void Arrow::Finalize() {
 	mArrowExists = false;
 	mAExistingFrameCnt = 0;
 }
+
 
 void Arrow::StartArrow(const int x, const int y, const int type) {
 	// 位置
@@ -73,11 +75,14 @@ void Arrow::StartArrow(const int x, const int y, const int type) {
 	mYCenter = mYCenter - mDYFirst;
 }
 
+
 void Arrow::Update() {
 	if (mIsHit) {
 		if (mHitFrameCnt == 20) {	// 当たってから20フレーム後
 			Finalize();	// 弓矢（当たったエフェクト）を消す
 		}
+
+		mHitFrameCnt++;
 	}
 	else if (mAExistingFrameCnt == 80) {	// 放ってから80フレーム後
 		Finalize();	// 弓矢を消す
@@ -113,6 +118,7 @@ void Arrow::Update() {
 
 	mAExistingFrameCnt++;
 }
+
 
 void Arrow::Draw() {
 	if (mIsHit) {	// 何かにあたったとき
@@ -151,6 +157,7 @@ void Arrow::Move() {
 	}
 }
 
+
 void Arrow::UpdateHit() {
 	/*if (mIsMoving == true) {
 		HitJudge0::SetPlARange(mX, mY, hitRangeAX, hitRangeAY);
@@ -172,6 +179,22 @@ void Arrow::UpdateHit() {
 	}*/
 }
 
+
+bool Arrow::GetIsMoving() const {
+	return mIsMoving;
+}
+
+
 bool Arrow::GetArrowExists() const {
 	return mArrowExists;
+}
+
+
+std::tuple<int, int> Arrow::GetArrowXY() {
+	return { mXCenter, mYCenter };
+}
+
+
+void Arrow::SetIsHit(const bool isHit) {
+	mIsHit = isHit;
 }
