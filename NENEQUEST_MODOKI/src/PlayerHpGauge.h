@@ -1,6 +1,5 @@
 #pragma once
 
-// Player‚ÌhpƒQ[ƒW
 #include "BasicFunc.h"
 
 
