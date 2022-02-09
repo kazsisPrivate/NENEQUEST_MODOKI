@@ -16,8 +16,8 @@ public:
 	void Initialize() override;
 	void Finalize() override;
 	void Update() override;
-	void Draw() override;
-	//void Draw(const int itemIdx);	// 指定されてインデックス番号のmItemを描画
+	void Draw() override {};
+	void Draw(const int itemIdx);	// 指定されたインデックス番号のmItemを描画
 	void ChangeItem(const int itemIdx, EItem itemNext, 
 		const int itemNextX, const int itemNextY) override;	// itemIdxは配列mItemのインデックス番号を指す
 	void GetIteDataMaps(std::vector<std::map<std::string, float>>* iteDataMaps, bool* isExistings);	// Itemのデータを渡すために使用する, isExistingsはmItemsの各インデックス番号においてNULLでなければtrue

@@ -39,7 +39,7 @@ void ItemMgr::Initialize() {
 		mItemNextX[i] = 1300 + 500 * i;
 		mItemNextY[i] = 300 + 150 * i;
 	}
-	mItemsNext[0] = eItem9;	// デバッグ用に入れいている
+	mItemsNext[0] = eItem12;	// デバッグ用に入れいている
 	mItemsNext[1] = eItem14;	// デバッグ用に入れいている
 
 	/*ItemData::SetNextItem0(-1);
@@ -47,6 +47,7 @@ void ItemMgr::Initialize() {
 	count = 0;
 	apcount = 0;*/
 }
+
 
 void ItemMgr::Finalize() {
 	for (int i = 0; i < ITEM_NUM; i++) {
@@ -59,73 +60,8 @@ void ItemMgr::Finalize() {
 	mItemMgr = NULL;
 }
 
+
 void ItemMgr::Update() {
-	/*if (apcount < ITEM_DELETE_FRAME_NUM) {
-		if (count != 59) {
-			count++;
-		}
-		else {
-			if (ItemData::GetItem0Flag()) {
-				switch (itAppear[apcount]) {
-				case 0: break;
-				case 1: mNextItem0 = eItem_1; break;
-				case 2: mNextItem0 = eItem_2; break;
-				case 3: mNextItem0 = eItem_3; break;
-				case 4: mNextItem0 = eItem_4; break;
-				case 5: mNextItem0 = eItem_5; break;
-				case 6: mNextItem0 = eItem_6; break;
-				case 7: mNextItem0 = eItem_7; break;
-				case 8: mNextItem0 = eItem_12; break;
-				case 9: mNextItem0 = eItem_14; break;
-				case 10: mNextItem0 = eItem_10; break;
-				case 11: mNextItem0 = eItem_11; break;
-				case 12: mNextItem0 = eItem_12; break;
-				case 13: mNextItem0 = eItem_13; break;
-				case 14: mNextItem0 = eItem_14; break;
-				}
-			}
-			else if (ItemData::GetItem1Flag()) {
-				switch (itAppear[apcount]) {
-				case 0: break;
-				case 1: mNextItem1 = eItem_1; break;
-				case 2: mNextItem1 = eItem_2; break;
-				case 3: mNextItem1 = eItem_3; break;
-				case 4: mNextItem1 = eItem_4; break;
-				case 5: mNextItem1 = eItem_5; break;
-				case 6: mNextItem1 = eItem_6; break;
-				case 7: mNextItem1 = eItem_7; break;
-				case 8: mNextItem1 = eItem_12; break;
-				case 9: mNextItem1 = eItem_14; break;
-				case 10: mNextItem1 = eItem_10; break;
-				case 11: mNextItem1 = eItem_11; break;
-				case 12: mNextItem1 = eItem_12; break;
-				case 13: mNextItem1 = eItem_13; break;
-				case 14: mNextItem1 = eItem_14; break;
-				}
-			}
-
-			count = 0;
-			apcount++;
-		}
-	}*/
-
-	
-
-	//nItNum0 = ItemData::GetNextItem0(); //ここら辺はBossとのやり取りのためのみ
-	//if (nItNum0 != -1) {
-	//	if (nItNum0 == 0) {
-	//		mNextItem0 = eItem_12;
-	//	}
-	//	else if (nItNum0 == 1) {
-	//		mNextItem0 = eItem_13;
-	//	}
-	//	else {
-	//		mNextItem0 = eItem_14;
-	//	}
-
-	//	ItemData::SetNextItem0(-1);
-	//}
-	
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mItemsNext[i] != eItemNone) {	// 次のItemがセットされているとき
 			if (mItems[i]) {	// mItems[i]の中がNULLでないとき
@@ -200,21 +136,21 @@ void ItemMgr::Update() {
 }
 
 
-void ItemMgr::Draw() {
-	// 各Itemの描画
-	for (int i = 0; i < ITEM_NUM; i++) {
-		if (mItems[i]) {	// NULLが入っていなければ
-			mItems[i]->Draw();
-		}
-	}
-}
-
-
-//void ItemMgr::Draw(const int itemIdx) {
-//	if (mItems[itemIdx]) {
-//		mItems[itemIdx]->Draw();
+//void ItemMgr::Draw() {
+//	// 各Itemの描画
+//	for (int i = 0; i < ITEM_NUM; i++) {
+//		if (mItems[i]) {	// NULLが入っていなければ
+//			mItems[i]->Draw();
+//		}
 //	}
 //}
+
+
+void ItemMgr::Draw(const int itemIdx) {
+	if (mItems[itemIdx]) {
+		mItems[itemIdx]->Draw();
+	}
+}
 
 
 void ItemMgr::ChangeItem(const int itemIdx, EItem itemNext, const int itemNextX, const int itemNextY) {

@@ -48,6 +48,7 @@ void GameScene::Initialize() {
 
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mPlIsHitMap["item"].push_back(false);
+		mPlIsHitMap["plAToItem"].push_back(false);
 	}
 
 	for (int i = 0; i < ITEM_NUM; i++) {
@@ -169,6 +170,9 @@ void GameScene::Update() {
 	mPlayerMgr->SetIsHitMap(&mPlIsHitMap);
 	mItemMgr->SetIsHitMaps(mIteIsHitMaps);
 
+	// 各オブジェクトの描画順を更新する
+	UpdateDOrder();
+
 	// 更新
 	mGameBack->Update();
 	mPlayerMgr->Update();
@@ -224,7 +228,7 @@ void GameScene::Draw() {
 	//	gameCtrs.Draw();
 	//}
 
-	SetDrawingOrder();
+	
 
 
 	mGameBack->Draw();
@@ -251,28 +255,61 @@ void GameScene::Draw() {
 		}
 	}*/
 
-	mPlayerMgr->Draw();
-	mItemMgr->Draw();
+	for (const auto& dOrder : mDOrderVec) {
+		int objId = dOrder.second.first;
+		int idx = dOrder.second.second;
 
+		if (objId == 0) {	// Playerの描画
+			mPlayerMgr->Draw();
+		}
+		else if (objId == 1) {	// Enemyの描画
+
+		}
+		else {	// Itemの描画
+			mItemMgr->Draw(idx);
+		}
+	}
+	
+	// Playerのhpゲージの描画
 	mPlHpGauge->Draw();
 
 	//DrawFormatString(400, 500, GetColor(255, 255, 255), "eneapp = %d", iNum);
 }
 
-void GameScene::SetDrawingOrder() {
+void GameScene::UpdateDOrder() {
 	using namespace std;
 
-	vector<pair<int, pair<int, int>>> charaYVec(3);	// firstにy座標，secondにキャラの種類とインデックス番号を入れたpairのvector
+	//vector<pair<int, pair<int, int>>> yVec(3);	// firstにy座標，secondに物体の種類とインデックス番号を入れたpairのvector
+												// キャラの種類（0: Player, 1: Enemy, 2: Item）
 
-	//charaYVec[0] = { mPlIntDataMap["y"] - 73, {0, 0} };
+	// 順序を入れるvectorを空にする
+	mDOrderVec.clear();
+
+	// Playerのy座標情報をセット
+	mDOrderVec.push_back({ mPlIntDataMap["y"] - 73, {0, 0} });
+
+	// Itemのy座標情報をセット
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mIteIsExistings[i]) {
+			mDOrderVec.push_back({ (int)mIteDataMaps.at(i)["y"] - 73, {2, i} });
+		}
+	}
+
+	// y座標の昇順に並び替え
+	sort(mDOrderVec.begin(), mDOrderVec.end());
+
+	/*yVec[0] = { mPlIntDataMap["y"] - 73, {0, 0} };
+	yVec[0] = { mIteDataMaps.at(0)["y"], {2, 0} };
+	yVec[0] = { mIteDataMaps.at(1)["y"], {2, 1} };*/
+
+
 	//charaY[1] = CharaY::GetEnemy0Y();
 	//charaY[2] = CharaY::GetEnemy1Y();
 	/*charaY[3] = CharaY::GetEnemy2Y();
 	charaY[4] = CharaY::GetItem0Y();
 	charaY[5] = CharaY::GetItem1Y();*/
 
-	sort(charaYVec.begin(), charaYVec.end());
-
+	
 	//for (int i = 0; i < 6; i++) {
 	//	yJudge[i] = charaY[i];
 	//}
@@ -354,18 +391,20 @@ void GameScene::UpdateHit() {
 				int plAPs[] = { plALX, plARX, plATY, plABY };
 
 				// Itemに攻撃が当たったかどうか確認する（箱などのItemに必要，Playerには不要）
-				mIteIsHitMaps.at(i)["playerAttack"] = IsHit(plAPs, itePs);
+				mPlIsHitMap["plAToItem"].at(i) = IsHit(plAPs, itePs);
 			}
 			else {	// Playerが攻撃中でなければ
-				mIteIsHitMaps.at(i)["playerAttack"] = false;
+				mPlIsHitMap["plAToItem"].at(i) = false;
 			}
 		}
 		else {	// Itemが存在していなかったら
 			mPlIsHitMap["item"].at(i) = false;
+			mPlIsHitMap["plAToItem"].at(i) = false;
 		}
 
 		// Item側の判定にも同じ結果を入れる
 		mIteIsHitMaps.at(i)["player"] = mPlIsHitMap["item"].at(i);
+		mIteIsHitMaps.at(i)["playerAttack"] = mPlIsHitMap["plAToItem"].at(i);
 	}
 }
 
