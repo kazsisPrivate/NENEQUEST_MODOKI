@@ -8,6 +8,7 @@
 //#include "PlayerData.h"
 //#include "PowerBox.h"
 #include "PlayerMgr.h"
+#include "EffectGraphics.h"
 
 
 Player::Player(PlayerChanger* changer, const int* graph) : mPlHandle(graph) {
@@ -53,17 +54,17 @@ void Player::Initialize() {
 	else if (mEffectId == 1) {
 		mIteSP = 2.0f;
 		mIteAP = 1;
-		mEffectHandle = LoadGraph("images/effect_1.png");
+		mEffectHandle = EffectGraphics::GetGraHandle(1);
 	}
 	else if (mEffectId == 2) {
 		mIteSP = 0.5f;
 		mIteAP = 1;
-		mEffectHandle = LoadGraph("images/effect_2.png");
+		mEffectHandle = EffectGraphics::GetGraHandle(2);
 	}
 	else {
 		mIteSP = 1.0f;
 		mIteAP = 2;
-		mEffectHandle = LoadGraph("images/effect_3.png");
+		mEffectHandle = EffectGraphics::GetGraHandle(3);
 	}
 
 	// 情報保持に使用するmap(vector), 配列の初期化
@@ -76,7 +77,7 @@ void Player::Initialize() {
 
 void Player::Finalize() {
 	// 効果の画像を削除
-	DeleteGraph(mEffectHandle);
+	//DeleteGraph(mEffectHandle);
 }
 
 
@@ -86,7 +87,7 @@ void Player::Draw() {
 
 	// Effectの画像表示
 	if (mIsEffected) {	// Itemの効果中のとき
-		DrawGraph(mX - 114, mY - 113, mEffectHandle, TRUE);
+		DrawGraph(mX - 114, mY - 113, *mEffectHandle, TRUE);
 	}
 }
 
@@ -469,6 +470,9 @@ void Player::UpdateIteEffect() {
 				// 自強化系Itemの効果の設定
 				mIteAP = mIteDataMaps.at(i)["attackPower"];
 				mIteSP = mIteDataMaps.at(i)["speedPower"];
+
+				// 画像の設定
+				mEffectHandle = EffectGraphics::GetGraHandle(mEffectId);
 			}
 			else if (itemId <= 11) {	// 武器
 				mIteKindId = itemId - 7;
@@ -488,20 +492,26 @@ void Player::UpdateIteEffect() {
 			mIteAP = 1;
 			mIteSP = 1.0f;
 			mIsEffected = false;
+			mEffectHandle = NULL;
 		}
 	}
 }
 
 
 void Player::UpdateHp() {
+	// アイテムによる回復
 	if (mIteHP != 0) {
 		mHp += mIteHP;
 
-		if (mHp > HP_MAX) {	// hpの上限を超えたとき
-			mHp = HP_MAX;
-		}
-
 		mIteHP = 0;
+	}
+
+	// 体力の補正
+	if (mHp > HP_MAX) {	// hpの上限を超えたとき
+		mHp = HP_MAX;
+	}
+	else if (mHp < 0) {	// hpが0未満になった時
+		mHp = 0;
 	}
 }
 
