@@ -39,7 +39,7 @@ void ItemMgr::Initialize() {
 		mItemNextX[i] = 1300 + 500 * i;
 		mItemNextY[i] = 300 + 150 * i;
 	}
-	mItemsNext[0] = eItem13;	// デバッグ用に入れいている
+	mItemsNext[0] = eItem9;	// デバッグ用に入れいている
 	mItemsNext[1] = eItem14;	// デバッグ用に入れいている
 
 	/*ItemData::SetNextItem0(-1);
