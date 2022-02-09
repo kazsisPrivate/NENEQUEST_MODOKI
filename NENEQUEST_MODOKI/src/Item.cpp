@@ -35,6 +35,7 @@ void Item::Move() {
 	mX -= mSpeed;
 }
 
+
 //void Item::UpdateHit() {
 //	if (mItNum == 0) {
 //		if (plJudge == true) {
