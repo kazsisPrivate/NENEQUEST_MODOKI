@@ -16,7 +16,7 @@ private:
 	void Move();	//	弓矢の移動
 	void UpdateHit();	//	弓矢の当たり判定と敵に弓矢が当たったかどうかの判定
 	int* mArrowHandle;	// 弓矢の画像
-	int mHitEffectHandle;	// 弓矢が当たった瞬間に出る当たったエフェクトの画像
+	int* mHitEffectHandle;	// 弓矢が当たった瞬間に出る当たったエフェクトの画像
 	int mX, mY;	// 弓矢のx,y座標（左上端）
 	int mXCenter, mYCenter; // 弓矢の回転の中心のx,y座標
 	int mDX;	// x座標の1フレームあたりの増加量，強く放つか弱く放つかで変化する

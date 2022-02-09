@@ -1,6 +1,7 @@
 #include "Arrow.h"
 #include "DxLib.h"
 #include "ItemGraphics.h"
+#include "EffectGraphics.h"
 #include <math.h>
 
 #define PI 3.14159265358979323846
@@ -14,8 +15,6 @@ void Arrow::Initialize() {
 }
 
 void Arrow::Finalize() {
-	DeleteGraph(mHitEffectHandle);
-
 	mArrowExists = false;
 	mAExistingFrameCnt = 0;
 }
@@ -31,7 +30,7 @@ void Arrow::StartArrow(const int x, const int y, const int type) {
 	mArrowExists = true;
 
 	// 弓矢の当たったときに使用する変数
-	mHitEffectHandle = LoadGraph("images/hit.png");
+	mHitEffectHandle = EffectGraphics::GetGraHandle(4);
 	mIsHit = false;
 	mHitFrameCnt = 0;
 
@@ -118,7 +117,7 @@ void Arrow::Update() {
 void Arrow::Draw() {
 	if (mIsHit) {	// 何かにあたったとき
 		// 当たったエフェクトの画像の描画
-		DrawGraph(mX - IMG_W / 2, mY - IMG_H / 2, mHitEffectHandle, TRUE);
+		DrawGraph(mX - IMG_W / 2, mY - IMG_H / 2, *mHitEffectHandle, TRUE);
 	}
 	else {
 		// 弓矢の描画
