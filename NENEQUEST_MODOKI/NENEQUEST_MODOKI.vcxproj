@@ -24,6 +24,10 @@
     <ClCompile Include="src\CharaGraphics.cpp" />
     <ClCompile Include="src\ConfigScene.cpp" />
     <ClCompile Include="src\EffectGraphics.cpp" />
+    <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\Enemy1.cpp" />
+    <ClCompile Include="src\EnemyBoar.cpp" />
+    <ClCompile Include="src\EnemyMgr.cpp" />
     <ClCompile Include="src\GameBack.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\Item10.cpp" />
@@ -64,6 +68,11 @@
     <ClInclude Include="src\CharaGraphics.h" />
     <ClInclude Include="src\ConfigScene.h" />
     <ClInclude Include="src\EffectGraphics.h" />
+    <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\Enemy1.h" />
+    <ClInclude Include="src\EnemyBoar.h" />
+    <ClInclude Include="src\EnemyChanger.h" />
+    <ClInclude Include="src\EnemyMgr.h" />
     <ClInclude Include="src\GameBack.h" />
     <ClInclude Include="src\GameScene.h" />
     <ClInclude Include="src\Item10.h" />
