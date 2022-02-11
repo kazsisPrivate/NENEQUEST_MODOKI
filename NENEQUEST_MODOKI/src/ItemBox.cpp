@@ -1,3 +1,4 @@
+// Item12～14の箱系アイテムの基底クラス
 #include "ItemBox.h"
 #include "Dxlib.h"
 
@@ -11,6 +12,7 @@ void ItemBox::Initialize() {
 	// 当たり判定関連の設定
 	mPlIsHit = false;
 	mPlAIsHit = false;
+	mIsChangingItem = false;
 
 	// ItemBoxのみがもつ変数の設定
 	mBoxItemEnum = eItemNULL;
@@ -27,7 +29,7 @@ void ItemBox::Initialize() {
 
 void ItemBox::Draw() {
 	// 箱の描画
-	DrawGraph(mX - mImgW / 2, mY - mImgH / 2, mIteHandle[mHandleNumber], TRUE);
+	DrawGraph(mX - mImgW / 2, mY - mImgH / 2, mIteHandle[mHandleId], TRUE);
 
 	// 箱から飛び出したitemの描画
 	if (mIsJumping) {
@@ -51,7 +53,7 @@ void ItemBox::Update() {
 	else {
 		if (mPlAIsHit) {	// Playerの攻撃が箱に当たったら
 			// 割れている箱の画像を映すようにする
-			mHandleNumber = 1;
+			mHandleId = 1;
 
 			// Jumpに使用する変数の設定
 			mIsJumping = true;

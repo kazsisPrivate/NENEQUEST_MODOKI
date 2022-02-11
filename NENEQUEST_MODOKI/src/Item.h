@@ -39,6 +39,7 @@ protected:
 	bool mPlIsHit;	// Playerとの当たり判定，当たっているときtrue
 	bool mPlAIsHit;	// Playerの攻撃との当たり判定，当たっているときはtrue
 	const int ITEM_DELETE_X = -90;	// この座標までitemが移動したとき，自動的に消すようにする
+	bool mIsChangingItem;	// Itemをチェンジする処理のChangeItemを呼びだしたあとtrueにする，Playerに2回判定を与えないようにするために使用する
 	//std::map<std::string, int> mIteIntDataMap;	// x, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmap，他のクラスに渡す用
 
 	//int type; //そのItemの座標のパターンの番号

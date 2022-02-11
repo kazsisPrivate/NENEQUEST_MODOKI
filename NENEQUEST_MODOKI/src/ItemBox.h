@@ -14,7 +14,7 @@ protected:
 	virtual void CreateBoxItem() = 0;
 	void Jump();	// 箱が割れたときに箱から飛び出すitemの処理で使用する
 
-	int mHandleNumber;	// 箱の割れていない画像と割れている画像の切り替えで使用する
+	int mHandleId;	// 箱の割れていない画像と割れている画像の切り替えで使用する
 	int* mBoxItemHandle;	// 箱から飛び出したitemの画像
 	int mBoxItemX, mBoxItemY;	// 箱から飛び出したitemのx, y座標
 	int mBoxIteImgW, mBoxIteImgH;	// 箱から飛び出したitemの画像のサイズ

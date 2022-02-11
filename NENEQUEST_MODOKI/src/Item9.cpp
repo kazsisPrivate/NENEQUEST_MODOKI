@@ -15,6 +15,7 @@ void Item9::Initialize() {
 	mHitRangeW = 12, mHitRangeH = 45;
 	mPlIsHit = false;
 	mPlAIsHit = false;
+	mIsChangingItem = false;
 
 	// ÇªÇÃëºÇÃê›íË
 	mSpeed = 2.0f;

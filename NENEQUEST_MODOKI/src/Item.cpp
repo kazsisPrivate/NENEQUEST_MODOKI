@@ -16,6 +16,7 @@ Item::Item(ItemChanger* changer, const int* graph, const int itemIdx, const int 
 void Item::Update() {
 	if (mPlIsHit || mX < ITEM_DELETE_X) {
 		mItemChanger->ChangeItem(mItemIdx, eItemNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
+		mIsChangingItem = true;
 	}
 
 	// 移動
@@ -70,9 +71,16 @@ void Item::GetIteDataMap(std::map<std::string, float>* iteDataMap) {
 	mIteIntDataMap["itemKind"] = mItemKind;*/
 
 	//iteDataMap = &mIteIntDataMap;
-
-	(*iteDataMap)["x"] = mX;
-	(*iteDataMap)["y"] = mY;
+	if (mIsChangingItem) {	// 次に交代するitemが決まっているとき
+		// 判定を2回とらないようにするために位置を画面外に設定する
+		(*iteDataMap)["x"] = -1000;
+		(*iteDataMap)["y"] = -1000;
+	}
+	else {
+		(*iteDataMap)["x"] = mX;
+		(*iteDataMap)["y"] = mY;
+	}
+	
 	(*iteDataMap)["hitRangeW"] = mHitRangeW;
 	(*iteDataMap)["hitRangeH"] = mHitRangeH;
 	(*iteDataMap)["healPower"] = mHealPower;
