@@ -34,18 +34,13 @@ void ItemMgr::Initialize() {
 	// Itemが何もセットされていない状態に初期化
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mItems[i] = NULL;
-		mItemsNext[i] = eItem1;	// デバッグ用に入れいている
+		mItesNext[i] = eItem1;	// デバッグ用に入れいている
 		
-		mItemNextX[i] = 1300 + 500 * i;
-		mItemNextY[i] = 300 + 150 * i;
+		mItesNextX[i] = 1300 + 500 * i;
+		mItesNextY[i] = 300 + 150 * i;
 	}
-	mItemsNext[0] = eItem12;	// デバッグ用に入れいている
-	mItemsNext[1] = eItem14;	// デバッグ用に入れいている
-
-	/*ItemData::SetNextItem0(-1);
-
-	count = 0;
-	apcount = 0;*/
+	mItesNext[0] = eItem12;	// デバッグ用に入れいている
+	mItesNext[1] = eItem14;	// デバッグ用に入れいている
 }
 
 
@@ -63,7 +58,7 @@ void ItemMgr::Finalize() {
 
 void ItemMgr::Update() {
 	for (int i = 0; i < ITEM_NUM; i++) {
-		if (mItemsNext[i] != eItemNone) {	// 次のItemがセットされているとき
+		if (mItesNext[i] != eItemNone) {	// 次のItemがセットされているとき
 			if (mItems[i]) {	// mItems[i]の中がNULLでないとき
 				// 終了処理をする
 				mItems[i]->Finalize();
@@ -71,55 +66,55 @@ void ItemMgr::Update() {
 			}
 			
 			// 次のItemに変更する
-			switch (mItemsNext[i]) {
+			switch (mItesNext[i]) {
 				case eItem1:
-					mItems[i] = (Item*) new Item1(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item1(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem2:
-					mItems[i] = (Item*) new Item2(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item2(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem3:
-					mItems[i] = (Item*) new Item3(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item3(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem4:
-					mItems[i] = (Item*) new Item4(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item4(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem5:
-					mItems[i] = (Item*) new Item5(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item5(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem6:
-					mItems[i] = (Item*) new Item6(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item6(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem7:
-					mItems[i] = (Item*) new Item7(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item7(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem8:
-					mItems[i] = (Item*) new Item8(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item8(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem9:
-					mItems[i] = (Item*) new Item9(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item9(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem10:
-					mItems[i] = (Item*) new Item10(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item10(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem11:
-					mItems[i] = (Item*) new Item11(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item11(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem12:
-					mItems[i] = (Item*) new Item12(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item12(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem13:
-					mItems[i] = (Item*) new Item13(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item13(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
 				case eItem14:
-					mItems[i] = (Item*) new Item14(this, i, mItemNextX[i], mItemNextY[i]);
+					mItems[i] = (Item*) new Item14(this, i, mItesNextX[i], mItesNextY[i]);
 					break;
-				case eItemNULL:
+				default:	// case eItemNULL
 					mItems[i] = NULL;
 					break;
 			}
 
-			mItemsNext[i] = eItemNone;
+			mItesNext[i] = eItemNone;
 
 			if (mItems[i]) {
 				mItems[i]->Initialize();
@@ -154,17 +149,17 @@ void ItemMgr::Draw(const int itemIdx) {
 
 
 void ItemMgr::ChangeItem(const int itemIdx, EItem itemNext, const int itemNextX, const int itemNextY) {
-	mItemsNext[itemIdx] = itemNext;
+	mItesNext[itemIdx] = itemNext;
 	
-	mItemNextX[itemIdx] = itemNextX;
-	mItemNextY[itemIdx] = itemNextY;
+	mItesNextX[itemIdx] = itemNextX;
+	mItesNextY[itemIdx] = itemNextY;
 }
 
 
-void ItemMgr::GetIteDataMaps(std::vector<std::map<std::string, float>>* iteDataMaps, bool* isExistings) {
+void ItemMgr::GetIteData(std::vector<std::map<std::string, float>>* iteDataMaps, bool* isExistings) {
 	// 各Itemの情報を渡す
 	for (int i = 0; i < ITEM_NUM; i++) {
-		if (mItemsNext[i] == eItemNone && mItems[i]) {
+		if (mItems[i]) {
 			mItems[i]->GetIteDataMap(&(*iteDataMaps).at(i));
 			isExistings[i] = true;
 		}
@@ -177,11 +172,11 @@ void ItemMgr::GetIteDataMaps(std::vector<std::map<std::string, float>>* iteDataM
 }
 
 
-void ItemMgr::SetIsHitMaps(std::vector<std::map<std::string, bool>>& isHitMap) {
+void ItemMgr::SetIsHitMaps(std::vector<std::map<std::string, bool>>& isHitMaps) {
 	// 各ItemにPlayerとの当たり判定結果を渡す
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mItems[i]) {
-			mItems[i]->SetIsHits(isHitMap);
+			mItems[i]->SetIsHits(isHitMaps);
 		}
 	}
 }
