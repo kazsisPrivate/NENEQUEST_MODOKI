@@ -11,8 +11,8 @@
 //#include "GameOver.h"
 
 //#include "GameCounters.h"
-//#include "PlayerMgr.h"
-//#include "EnemyMgr.h"
+#include "PlayerMgr.h"
+#include "EnemyMgr.h"
 #include "ItemMgr.h"
 
 #include <memory>
@@ -21,7 +21,7 @@
 #include <vector>
 
 //
-class PlayerMgr;
+//class PlayerMgr;
 ////class EnemyMgr;
 //class ItemMgr;
 //class SceneMgr;
@@ -43,7 +43,7 @@ private:
 
 	GameBack* mGameBack;
 	PlayerMgr* mPlayerMgr;
-	//EnemyMgr* enemyMgr;
+	EnemyMgr* mEnemyMgr;
 	ItemMgr* mItemMgr;
 	PlayerHpGauge* mPlHpGauge;
 	//Appearance* appear;
@@ -62,15 +62,27 @@ private:
 	//bool m_bsDeadFlag; //Bossの体力が0になったときtrue
 	//void Sort(int num[]); //YJudgeで使用するソートのための関数
 	int iNum;
+
+	const int ITEM_NUM = 2;	// 管理できるitemの数
+	const int ENEMY_NUM = 3;	// 管理できるEnemyの数
+	const int ENEMY_ATTACK_NUM = 5;	// 管理できるEnemyの攻撃の数
 	
 	std::map<std::string, int> mPlIntDataMap;	// Playerのx, y, hp, hitRangeW, hitRangeH, hitRangeAW, hitRangeAH, iteSFrameCnt, iteAFrameCnt, bsStopFrameCnt, effectIdなどを入れているmap
 	std::map<std::string, bool> mPlBoolDataMap;	// PlayerのisDead, isAttackingなどを入れているmap
-	std::vector<std::map<std::string, float>> mIteDataMaps;	// 各Itemのx, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmap
+	
+	std::vector<std::map<std::string, int>> mEneIntDataMaps;	// 各Enemyのx, y, hitRangeW, hitRangeHなどを入れているmapのvector
+	std::vector<std::vector<std::map<std::string, int>>> mEneAXYMapVecs;	// 各Enemyの各攻撃（複数の火の玉など）のax, ay, hitRangeAW, hitRangeAHを入れているmapのvectorのvector
+	std::vector<std::map<std::string, bool>> mEneBoolDataMaps;	// EnemyのisAttackingなどを入れているmap
+	bool mEneIsExistings[3];	// 各Enemyが存在しているかどうか（NULLであるかないか），存在していればtrue
+
+	std::vector<std::map<std::string, float>> mIteDataMaps;	// 各Itemのx, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmapのvector
 	bool mIteIsExistings[2];	// 各Itemが存在しているかどうか（NULLであるかないか），存在していればtrue
+
 	std::map<std::string, std::vector<bool>> mPlIsHitMap;	// Playerの当たり判定の情報を入れたmap, キーは対称の物体の種類（item, enemy, enemyAttack, plAToItem, plAToEnemy）, PlayerMgrに渡す
 															// plAToItemとplAToEnemyはPlayerの攻撃が当たっていたらtrueで返す
+	bool mEneIsHits[3];	// 各Enemyにおける，Playerの攻撃との当たり判定を入れた配列
 	std::vector<std::map<std::string, bool>> mIteIsHitMaps;	// 各Itemの当たり判定の情報を入れたmap, キーは対称の物体の種類（player, playerAttack）, ItemMgrに渡す
-	const int ITEM_NUM = 2;	// 保持できるitemの数
+	
 
 private:
 	static GameScene* mGameScene;

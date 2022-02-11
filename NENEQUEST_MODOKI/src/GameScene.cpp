@@ -4,7 +4,7 @@
 #include "ItemGraphics.h"
 #include "EffectGraphics.h"
 #include "SceneMgr.h"
-#include "PlayerMgr.h"
+//#include "PlayerMgr.h"
 ////#include "EnemyMgr.h"
 //#include "ItemMgr.h"
 #include <mutex>
@@ -37,30 +37,40 @@ GameScene* GameScene::GetInstance() {
 
 
 void GameScene::Initialize() {
-	mImageHandle = 0;//LoadGraph("images/clouds1.png");
+	mImageHandle = NULL;//LoadGraph("images/clouds1.png");
 	/*for (int i = 0; i < 5; i++) {
 		dnCheck[i] = false;
 	}*/
 
-	for (int i = 0; i < ITEM_NUM; i++) {
-		mIteDataMaps.push_back({});
+	// 情報を保持するためのmap(vector)の初期化
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneIntDataMaps.push_back({});
+		mEneBoolDataMaps.push_back({});
+		mEneIsHits[i] = false;
+		mPlIsHitMap["enemy"].push_back(false);
+		mPlIsHitMap["enemyAttack"].push_back(false);
+		mPlIsHitMap["plAToEnemy"].push_back(false);
+		mEneAXYMapVecs.push_back(std::vector<std::map<std::string, int>>());
+
+		for (int j = 0; j < ENEMY_ATTACK_NUM; j++) {
+			mEneAXYMapVecs.at(i).push_back({});
+		}
 	}
 
 	for (int i = 0; i < ITEM_NUM; i++) {
+		mIteDataMaps.push_back({});
+		mIteIsHitMaps.push_back({});
 		mPlIsHitMap["item"].push_back(false);
 		mPlIsHitMap["plAToItem"].push_back(false);
 	}
 
-	for (int i = 0; i < ITEM_NUM; i++) {
-		mIteIsHitMaps.push_back({});
-	}
 
-
-	//mCharaGraphics = new CharaGraphics();
+	// 画面の各構成要素のインスタンスの取得
 	mGameBack = new GameBack();
 	mPlayerMgr = PlayerMgr::GetInstance();
-	//enemyMgr = new EnemyMgr(eneAppear);
+	mEnemyMgr = EnemyMgr::GetInstance();
 	mItemMgr = ItemMgr::GetInstance();
+	mPlHpGauge = new PlayerHpGauge();
 
 	/*appear = new Appearance();
 	appear->GetEnemyAppear(eneAppear);
@@ -69,14 +79,14 @@ void GameScene::Initialize() {
 	
 	//iNum = appear->GetItNum();
 
-	mPlHpGauge = new PlayerHpGauge();
-
+	
+	// 画面の各構成要素の初期化
 	CharaGraphics::Initialize();
 	ItemGraphics::Initialize();
 	EffectGraphics::Initialize();
 	mGameBack->Initialize();
 	mPlayerMgr->Initialize();
-	//enemyMgr->Initialize();
+	mEnemyMgr->Initialize();
 	mItemMgr->Initialize();
 	mPlHpGauge->Initialize();
 
@@ -88,13 +98,13 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Finalize() {
-	DeleteGraph(mImageHandle);
+	// 画面の各構成要素の終了処理
 	CharaGraphics::Finalize();
 	ItemGraphics::Finalize();
 	EffectGraphics::Finalize();
 	mGameBack->Finalize();
 	mPlayerMgr->Finalize();
-	//enemyMgr->Finalize();
+	mEnemyMgr->Finalize();
 	mItemMgr->Finalize();
 	mPlHpGauge->Finalize();
 	//delete mCharaGraphics;
@@ -104,6 +114,8 @@ void GameScene::Finalize() {
 	//delete mItemMgr;
 	//delete hpGauge;
 	//delete appear;
+
+	// ゲームの音楽の削除
 	StopSoundMem(mSoundHandle);
 	DeleteSoundMem(mSoundHandle);
 
@@ -156,11 +168,25 @@ void GameScene::Update() {
 	}
 
 	// Player, Enemy, Itemの情報を取得
-	mPlayerMgr->GetPlDataMaps(&mPlIntDataMap, &mPlBoolDataMap);
-	mItemMgr->GetIteDataMaps(&mIteDataMaps, mIteIsExistings);
+	mPlayerMgr->GetPlData(&mPlIntDataMap, &mPlBoolDataMap);
+	mEnemyMgr->GetEneData(&mEneIntDataMaps, &mEneAXYMapVecs, &mEneBoolDataMaps, mEneIsExistings);
+	mItemMgr->GetIteData(&mIteDataMaps, mIteIsExistings);
+
+	// Playerに渡すEnemyの攻撃力を一つの配列にまとめる
+	int eneAPs[3];	// ENEMY_NUM = 3
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEneIsExistings) {
+			eneAPs[i] = mEneIntDataMaps.at(i)["attack"];
+		}
+		else {
+			eneAPs[i] = 0;
+		}
+	}
 
 	// Player, Enemy, Item間で使用する情報をお互いに渡す
 	mPlayerMgr->SetIteDataMaps(mIteDataMaps);
+	mPlayerMgr->SetEneAPowers(eneAPs);
+	mEnemyMgr->SetPlAPower(mPlIntDataMap["attack"]);
 	mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
 
 	// 各オブジェクトの当たり判定を確認
@@ -168,6 +194,7 @@ void GameScene::Update() {
 
 	// 当たり判定の確認結果のデータを各オブジェクトに渡す
 	mPlayerMgr->SetIsHitMap(&mPlIsHitMap);
+	mEnemyMgr->SetIsHits(mEneIsHits);
 	mItemMgr->SetIsHitMaps(mIteIsHitMaps);
 
 	// 各オブジェクトの描画順を更新する
@@ -176,6 +203,7 @@ void GameScene::Update() {
 	// 更新
 	mGameBack->Update();
 	mPlayerMgr->Update();
+	mEnemyMgr->Update();
 	mItemMgr->Update();
 	mPlHpGauge->Update();
 	
@@ -228,11 +256,16 @@ void GameScene::Draw() {
 	//	gameCtrs.Draw();
 	//}
 
+	int tmpA = 0;
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEneIsExistings[i]) {
+			tmpA = 1;
+		}
+	}
 	
 
-
 	mGameBack->Draw();
-	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %f, %f, %d", mPlIntDataMap["hp"], mIteDataMaps.at(0)["healPower"], mIteDataMaps.at(1)["x"], mPlIntDataMap["attack"]);
+	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mEneIntDataMaps.at(1)["x"], tmpA, mEneIntDataMaps.at(1)["hp"]);
 
 	/*for (int i = 1; i < 7; i++) {
 		if (drawNum[0] == i) {
@@ -263,7 +296,7 @@ void GameScene::Draw() {
 			mPlayerMgr->Draw();
 		}
 		else if (objId == 1) {	// Enemyの描画
-
+			mEnemyMgr->Draw(idx);
 		}
 		else {	// Itemの描画
 			mItemMgr->Draw(idx);
@@ -286,12 +319,19 @@ void GameScene::UpdateDOrder() {
 	mDOrderVec.clear();
 
 	// Playerのy座標情報をセット
-	mDOrderVec.push_back({ mPlIntDataMap["y"] - 73, {0, 0} });
+	mDOrderVec.push_back({ mPlIntDataMap["y"], {0, 0} });
+
+	// Enemyのy座標情報をセット
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEneIsExistings[i]) {
+			mDOrderVec.push_back({ (int)mEneIntDataMaps.at(i)["y"], {1, i} });
+		}
+	}
 
 	// Itemのy座標情報をセット
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mIteIsExistings[i]) {
-			mDOrderVec.push_back({ (int)mIteDataMaps.at(i)["y"] - 73, {2, i} });
+			mDOrderVec.push_back({ (int)mIteDataMaps.at(i)["y"], {2, i} });
 		}
 	}
 
@@ -361,16 +401,79 @@ void GameScene::UpdateDOrder() {
 
 
 void GameScene::UpdateHit() {
-	// Player-Item間の当たり判定更新
-	for (int i = 0; i < 2; i++) {
-		if (mIteIsExistings[i]) {	// Itemが存在していたら
-			// Playerの身体の当たり判定範囲
-			int plLX = mPlIntDataMap["x"] - mPlIntDataMap["hitRangeW"];
-			int plRX = mPlIntDataMap["x"] + mPlIntDataMap["hitRangeW"];
-			int plTY = mPlIntDataMap["y"] - mPlIntDataMap["hitRangeH"];
-			int plBY = mPlIntDataMap["y"] + mPlIntDataMap["hitRangeH"];
-			int plPs[] = { plLX, plRX, plTY, plBY };
+	// Playerの身体の当たり判定範囲
+	int plLX = mPlIntDataMap["x"] - mPlIntDataMap["hitRangeW"];
+	int plRX = mPlIntDataMap["x"] + mPlIntDataMap["hitRangeW"];
+	int plTY = mPlIntDataMap["y"] - mPlIntDataMap["hitRangeH"];
+	int plBY = mPlIntDataMap["y"] + mPlIntDataMap["hitRangeH"];
+	int plPs[] = { plLX, plRX, plTY, plBY };
 
+	// Player-Enemy間の当たり判定
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEneIsExistings[i]) {	// Enemyが存在していたら
+			// Enemyの身体の当たり判定範囲
+			int eneLX = mEneIntDataMaps.at(i)["x"] - mEneIntDataMaps.at(i)["hitRangeW"];
+			int eneRX = mEneIntDataMaps.at(i)["x"] + mEneIntDataMaps.at(i)["hitRangeW"];
+			int eneTY = mEneIntDataMaps.at(i)["y"] - mEneIntDataMaps.at(i)["hitRangeH"];
+			int eneBY = mEneIntDataMaps.at(i)["y"] + mEneIntDataMaps.at(i)["hitRangeH"];
+			int enePs[] = { eneLX, eneRX, eneTY, eneBY };
+
+			// 当たり判定チェックをする（Playerに必要，Enemyには不要）
+			mPlIsHitMap["enemy"].at(i) = IsHit(plPs, enePs);
+
+			// PlayerAttack-Enemy間の当たり判定
+			if (mPlBoolDataMap["isAttacking"]) {	// Playerが攻撃中だったら
+				// Playerの攻撃の当たり判定範囲
+				int plALX = mPlIntDataMap["ax"] - mPlIntDataMap["hitRangeAW"];
+				int plARX = mPlIntDataMap["ax"] + mPlIntDataMap["hitRangeAW"];
+				int plATY = mPlIntDataMap["ay"] - mPlIntDataMap["hitRangeAH"];
+				int plABY = mPlIntDataMap["ay"] + mPlIntDataMap["hitRangeAH"];
+				int plAPs[] = { plALX, plARX, plATY, plABY };
+
+				// Enemyに攻撃が当たったかどうか確認する
+				mPlIsHitMap["plAToEnemy"].at(i) = IsHit(plAPs, enePs);
+			}
+			else {	// Playerが攻撃中でなければ
+				mPlIsHitMap["plAToEnemy"].at(i) = false;
+			}
+
+			// Player-EnemyAttack間の当たり判定
+			if (mEneBoolDataMaps.at(i)["isAttacking"]) {	// Enemyが攻撃中だったら
+				mPlIsHitMap["enemyAttack"].at(i) = false;
+				
+				int eneANum = mEneIntDataMaps.at(i)["attackNum"];
+				for (int j = 0; j < eneANum; j++) {	// 各Enemyの攻撃数の分だけ
+					int eneALX = mEneAXYMapVecs.at(i).at(j)["ax"] - mEneAXYMapVecs.at(i).at(j)["hitRangeAW"];
+					int eneARX = mEneAXYMapVecs.at(i).at(j)["ax"] + mEneAXYMapVecs.at(i).at(j)["hitRangeAW"];
+					int eneATY = mEneAXYMapVecs.at(i).at(j)["ay"] - mEneAXYMapVecs.at(i).at(j)["hitRangeAH"];
+					int eneABY = mEneAXYMapVecs.at(i).at(j)["ay"] + mEneAXYMapVecs.at(i).at(j)["hitRangeAH"];
+					int eneAPs[] = { eneALX, eneARX, eneATY, eneABY };
+
+					// Enemyの攻撃が当たったかどうか確認する（Playerに必要，Enemyには不要）
+					if (IsHit(plPs, eneAPs)) {	// Enemyの攻撃が当たっていたら
+						mPlIsHitMap["enemyAttack"].at(i) = true;
+					}
+				}
+			}
+			else {	// Enemyが攻撃中でなければ
+				mPlIsHitMap["enemyAttack"].at(i) = false;
+			}
+			
+		}
+		else {	// Enemyが存在していなかったら
+			mPlIsHitMap["enemy"].at(i) = false;
+			mPlIsHitMap["plAToEnemy"].at(i) = false;
+			mPlIsHitMap["enemyAttack"].at(i) = false;
+		}
+
+		// Enemy側の判定にも同じ結果を入れる
+		mEneIsHits[i] = mPlIsHitMap["plAToEnemy"].at(i);
+	}
+
+
+	// Player-Item間の当たり判定更新
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mIteIsExistings[i]) {	// Itemが存在していたら
 			// Itemの当たり判定範囲
 			int iteLX = mIteDataMaps.at(i)["x"] - mIteDataMaps.at(i)["hitRangeW"];
 			int iteRX = mIteDataMaps.at(i)["x"] + mIteDataMaps.at(i)["hitRangeW"];
@@ -381,8 +484,8 @@ void GameScene::UpdateHit() {
 			// 当たり判定チェックをする
 			mPlIsHitMap["item"].at(i) = IsHit(plPs, itePs);
 			
-
-			if (mPlBoolDataMap["isAttacking"]) {	// Playerが攻撃中だったら
+			// PlayerAttack-Item間の当たり判定
+			if (mPlBoolDataMap["isAttacking"] && mIteDataMaps.at(i)["itemId"] >= 12) {	// Playerが攻撃中で箱系アイテムだったら
 				// Playerの攻撃の当たり判定範囲
 				int plALX = mPlIntDataMap["ax"] - mPlIntDataMap["hitRangeAW"];
 				int plARX = mPlIntDataMap["ax"] + mPlIntDataMap["hitRangeAW"];
