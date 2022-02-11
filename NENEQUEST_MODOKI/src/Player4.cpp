@@ -29,7 +29,7 @@ void Player4::Initialize() {
 
 	// 位置，当たり判定の範囲関連設定
 	mHitRangeW = 33, mHitRangeH = 60;
-	mHitRangeAW = 45, mHitRangeAH = 60;
+	mHitRangeAW = 20, mHitRangeAH = 20;	// 弓矢の当たり判定
 
 	// Playerの攻撃の状態設定
 	mAttackBase = 1;
@@ -58,13 +58,15 @@ void Player4::Finalize() {
 
 
 void Player4::Update() {
-	if (mHp == 0) {	// 死んだときの処理（死んだことを認識させるための120フレームの硬直）
-		if (mDeadFrameCnt == DEAD_STOP_FRAME_NUM) {
+	if (mHp <= 0) {	// 死んだときの処理（死んだことを認識させるための120フレームの硬直）
+		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
 			mIsDead = true;
 		}
-		mHandleId = 0;
 
-		mDeadFrameCnt++;
+		// ダメージをくらったことがわかる画像にする
+		mHandleId = 16;
+
+		mGodFrameCnt++;
 	}
 	else {	// 生きているときの処理
 		// boss stageに突入しているかしていないかチェック
@@ -142,7 +144,7 @@ void Player4::Update() {
 				}
 
 				// 攻撃時間が終わったら次の攻撃ができるようにする
-				if (mAFrameCnt == 0) {
+				if (mAFrameCnt == mAFrameNum) {
 					mIsAttacking = false;
 					mArrowIsHit = false;
 				}
@@ -154,21 +156,21 @@ void Player4::Update() {
 				PrepareSAttack();
 			}
 
-			//HitJudge();
-		}
-	}
+			// ダメージを受けた後の少しの間の無敵時間の処理
+			if (mIsGod) {	// 攻撃を受けた後の無敵時間のとき
+				if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
+					mIsGod = false;
+					mGodFrameCnt = 0;
+				}
+				else {	// 無敵時間中なら
+					// 無敵時間であることを表す画像にする
+					if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
+						mHandleId += 16;
+					}
+				}
 
-	// ダメージを受けた後の少しの間の無敵時間の処理
-	if (mIsGod) {
-		if (mGodFrameCnt == -1) {
-			mIsGod = false;
-		}
-		else if (mGodFrameCnt > 80 || (mGodFrameCnt <= 60 && mGodFrameCnt > 40) || mGodFrameCnt <= 20) {	// Playerを白くする
-			mHandleId += 16;
-			--mGodFrameCnt;
-		}
-		else {
-			--mGodFrameCnt;
+				mGodFrameCnt++;
+			}
 		}
 	}
 }
@@ -270,7 +272,7 @@ void Player4::Walk() {
 void Player4::Attack() {
 	mHandleId += 4;
 	
-	--mAFrameCnt;
+	mAFrameCnt++;
 }
 
 
@@ -310,7 +312,8 @@ void Player4::PrepareWAttack() {	// 弱い攻撃（弓矢が近くに落ちる，入力Dキー）
 
 		mIsPreparingWA = false;
 		mIsAttacking = true;
-		mAFrameCnt = 90; //矢を放った後の硬直する時間も含んでいる
+		mAFrameCnt = 0;
+		mAFrameNum = 90; //矢を放った後の硬直する時間も含んでいる
 	}
 }
 
@@ -336,7 +339,8 @@ void Player4::PrepareSAttack() {	// 強い攻撃（弓矢が遠くまで飛ぶ，入力Sキー）
 
 		mIsPreparingSA = false;
 		mIsAttacking = true;
-		mAFrameCnt = 120;
+		mAFrameCnt = 0;
+		mAFrameNum = 120;
 	}
 }
 

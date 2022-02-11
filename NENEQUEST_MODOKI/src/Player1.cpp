@@ -49,19 +49,24 @@ void Player1::Finalize() {
 
 
 void Player1::Update() {
-	if (mHp == 0) {	// 死んだときの処理（死んだことを認識させるための120フレームの硬直）
-		if (mDeadFrameCnt == DEAD_STOP_FRAME_NUM) {
+	if (mHp <= 0) {	// 死んだときの処理（死んだことを認識させるための120フレームの硬直）
+		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
 			mIsDead = true;
 		}
-		mHandleId = 0;
 
-		mDeadFrameCnt++;
+		// ダメージをくらったことがわかる画像にする
+		mHandleId = 12;
+
+		mGodFrameCnt++;
 	}
 	else {	// 生きているときの処理
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
 
-		// アイテムとの当たり判定を考慮したアイテムの効果の更新
+		// Enemyとの当たり判定を考慮したEnemyから受けるダメージの更新
+		UpdateEneDamage();
+
+		// Itemとの当たり判定を考慮したアイテムの効果の更新
 		UpdateIteEffect();
 
 		// hpの更新
@@ -119,23 +124,24 @@ void Player1::Update() {
 				Attack();
 			}
 
-			//HitJudge();
+			// ダメージを受けた後の少しの間の無敵時間の処理
+			if (mIsGod) {	// 攻撃を受けた後の無敵時間のとき
+				if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
+					mIsGod = false;
+					mGodFrameCnt = 0;
+				}
+				else {	// 無敵時間中なら
+					// 無敵時間であることを表す画像にする
+					if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
+						mHandleId += 12;
+					}
+				}
+
+				mGodFrameCnt++;
+			}
 		}
 	}
 
-	// ダメージを受けた後の少しの間の無敵時間の処理
-	if (mIsGod == true) {
-		if (mGodFrameCnt == -1) {
-			mIsGod = false;
-		}
-		else if (mGodFrameCnt > 80 || (mGodFrameCnt <= 60 && mGodFrameCnt > 40) || mGodFrameCnt <= 20) {	// Playerを白くする
-			mHandleId += 12;
-			--mGodFrameCnt;
-		}
-		else {
-			--mGodFrameCnt;
-		}
-	}
 }
 
 

@@ -4,13 +4,7 @@
 #include "Player2.h"
 #include "Player3.h"
 #include "Player4.h"
-#include "GameScene.h"
-//#include "HitJudge0.h"
-//#include "HitJudge1.h"
-//#include "HitJudge2.h"
-//#include "PowerBox.h"
-//#include "PlayerData.h"
-//#include "PlInitialize.h"
+//#include "GameScene.h"
 #include "Player.h"
 #include <string>
 #include <map>
@@ -20,6 +14,7 @@ PlayerMgr* PlayerMgr::mPlayerMgr;
 
 
 PlayerMgr::PlayerMgr() : mPlayerNext(ePlayerNone) {
+	//PlInitialize::SetPlayer(290, 500, 10, -1, -1, 0, 0, false); //Playerの初期状態の設定
 }
 
 
@@ -39,27 +34,34 @@ void PlayerMgr::Initialize() {
 	std::map<std::string, bool> plBoolDataMap;
 	plIntDataMap["x"] = 290;
 	plIntDataMap["y"] = 500;
-	plIntDataMap["hp"] = 10;
+	plIntDataMap["hp"] = 5;
 	plIntDataMap["effectFrameCnt"] = 0;
 	plIntDataMap["bsStopFrameCnt"] = 0;
 	plIntDataMap["effectId"] = 0;
+	plIntDataMap["godFrameCnt"] = 0;
 	plBoolDataMap["isDead"] = false;
+	plBoolDataMap["isGod"] = false;
 
 	// 最初に使用するPlayerの初期化
-	mPlayer = (Player*)Player3::GetInstance();
+	mPlayer = (Player*)Player1::GetInstance();
 	mPlayer->SetPlParams(&plIntDataMap, &plBoolDataMap);
 	mPlayer->Initialize();
 
 	// 情報やり取りのためにGameSceneクラスのインスタンスを取得
-	mGameScene = GameScene::GetInstance();
+	//mGameScene = GameScene::GetInstance();
 
-	// 情報を保持するためのmap(vector)の初期化
-	for (int i = 0; i < ITEM_NUM; i++) {
-		mIteDataMaps.push_back({});
+	// 情報を保持するためのmap(vector), 配列の初期化
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneAPs[i] = 0;
+		mPlIsHitMap["enemy"].push_back(false);
+		mPlIsHitMap["enemyAttack"].push_back(false);
+		mPlIsHitMap["plAToEnemy"].push_back(false);
 	}
 
 	for (int i = 0; i < ITEM_NUM; i++) {
+		mIteDataMaps.push_back({});
 		mPlIsHitMap["item"].push_back(false);
+		mPlIsHitMap["plAToItem"].push_back(false);
 	}
 }
 
@@ -74,12 +76,13 @@ void PlayerMgr::Finalize() {
 
 void PlayerMgr::Update() {
 	if (mPlayerNext != ePlayerNone) {
-		mPlayer->Finalize();
-
 		// データの引継ぎに使用するデータの取得
 		std::map<std::string, int> plIntDataMap;
 		std::map<std::string, bool> plBoolDataMap;
 		mPlayer->GetPlDataMap(&plIntDataMap, &plBoolDataMap);
+
+		// 終了処理
+		mPlayer->Finalize();
 
 		switch (mPlayerNext) {
 			case ePlayer1:
@@ -91,7 +94,7 @@ void PlayerMgr::Update() {
 			case ePlayer3:
 				mPlayer = (Player*) Player3::GetInstance();
 				break;
-			case ePlayer4:
+			default:	// case ePlayer4
 				mPlayer = (Player*) Player4::GetInstance();
 				break;
 		}
@@ -103,6 +106,7 @@ void PlayerMgr::Update() {
 	}
 
 	// 当たり判定情報やItemやEnemyの情報を渡したのちに更新
+	mPlayer->SetEneAPowers(mEneAPs);
 	mPlayer->SetIteParams(mIteDataMaps);
 	mPlayer->SetIsHits(&mPlIsHitMap);
 
@@ -131,7 +135,7 @@ void PlayerMgr::ChangePlayer(EPlayer playerNext) {
 //}
 
 
-void PlayerMgr::GetPlDataMaps(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
+void PlayerMgr::GetPlData(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
 	mPlayer->GetPlDataMap(plIntDataMap, plBoolDataMap);
 }
 
@@ -142,9 +146,25 @@ void PlayerMgr::GetPlIntDataMap(std::map<std::string, int>* plIntDataMap) {
 
 
 void PlayerMgr::SetIsHitMap(std::map<std::string, std::vector<bool>>* isHitMap) {
+	// 各Enemyの身体と攻撃との当たり判定をセット
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mPlIsHitMap["enemy"].at(i) = (*isHitMap)["enemy"].at(i);
+		mPlIsHitMap["enemyAttack"].at(i) = (*isHitMap)["enemyAttack"].at(i);
+		mPlIsHitMap["plAToEnemy"].at(i) = (*isHitMap)["plAToEnemy"].at(i);
+	}
+
 	// 各Itemとの当たり判定をセット
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mPlIsHitMap["item"].at(i) = (*isHitMap)["item"].at(i);
+		mPlIsHitMap["plAToItem"].at(i) = (*isHitMap)["plAToItem"].at(i);
+	}
+}
+
+
+void PlayerMgr::SetEneAPowers(const int* const eneAPs) {
+	// 各Enemyの攻撃力のセット
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneAPs[i] = eneAPs[i];
 	}
 }
 

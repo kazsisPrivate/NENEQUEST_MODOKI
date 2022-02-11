@@ -24,8 +24,8 @@ void Player::Initialize() {
 	//mHitRangeW = 33, mHitRangeH = 60;
 	//mHitRangeAW = 50, mHitRangeAH = 60;
 	mImgW = 500, mImgH = 283;
-	mIsGod = false;
-	mGodFrameCnt = -1;
+	//mIsGod = false;
+	//mGodFrameCnt = 0;
 
 	// Playerの攻撃，ジャンプなどの状態設定
 	mXFrameCnt = 0, mYFrameCnt = 0;
@@ -38,6 +38,7 @@ void Player::Initialize() {
 
 	// アイテムや使用武器の設定
 	mIteHP = 0;
+	mEneDamage = 0;
 
 	if (mEffectFrameCnt > 0) {
 		mIsEffected = true;
@@ -68,6 +69,12 @@ void Player::Initialize() {
 	}
 
 	// 情報保持に使用するmap(vector), 配列の初期化
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneIsHits[i] = false;
+		mEneAIsHits[i] = false;
+		mPlAIsHitMap["enemy"].push_back(false);
+	}
+
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mIteIsHits[i] = false;
 		mIteDataMaps.push_back({});
@@ -499,12 +506,40 @@ void Player::UpdateIteEffect() {
 }
 
 
+void Player::UpdateEneDamage() {
+	if (!mIsGod) {	// 無敵時間でないとき
+		// Enemyの身体と攻撃との当たり判定
+		for (int i = 0; i < ENEMY_NUM; i++) {
+			// Enemyの身体との当たり判定
+			if (mEneIsHits[i]) {	// Enemyの身体にあたっていたら
+				mEneDamage = 1;
+			}
+
+			// Enemyの攻撃との当たり判定
+			if (mEneAIsHits[i]) {
+				mEneDamage = mEneAPs[i];
+			}
+		}
+	}
+}
+
+
 void Player::UpdateHp() {
 	// アイテムによる回復
 	if (mIteHP != 0) {
 		mHp += mIteHP;
 
 		mIteHP = 0;
+	}
+
+	// 敵によるダメージ
+	if (mEneDamage != 0) {
+		mHp -= mEneDamage;
+
+		mEneDamage = 0;
+		// 少しの間無敵になる
+		mIsGod = true;
+		mGodFrameCnt = 0;
 	}
 
 	// 体力の補正
@@ -598,8 +633,11 @@ void Player::SetPlParams(std::map<std::string, int>* plIntDataMap, std::map<std:
 	//mIteAFrameCnt = (*plIntDataMap)["iteAFrameCnt"];
 	mBsStopFrameCnt = (*plIntDataMap)["bsStopFrameCnt"];
 	mEffectId = (*plIntDataMap)["effectId"];
-	mDeadFrameCnt = (*plIntDataMap)["deadFrameCnt"];
+	//mDeadFrameCnt = (*plIntDataMap)["deadFrameCnt"];
+	mGodFrameCnt = (*plIntDataMap)["godFrameCnt"];
+
 	mIsDead = (*plBoolDataMap)["isDead"];
+	mIsGod = (*plBoolDataMap)["isGod"];
 }
 
 
@@ -617,9 +655,11 @@ void Player::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std
 	(*plIntDataMap)["bsStopFrameCnt"] = mBsStopFrameCnt;
 	(*plIntDataMap)["effectId"] = mEffectId;
 	(*plIntDataMap)["attack"] = mAttack;
+	(*plIntDataMap)["godFrameCnt"] = mGodFrameCnt;
 
 	(*plBoolDataMap)["isDead"] = mIsDead;
 	(*plBoolDataMap)["isAttacking"] = mIsAttacking;
+	(*plBoolDataMap)["isGod"] = mIsGod;
 }
 
 
@@ -637,10 +677,18 @@ void Player::GetPlIntDataMap(std::map<std::string, int>* plIntDataMap) {
 	(*plIntDataMap)["bsStopFrameCnt"] = mBsStopFrameCnt;
 	(*plIntDataMap)["effectId"] = mEffectId;
 	(*plIntDataMap)["attack"] = mAttack;
+	(*plIntDataMap)["godFrameCnt"] = mGodFrameCnt;
 }
 
 
 void Player::SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap) {
+	// 各Enemyとの当たり判定をセット
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneIsHits[i] = (*isHitMap)["enemy"].at(i);
+		mEneAIsHits[i] = (*isHitMap)["enemyAttack"].at(i);
+		mPlAIsHitMap["enemy"].at(i) = (*isHitMap)["plAToEnemy"].at(i);
+	}
+
 	// 各Itemとの当たり判定をセット
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mIteIsHits[i] = (*isHitMap)["item"].at(i);
@@ -656,5 +704,13 @@ void Player::SetIteParams(std::vector<std::map<std::string, float>>& iteDataMaps
 		mIteDataMaps.at(i)["speedPower"] = iteDataMaps.at(i)["speedPower"];
 		mIteDataMaps.at(i)["attackPower"] = iteDataMaps.at(i)["attackPower"];
 		mIteDataMaps.at(i)["itemId"] = iteDataMaps.at(i)["itemId"];
+	}
+}
+
+
+void Player::SetEneAPowers(const int* const eneAPs) {
+	// 各Enemyの攻撃力のセット
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		mEneAPs[i] = eneAPs[i];
 	}
 }

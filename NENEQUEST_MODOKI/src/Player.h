@@ -25,26 +25,33 @@ public:
 	//void GetPlIntDataMap(std::map<std::string, int>* plIntDataMap);	// Playerのデータを渡すために使用する(int)
 	void GetPlIntDataMap(std::map<std::string, int>* plIntDataMap);	// Playerのデータを渡すために使用する(int)
 	void SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap);	// Item, Enemy, EnemyAttackとの当たり判定の確認結果を受け取り，mPlIsHitとmPlAIsHitに代入する
-	void SetIteParams(std::vector<std::map<std::string, float>>& iteDataMaps);	// Itemの情報を受け取る，Player側でのItemの効果の把握のために使用する
+	void SetEneAPowers(const int* const eneAPs);	// 各Enemyの攻撃力を受け取る，Player側でのEnemyの攻撃力の把握のために使用する
+	void SetIteParams(std::vector<std::map<std::string, float>>& iteDataMaps);	// 各Itemの情報を受け取る，Player側でのItemの効果の把握のために使用する
 	
 protected:
 	virtual void Walk() override;
-	virtual void Jump() override;
+	virtual void Jump();// override;
 	virtual void Attack() override;
-	virtual void UpdateSAP() override;
+	virtual void UpdateSAP();// override;
 	//void UpdateHit() override;
-	void UpdateIteEffect();	// 当たり判定を考慮したitemの効果の更新
-	void UpdateHp();	// itemやEnemyの当たり判定を考慮したhpの更新
+	void UpdateIteEffect();	// 当たり判定を考慮したItemの効果の更新
+	void UpdateEneDamage();	// 当たり判定を考慮したEnemyから受けるダメージの更新
+	void UpdateHp() override;	// itemやEnemyの当たり判定を考慮したhpの更新
 	virtual void StartBossStage();	// bossStageに入ってからの一定時間の動き
 
 	PlayerChanger* mPlayerChanger;
 	PlayerMgr* mPlayerMgr;	// EnemyやItemなどとの当たり判定などの情報の取得に使用する
+	int mAX, mAY;	// Playerの攻撃の中心のxy座標
+	int mHitRangeAW, mHitRangeAH; // Playerの攻撃の当たり判定の中心座標からの範囲(width, height)
+	int mAFrameCnt;	// 攻撃したあと，次に攻撃できるようになるまでのインターバルとして使用する
+	bool mIsJumping;	// ジャンプ中ならばtrue
+	int mYStart, mYPrev;	// ジャンプ処理で使用する。以前のy座標を表す
 	const int* mPlHandle;	// Playerの画像
 	const int HP_MAX = 10;	// PlayerのmHpの上限 
 	int mAttackBase;	// 攻撃力アップ系のアイテムの効果を受けていない状態のときの攻撃力，攻撃力更新で使用する
 	int mXFrameCnt, mYFrameCnt;	// x, yそれぞれにおいて押しつづけたフレーム数のカウント
 	int mAFrameNum;	// 攻撃の効果時間（1回の攻撃の持続時間）
-	int mEneAP;	// Enemyの1回の攻撃で受けるダメージ
+	int mEneDamage;	// Enemyから受けたダメージ
 	int mIteAP;	// Itemによりかかる攻撃倍率
 	int mIteHP;	// Itemによる回復量, 0以外のときは回復する
 	float mIteSP;	// Itemによる速度倍率
@@ -61,15 +68,12 @@ protected:
 	int mBsStopFrameCnt; //bossStageに入ってから少しの間動けなくするのに使う
 	//int prev_x, prev_y; //BossStart()で使う
 	//int prev_xcount, prev_ycount;
-	int mDeadFrameCnt; //playerが死んでから，死んだことを認識させるためにPlayerを少しの間，固らせるときに使う
+	const int GOD_FRAME_NUM = 100;	// 攻撃を受けてから無敵でいられるフレーム数
+	//int mDeadFrameCnt; //playerが死んでから，死んだことを認識させるためにPlayerを少しの間，固らせるときに使う
 	const int DEAD_STOP_FRAME_NUM = 120;	// 死んだことを認識させるためのPlayerの硬直時間（フレーム数）
-	//bool eneJudge0, eneJudge1, eneJudge2; //enemyとの当たり判定
-	//bool eneAJudge0, eneAJudge1, eneAJudge2; //enemyとの当たり判定
-	//bool iJudge0, iJudge1; //itemとの当たり判定
-	//bool aiJudge0, aiJudge1; //PlayerAttack
 	const int ENEMY_NUM = 3;	// セットできる敵の数，mEneIsHitsの要素数
 	bool mEneIsHits[3];	// enemyの身体との当たり判定の配列
-	const int ENEMY_ATTACK_NUM = 3;	// セットできる敵の数，mEneAIsHitsの要素数
+	//const int ENEMY_ATTACK_NUM = 5;	// セットできる敵の数，mEneAIsHitsの要素数
 	bool mEneAIsHits[3];	// enemyの攻撃との当たり判定の配列
 	const int ITEM_NUM = 2;	// セットできるitemの数，mIteIsHitsの要素数
 	bool mIteIsHits[2];	// itemとの当たり判定の配列
@@ -88,7 +92,8 @@ protected:
 	const int X_MAX_BR = 904;	// boss stageの橋の右端のx座標
 	const int Y_MIN_BR = 401;	// boss stageの橋の上端のy座標
 	const int Y_MAX_BR = 494;	// boss stageの橋の下端のy座標
-	std::map<std::string, int> mPlIntDataMap;	// x, y, hp, hitRangeW, hitRangeH, hitRangeAW, hitRangeAH, effectFrameCnt, bsStopFrameCnt, effectIdなどを入れているmap，他のクラスに渡す用
-	std::map<std::string, bool> mPlBoolDataMap;	// isDead, isAttackingなどを入れているmap，他のクラスに渡す用
+	//std::map<std::string, int> mPlIntDataMap;	// x, y, hp, hitRangeW, hitRangeH, hitRangeAW, hitRangeAH, effectFrameCnt, bsStopFrameCnt, effectIdなどを入れているmap，他のクラスに渡す用
+	//std::map<std::string, bool> mPlBoolDataMap;	// isDead, isAttackingなどを入れているmap，他のクラスに渡す用
+	int mEneAPs[3];	// 各Enemyの攻撃力を入れた配列
 	std::vector<std::map<std::string, float>> mIteDataMaps;	// 各ItemのhealPower, speedPower, attackPowerなどを入れているmap
 };
