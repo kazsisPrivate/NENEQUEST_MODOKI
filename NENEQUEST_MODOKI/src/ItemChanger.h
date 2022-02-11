@@ -21,6 +21,6 @@ typedef enum {
 
 class ItemChanger {
 public:
-	virtual void ChangeItem(const int itemIdx, EItem nextItem, 
+	virtual void ChangeItem(const int itemIdx, EItem itemNext, 
 		const int itemNextX, const int itemNextY) = 0;	// 指定したインデックス番号のItem変数に次にセットするようにする(座標も指定)
 };
