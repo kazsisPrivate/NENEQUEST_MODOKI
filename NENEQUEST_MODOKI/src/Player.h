@@ -30,9 +30,9 @@ public:
 	
 protected:
 	virtual void Walk() override;
-	virtual void Jump();// override;
-	virtual void Attack() override;
-	virtual void UpdateSAP();// override;
+	virtual void Jump();	// ジャンプ
+	virtual void Attack();	// 攻撃
+	virtual void UpdateSAP();	// 移動速度と攻撃力の更新
 	//void UpdateHit() override;
 	void UpdateIteEffect();	// 当たり判定を考慮したItemの効果の更新
 	void UpdateEneDamage();	// 当たり判定を考慮したEnemyから受けるダメージの更新
@@ -58,6 +58,7 @@ protected:
 	int mEffectFrameCnt;	// Itemによりかかる自強化の時間経過に使用する
 	const int EFFECT_FRAME_NUM = 600;	// Itemによりかかる自強化のフレーム数
 	bool mIsEffected;	// Itemによりかかる自強化の効果を受けているとき
+	bool mIsDead;	// mHpが0，かつ消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
 	//bool mHasIteS;	// 移動速度アップのItemを保持しているときtrue
 	//int mIteSFrameCnt;	// Itemによりかか速度アップの時間経過に使用する
 	//bool mHasIteA;	// 攻撃力アップのItemを保持しているときtrue
