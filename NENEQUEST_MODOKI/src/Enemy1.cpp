@@ -1,3 +1,4 @@
+// イノシシ1（hp1）
 #include "Enemy1.h"
 #include "DxLib.h"
 #include "CharaGraphics.h"
@@ -21,7 +22,7 @@ void Enemy1::Initialize() {
 
 
 void Enemy1::Update() {
-	if (mHp > 0) {	// 生きているときの処理
+	if (mHp > 0 && mX >= ENE_BOAR_DELETE_X) {	// 生きていて，画面内にいるときの処理
 		// hpの更新
 		UpdateHp();
 
@@ -37,18 +38,22 @@ void Enemy1::Update() {
 				if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
 					mHandleId += 2;
 				}
-			}
 
-			mGodFrameCnt++;
+				mGodFrameCnt++;
+			}
 		}
+
+		mExistingFrameCnt++;
 	}
-	else {	// 死んだときの処理（死んだことを認識させるための10フレームの硬直）
-		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
+	else {	// 画面外に行くか，死んだときの処理（死んだときは死んだことを認識させるための10フレームの硬直を行う）
+		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM || mX < ENE_BOAR_DELETE_X) {
 			mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
 		}
 		
 		// ダメージをくらったことがわかる画像にする
-		mHandleId = 2;
+		if (mGodFrameCnt == 0) {	// elseの中を最初に通ったときに設定する
+			mHandleId += 2;
+		}
 
 		mGodFrameCnt++;
 	}
