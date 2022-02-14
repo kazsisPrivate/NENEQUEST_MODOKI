@@ -7,7 +7,7 @@ class Chara : public BasicFunc {
 protected:
 	virtual void Walk() {};	// 移動
 	//virtual void Jump() {};	// ジャンプ
-	virtual void Attack() {};	// 攻撃
+	//virtual void Attack() {};	// 攻撃
 	//virtual void UpdateSAP() {};	// 移動速度と攻撃力の更新
 	//virtual void UpdateHit() {};	// 当たり判定の更新
 	virtual void UpdateHp() {};	// 体力の更新
@@ -29,5 +29,5 @@ protected:
 	//bool mIsJumping;	// ジャンプ中ならばtrue
 	bool mIsAttacking;	// 攻撃中ならばtrue
 	bool mIsGod;	// ダメージを受けてから，無敵になっているかの判定で使う
-	bool mIsDead;	// mHpが0，かつ消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
+	//bool mIsDead;	// mHpが0，かつ消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
 };
