@@ -186,7 +186,7 @@ void GameScene::Update() {
 	// Player, Enemy, Item間で使用する情報をお互いに渡す
 	mPlayerMgr->SetIteDataMaps(mIteDataMaps);
 	mPlayerMgr->SetEneAPowers(eneAPs);
-	mEnemyMgr->SetPlDataMap(&mPlIntDataMap);
+	mEnemyMgr->SetPlAPower(mPlIntDataMap["attack"]);
 	mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
 
 	// 各オブジェクトの当たり判定を確認
@@ -265,7 +265,7 @@ void GameScene::Draw() {
 	
 
 	mGameBack->Draw();
-	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mEneIntDataMaps.at(1)["x"], mEneIntDataMaps.at(1)["y"], mEneIntDataMaps.at(1)["hp"]);
+	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mEneIntDataMaps.at(1)["x"], tmpA, mEneIntDataMaps.at(1)["hp"]);
 
 	/*for (int i = 1; i < 7; i++) {
 		if (drawNum[0] == i) {

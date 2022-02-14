@@ -26,13 +26,7 @@
     <ClCompile Include="src\EffectGraphics.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Enemy1.cpp" />
-    <ClCompile Include="src\Enemy2.cpp" />
-    <ClCompile Include="src\Enemy3.cpp" />
-    <ClCompile Include="src\Enemy4.cpp" />
-    <ClCompile Include="src\Enemy5.cpp" />
-    <ClCompile Include="src\Enemy6.cpp" />
     <ClCompile Include="src\EnemyBoar.cpp" />
-    <ClCompile Include="src\EnemyMage.cpp" />
     <ClCompile Include="src\EnemyMgr.cpp" />
     <ClCompile Include="src\GameBack.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
@@ -47,7 +41,6 @@
     <ClCompile Include="src\Item8.cpp" />
     <ClCompile Include="src\Item9.cpp" />
     <ClCompile Include="src\ItemBox.cpp" />
-    <ClCompile Include="src\MageFire.cpp" />
     <ClCompile Include="src\PlayerHpGauge.cpp" />
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\ItemGraphics.cpp" />
@@ -77,14 +70,8 @@
     <ClInclude Include="src\EffectGraphics.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Enemy1.h" />
-    <ClInclude Include="src\Enemy2.h" />
-    <ClInclude Include="src\Enemy3.h" />
-    <ClInclude Include="src\Enemy4.h" />
-    <ClInclude Include="src\Enemy5.h" />
-    <ClInclude Include="src\Enemy6.h" />
     <ClInclude Include="src\EnemyBoar.h" />
     <ClInclude Include="src\EnemyChanger.h" />
-    <ClInclude Include="src\EnemyMage.h" />
     <ClInclude Include="src\EnemyMgr.h" />
     <ClInclude Include="src\GameBack.h" />
     <ClInclude Include="src\GameScene.h" />
@@ -99,7 +86,6 @@
     <ClInclude Include="src\Item8.h" />
     <ClInclude Include="src\Item9.h" />
     <ClInclude Include="src\ItemBox.h" />
-    <ClInclude Include="src\MageFire.h" />
     <ClInclude Include="src\PlayerHpGauge.h" />
     <ClInclude Include="src\Item.h" />
     <ClInclude Include="src\ItemChanger.h" />

@@ -1,11 +1,11 @@
 #include "DxLib.h"
 #include "Enemy.h"
 #include "Enemy1.h"	// ここからイノシシ系
-#include "Enemy2.h"
-#include "Enemy3.h"
-#include "Enemy4.h"	// ここから魔術師系
-#include "Enemy5.h"
-#include "Enemy6.h"
+//#include "Enemy2.h"
+//#include "Enemy3.h"
+//#include "Enemy4.h"	// ここから魔術師系
+//#include "Enemy5.h"
+//#include "Enemy6.h"
 //#include "Enemy7.h"	// ここからその他
 //#include "EnemyBoss.h"
 #include "EnemyMgr.h"
@@ -30,12 +30,12 @@ void EnemyMgr::Initialize() {
 		mEnemies[i] = NULL;
 		mEnesNext[i] = eEnemy1;	// デバッグ用に入れいている
 
-		mEnesNextX[i] = 1200;//1300 + 500 * i;
-		mEnesNextY[i] = 300 + 150 * i;
+		mEnesNextX[i] = 1300 + 500 * i;
+		mEnesNextY[i] = 400 + 150 * i;
 	}
-	mEnesNext[0] = eEnemy4;	// デバッグ用に入れいている
-	mEnesNext[1] = eEnemy5;	// デバッグ用に入れいている
-	mEnesNext[2] = eEnemy6;	// デバッグ用に入れいている
+	mEnesNext[0] = eEnemyNone;	// デバッグ用に入れいている
+	mEnesNext[1] = eEnemy1;	// デバッグ用に入れいている
+	mEnesNext[2] = eEnemyNone;	// デバッグ用に入れいている
 }
 
 
@@ -65,7 +65,7 @@ void EnemyMgr::Update() {
 			case eEnemy1:
 				mEnemies[i] = (Enemy*) new Enemy1(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;
-			case eEnemy2:
+			/*case eEnemy2:
 				mEnemies[i] = (Enemy*) new Enemy2(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;
 			case eEnemy3:
@@ -80,7 +80,7 @@ void EnemyMgr::Update() {
 			case eEnemy6:
 				mEnemies[i] = (Enemy*) new Enemy6(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;
-			/*case eEnemy7:
+			case eEnemy7:
 				mEnemies[i] = (Enemy*) new Enemy7(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;*/
 			default:	// case eEnemyNULL
@@ -159,11 +159,11 @@ void EnemyMgr::SetIsHits(const bool* const isHits) {
 }
 
 
-void EnemyMgr::SetPlDataMap(std::map<std::string, int>* plDataMap) {
+void EnemyMgr::SetPlAPower(const int plAPower) {
 	// 各EnemyにPlayerの攻撃力を渡す
 	for (int i = 0; i < ENEMY_NUM; i++) {
 		if (mEnemies[i]) {
-			mEnemies[i]->SetPlParams(plDataMap);
+			mEnemies[i]->SetPlAPower(plAPower);
 		}
 	}
 }
