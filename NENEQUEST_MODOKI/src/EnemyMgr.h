@@ -25,7 +25,7 @@ public:
 		std::vector<std::map<std::string, bool>>* eneBoolDataMaps, bool* isExistings);	// Enemyのデータを渡すために使用する
 																									// isExistingsはmEnemiesの各インデックス番号においてNULLでなければtrue
 	void SetIsHits(const bool* const isHits);	// Playerの攻撃との当たり判定の確認結果のMapを受け取る
-	void SetPlAPower(const int plAPower);	// Playerの攻撃力を受け取る
+	void SetPlDataMap(std::map<std::string, int>* plDataMap);	// Playerのx, y, 攻撃力を受け取る
 	//bool GetBossDead() const; //Bossの体力が0になったらtrue
 
 private:
