@@ -17,14 +17,17 @@ void EnemyBoar::Initialize() {
 	// 移動速度や攻撃力の設定
 	mSpeed = 20.0f;
 	mAttack = 1;
+
+	// その他
+	mExistingFrameCnt = 0;
 }
 
 
 void EnemyBoar::Walk() {
 	mX -= (int)mSpeed;
 
-	// x座標に合わせて表示画像を変化させる
-	int ix = (mX + 1000) % 20 / 10;
+	// フレーム数に合わせて表示画像を変化させる
+	int ix = mExistingFrameCnt % 20 / 10;	// 10フレーム毎に画像交代
 
 	mHandleId = ix;
 }
