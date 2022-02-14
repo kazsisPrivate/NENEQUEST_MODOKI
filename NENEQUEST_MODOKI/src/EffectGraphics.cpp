@@ -4,7 +4,7 @@
 
 int EffectGraphics::mEfe1to3Handles[3];
 int EffectGraphics::mArrowHitHandle;
-int EffectGraphics::mFireHandles[2];
+int EffectGraphics::mMgFireHandles[2];
 int EffectGraphics::mSlashHandle[4];
 int EffectGraphics::mBsFireHandles[2][2];
 int EffectGraphics::mBsFireBreHandles[2];
@@ -20,8 +20,8 @@ void EffectGraphics::Initialize() {	// 画像の読み込み
 	mArrowHitHandle = LoadGraph("images/arrowhit.png");
 
 	// Enemy4, 5, 6が使用する火の玉（Enemy4, 5は赤い火の玉，Enemy6は青い火の玉）の画像の読み込み
-	mFireHandles[0] = LoadGraph("images/fire1.png");
-	mFireHandles[1] = LoadGraph("images/fire2.png");
+	mMgFireHandles[0] = LoadGraph("images/fire1.png");
+	mMgFireHandles[1] = LoadGraph("images/fire2.png");
 
 	// Enemy7が使用する鎌攻撃のエフェクトの画像の読み込み
 	LoadDivGraph("images/slash.png", 4, 2, 2, 250, 150, mSlashHandle);
@@ -77,7 +77,7 @@ int* EffectGraphics::GetGraHandle(const int efeId) {
 		return &mArrowHitHandle;
 	}
 	else if (efeId <= 6) {	// Enemy4, 5, 6が使用する火の玉（Enemy4, 5は赤い火の玉，Enemy6は青い火の玉）
-		return &mFireHandles[efeId - 5];
+		return &mMgFireHandles[efeId - 5];
 	}
 	else if (efeId <= 7) {	// Enemy7が使用する鎌攻撃のエフェクト
 		return mSlashHandle;
