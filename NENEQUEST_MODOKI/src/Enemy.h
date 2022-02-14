@@ -20,7 +20,7 @@ public:
 	virtual void GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector<std::map<std::string, int>>* eneAXYMapVec,
 		std::map<std::string, bool>* eneBoolDataMap);	// Enemyのデータを渡すために使用する
 	void SetIsHit(const bool isHit);	// Playerの攻撃との当たり判定の確認結果を受け取り，mIsHitPlAに代入する
-	void SetPlAPower(const int plAPower);	// Itemの情報を受け取る，Player側でのItemの効果の把握のために使用する
+	void SetPlParams(std::map<std::string, int>* plDataMap);	// Playerの情報を受け取る，Enemy側でのPlayerのx, y, 攻撃力などの把握のために使用する
 
 protected:
 	//virtual void Jump() override {};	// JumpとUpdateSAPはEnemyでは行わない
@@ -34,6 +34,7 @@ protected:
 	int mEneANum;	// Enemyが出せる攻撃の数（火の玉3つなら3, 1つの角で攻撃なら1など），最大5
 	int mEneIdx;	// 使用しているmEnemiesのインデックス番号
 	int mPlAP;	// Playerの1回の攻撃で受けるダメージ
+	int mPlX, mPlY;	// Playerのx, y座標
 	//const int mEneNum; //mEnemyの何番目かを表す
 	bool mIsHitPlA;	// Playerの攻撃との当たり判定，当たっているときはtrue
 	const int GOD_FRAME_NUM = 100;	// 攻撃を受けてから無敵でいられるフレーム数

@@ -35,6 +35,7 @@ void Enemy::GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector
 	(*eneIntDataMap)["hitRangeH"] = mHitRangeH;
 	(*eneIntDataMap)["attack"] = mAttack;
 	(*eneIntDataMap)["attackNum"] = mEneANum;
+	//(*eneIntDataMap)["handleId"] = mHandleId;
 
 	//(*eneBoolDataMap)["isDead"] = mIsDead;
 	(*eneBoolDataMap)["isAttacking"] = mIsAttacking;
@@ -47,9 +48,13 @@ void  Enemy::SetIsHit(const bool isHit) {
 }
 
 
-void Enemy::SetPlAPower(const int plAPower) {
+void Enemy::SetPlParams(std::map<std::string, int>* plDataMap) {
+	// Playerのx, y座標をセット
+	mPlX = (*plDataMap)["x"];
+	mPlY = (*plDataMap)["y"];
+
 	// Playerの攻撃力をセット
-	mPlAP = plAPower;
+	mPlAP = (*plDataMap)["attack"];
 }
 
 
