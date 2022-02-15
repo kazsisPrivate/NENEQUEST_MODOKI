@@ -29,5 +29,4 @@ protected:
 	//bool mIsJumping;	// ジャンプ中ならばtrue
 	bool mIsAttacking;	// 攻撃中ならばtrue
 	bool mIsGod;	// ダメージを受けてから，無敵になっているかの判定で使う
-	//bool mIsDead;	// mHpが0，かつ消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
 };
