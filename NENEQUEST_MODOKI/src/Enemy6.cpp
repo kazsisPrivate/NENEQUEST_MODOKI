@@ -24,4 +24,7 @@ void Enemy6::Initialize() {
 
 	// “®ì‰ñ”‚Ìİ’è
 	mDeleteRoDoneNum = 3;
+
+	// “|‚µ‚½‚ç“¾‚ç‚ê‚éƒXƒRƒA‚Ìİ’è
+	mScore = 1000;
 }

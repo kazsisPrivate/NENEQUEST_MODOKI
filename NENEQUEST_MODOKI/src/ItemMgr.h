@@ -20,7 +20,8 @@ public:
 	void Draw(const int itemIdx);	// 指定されたインデックス番号のmItemを描画
 	void ChangeItem(const int itemIdx, EItem itemNext, 
 		const int itemNextX, const int itemNextY) override;	// itemIdxは配列mItemのインデックス番号を指す
-	void GetIteData(std::vector<std::map<std::string, float>>* iteDataMaps, bool* isExistings);	// Itemのデータを渡すために使用する
+	void GetIteData(std::vector<std::map<std::string, float>>* iteIntDataMaps, 
+		std::vector<std::map<std::string, float>>* iteBoolDataMaps, bool* isExistings);	// Itemのデータを渡すために使用する
 																									// isExistingsはmItemsの各インデックス番号においてNULLでなければtrue
 	void SetIsHitMaps(std::vector<std::map<std::string, bool>>& isHitMaps);	// Playerとの当たり判定の確認結果のMapを受け取る
 	//int nItNum0; //Bossとのやり取りのみで使用する

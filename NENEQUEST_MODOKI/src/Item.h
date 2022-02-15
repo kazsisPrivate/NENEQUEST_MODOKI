@@ -16,7 +16,7 @@ public:
 	virtual void Finalize() override {};
 	virtual void Update() override;
 	virtual void Draw() override;	
-	void GetIteDataMap(std::map<std::string, float>* iteDataMap);	// Itemのデータを渡すために使用する
+	void GetIteDataMap(std::map<std::string, float>* iteIntDataMap, std::map<std::string, float>* iteBoolDataMap);	// Itemのデータを渡すために使用する
 	void SetIsHits(std::vector<std::map<std::string, bool>>& isHitMap);	// Playerとの当たり判定の確認結果を受け取り，mIsHitPlとmIsHitPlAに代入する
 
 protected:
@@ -32,6 +32,7 @@ protected:
 	int mX, mY;	// itemのx座標とy座標
 	int mImgW, mImgH;	// itemの画像の横(width)、縦のサイズ(height)
 	int mHitRangeW, mHitRangeH;	// itemの当たり判定の中心座標からの範囲(width, height)
+	int mScore;	// Playerが取得した際に得ることができるスコア
 	float mSpeed;	// itemの移動速度
 	int mHealPower;	// 回復系のアイテムは0以外の値になる
 	float mSpeedPower;	// 自強化系（移動速度アップ）のアイテムは1以外の値になる，もとの移動速度に掛け合わせる倍率
@@ -39,8 +40,7 @@ protected:
 	bool mPlIsHit;	// Playerとの当たり判定，当たっているときtrue
 	bool mPlAIsHit;	// Playerの攻撃との当たり判定，当たっているときはtrue
 	const int ITEM_DELETE_X = -90;	// この座標までitemが移動したとき，自動的に消すようにする
-	bool mIsChangingItem;	// Itemをチェンジする処理のChangeItemを呼びだしたあとtrueにする，Playerに2回判定を与えないようにするために使用する
-	//std::map<std::string, int> mIteIntDataMap;	// x, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmap，他のクラスに渡す用
+	bool mIsDead;	// ItemがPlayerに取得されたときにtrueになる
 
 	//int type; //そのItemの座標のパターンの番号
 	//bool plJudge; //Playerの攻撃との当たり判定

@@ -20,6 +20,9 @@ void Enemy3::Initialize() {
 	mAX = mX - 124, mAY = mY;
 	mEneANum = 1;	// 体当たりするだけだから0
 	mHp = 1;
+
+	// 倒したら得られるスコアの設定
+	mScore = 500;
 }
 
 
@@ -50,7 +53,11 @@ void Enemy3::Update() {
 		mExistingFrameCnt++;
 	}
 	else {	// 画面外に行くか，死んだときの処理（死んだときは死んだことを認識させるための10フレームの硬直を行う）
-		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM || mX < ENE_BOAR_DELETE_X) {
+		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {	// 死んだとき(Playerに倒されたとき)
+			mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
+			mIsDead = true;
+		}
+		else if (mX < ENE_BOAR_DELETE_X) {	// 画面外に行ったとき
 			mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
 		}
 

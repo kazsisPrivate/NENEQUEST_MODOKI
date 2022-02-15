@@ -35,10 +35,12 @@ protected:
 	int mEneIdx;	// 使用しているmEnemiesのインデックス番号
 	int mPlAP;	// Playerの1回の攻撃で受けるダメージ
 	int mPlX, mPlY;	// Playerのx, y座標
+	int mScore;	// PlayerがEnemyを倒した際に得られるスコア
 	//const int mEneNum; //mEnemyの何番目かを表す
 	bool mIsHitPlA;	// Playerの攻撃との当たり判定，当たっているときはtrue
 	const int GOD_FRAME_NUM = 100;	// 攻撃を受けてから無敵でいられるフレーム数
 	const int DEAD_STOP_FRAME_NUM = 10;	// hpが0になってから死んだことを認識させるためのEnemyの硬直時間（フレーム数）
+	bool mIsDead;	// EnemyがPlayerに倒されたときにtrueになる
 	//const int type; //そのenemyの攻撃や移動のパターンの番号
 	//int plPower; //Playerから攻撃を受けたときのPlayerの攻撃力
 	//bool paJudge; //Playerの攻撃との当たり判定

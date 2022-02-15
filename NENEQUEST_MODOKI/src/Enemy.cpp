@@ -17,6 +17,7 @@ void Enemy::Initialize() {
 	mIsHitPlA = false;
 	mIsGod = false;
 	mGodFrameCnt = 0;
+	mIsDead = false;
 
 	// EnemyÇÃçUåÇä÷òAê›íË
 	mIsAttacking = false;
@@ -35,9 +36,10 @@ void Enemy::GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector
 	(*eneIntDataMap)["hitRangeH"] = mHitRangeH;
 	(*eneIntDataMap)["attack"] = mAttack;
 	(*eneIntDataMap)["attackNum"] = mEneANum;
+	(*eneIntDataMap)["score"] = mScore;
 	//(*eneIntDataMap)["handleId"] = mHandleId;
 
-	//(*eneBoolDataMap)["isDead"] = mIsDead;
+	(*eneBoolDataMap)["isDead"] = mIsDead;
 	(*eneBoolDataMap)["isAttacking"] = mIsAttacking;
 }
 

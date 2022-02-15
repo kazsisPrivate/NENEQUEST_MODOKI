@@ -15,7 +15,10 @@ void Item2::Initialize() {
 	mHitRangeW = 23, mHitRangeH = 15;
 	mPlIsHit = false;
 	mPlAIsHit = false;
-	mIsChangingItem = false;
+	mIsDead = false;
+
+	// “¾‚ç‚ê‚éƒXƒRƒA
+	mScore = 300;
 
 	// ‚»‚Ì‘¼‚Ìİ’è
 	mSpeed = 2.0f;

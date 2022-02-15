@@ -17,6 +17,9 @@ void Item14::Initialize() {
 	mImgW = 164, mImgH = 160;
 	mHitRangeW = 35, mHitRangeH = 35;
 
+	// “¾‚ç‚ê‚éƒXƒRƒA
+	mScore = 100;
+
 	// ‚»‚Ì‘¼‚Ìİ’è
 	mItemId = 13;
 }

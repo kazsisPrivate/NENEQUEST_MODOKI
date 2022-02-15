@@ -12,7 +12,7 @@ void ItemBox::Initialize() {
 	// 当たり判定関連の設定
 	mPlIsHit = false;
 	mPlAIsHit = false;
-	mIsChangingItem = false;
+	mIsDead = false;
 
 	// ItemBoxのみがもつ変数の設定
 	mBoxItemEnum = eItemNULL;
@@ -45,6 +45,7 @@ void ItemBox::Update() {
 	else if (mIsJumping) {	// 箱が割られて，itemが箱から飛び出しているとき
 		if (mJumpFrameCnt == JUMP_FRAME_NUM) {	// 箱から飛び出したItemが着地したら
 			mItemChanger->ChangeItem(mItemIdx, mBoxItemEnum, mBoxItemX, mBoxItemY);
+			mIsDead = true;
 		}
 		else {
 			Jump();

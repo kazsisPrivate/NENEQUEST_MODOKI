@@ -14,9 +14,12 @@ Item::Item(ItemChanger* changer, const int* graph, const int itemIdx, const int 
 
 
 void Item::Update() {
-	if (mPlIsHit || mX < ITEM_DELETE_X) {
+	if (mPlIsHit) {	// PlayerにItemを取得（破壊）されたとき
 		mItemChanger->ChangeItem(mItemIdx, eItemNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
-		mIsChangingItem = true;
+		mIsDead = true;
+	}
+	else if (mX < ITEM_DELETE_X) {	// Itemが画面外に移動したとき
+
 	}
 
 	// 移動
@@ -60,7 +63,7 @@ void Item::Move() {
 //}
 
 
-void Item::GetIteDataMap(std::map<std::string, float>* iteDataMap) {
+void Item::GetIteDataMap(std::map<std::string, float>* iteIntDataMap, std::map<std::string, float>* iteBoolDataMap) {
 	/*mIteIntDataMap["x"] = mX;
 	mIteIntDataMap["y"] = mY;
 	mIteIntDataMap["hitRangeW"] = mHitRangeW;
@@ -71,22 +74,25 @@ void Item::GetIteDataMap(std::map<std::string, float>* iteDataMap) {
 	mIteIntDataMap["itemKind"] = mItemKind;*/
 
 	//iteDataMap = &mIteIntDataMap;
-	if (mIsChangingItem) {	// 次に交代するitemが決まっているとき
+	if (mIsDead) {	// 次に消える（or 他のアイテムに交代する）とき
 		// 判定を2回とらないようにするために位置を画面外に設定する
-		(*iteDataMap)["x"] = -1000;
-		(*iteDataMap)["y"] = -1000;
+		(*iteIntDataMap)["x"] = -1000;
+		(*iteIntDataMap)["y"] = -1000;
 	}
 	else {
-		(*iteDataMap)["x"] = mX;
-		(*iteDataMap)["y"] = mY;
+		(*iteIntDataMap)["x"] = mX;
+		(*iteIntDataMap)["y"] = mY;
 	}
 	
-	(*iteDataMap)["hitRangeW"] = mHitRangeW;
-	(*iteDataMap)["hitRangeH"] = mHitRangeH;
-	(*iteDataMap)["healPower"] = mHealPower;
-	(*iteDataMap)["speedPower"] = mSpeedPower;
-	(*iteDataMap)["attackPower"] = mAttackPower;
-	(*iteDataMap)["itemId"] = mItemId;
+	(*iteIntDataMap)["hitRangeW"] = mHitRangeW;
+	(*iteIntDataMap)["hitRangeH"] = mHitRangeH;
+	(*iteIntDataMap)["healPower"] = mHealPower;
+	(*iteIntDataMap)["speedPower"] = mSpeedPower;
+	(*iteIntDataMap)["attackPower"] = mAttackPower;
+	(*iteIntDataMap)["itemId"] = mItemId;
+	(*iteIntDataMap)["score"] = mScore;
+
+	(*iteBoolDataMap)["isDead"] = mIsDead;
 }
 
 

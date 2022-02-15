@@ -156,11 +156,11 @@ void ItemMgr::ChangeItem(const int itemIdx, EItem itemNext, const int itemNextX,
 }
 
 
-void ItemMgr::GetIteData(std::vector<std::map<std::string, float>>* iteDataMaps, bool* isExistings) {
+void ItemMgr::GetIteData(std::vector<std::map<std::string, float>>* iteIntDataMaps, std::vector<std::map<std::string, float>>* iteBoolDataMaps, bool* isExistings) {
 	// ŠeItem‚Ìî•ñ‚ğ“n‚·
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mItems[i]) {
-			mItems[i]->GetIteDataMap(&(*iteDataMaps).at(i));
+			mItems[i]->GetIteDataMap(&(*iteIntDataMaps).at(i), &(*iteBoolDataMaps).at(i));
 			isExistings[i] = true;
 		}
 		else {
