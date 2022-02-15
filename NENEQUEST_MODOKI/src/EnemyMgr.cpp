@@ -6,7 +6,7 @@
 #include "Enemy4.h"	// ここから魔術師系
 #include "Enemy5.h"
 #include "Enemy6.h"
-//#include "Enemy7.h"	// ここからその他
+#include "Enemy7.h"	// ここからその他
 //#include "EnemyBoss.h"
 #include "EnemyMgr.h"
 
@@ -33,9 +33,9 @@ void EnemyMgr::Initialize() {
 		mEnesNextX[i] = 1200;//1300 + 500 * i;
 		mEnesNextY[i] = 300 + 150 * i;
 	}
-	mEnesNext[0] = eEnemy4;	// デバッグ用に入れいている
-	mEnesNext[1] = eEnemy5;	// デバッグ用に入れいている
-	mEnesNext[2] = eEnemy6;	// デバッグ用に入れいている
+	mEnesNext[0] = eEnemyNone;	// デバッグ用に入れいている
+	mEnesNext[1] = eEnemy7;	// デバッグ用に入れいている
+	mEnesNext[2] = eEnemyNone;	// デバッグ用に入れいている
 }
 
 
@@ -80,9 +80,9 @@ void EnemyMgr::Update() {
 			case eEnemy6:
 				mEnemies[i] = (Enemy*) new Enemy6(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;
-			/*case eEnemy7:
+			case eEnemy7:
 				mEnemies[i] = (Enemy*) new Enemy7(this, i, mEnesNextX[i], mEnesNextY[i]);
-				break;*/
+				break;
 			default:	// case eEnemyNULL
 				mEnemies[i] = NULL;
 				break;
@@ -135,7 +135,7 @@ void EnemyMgr::GetEneData(std::vector<std::map<std::string, int>>* eneIntDataMap
 	std::vector<std::map<std::string, bool>>* eneBoolDataMaps, bool* isExistings) {
 	// 各Enemyの情報を渡す
 	for (int i = 0; i < ENEMY_NUM; i++) {
-		if (mEnesNext[i] == eEnemyNone && mEnemies[i]) {
+		if (mEnemies[i]) {
 			mEnemies[i]->GetEneDataMap(&(*eneIntDataMaps).at(i), &(*eneAXYMapVecs).at(i), 
 				&(*eneBoolDataMaps).at(i));
 			isExistings[i] = true;
