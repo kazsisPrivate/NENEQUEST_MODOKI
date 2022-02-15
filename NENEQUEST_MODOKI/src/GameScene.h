@@ -6,6 +6,8 @@
 //#include "GameClear.h"
 
 #include "PlayerHpGauge.h"
+#include "TimeCounter.h"
+#include "ScoreCounter.h"
 //#include "Appearance.h"
 
 //#include "GameOver.h"
@@ -39,6 +41,7 @@ public:
 private:
 	void UpdateDOrder(); // Player, Enemy, Itemの描画順（drawing order）を更新する
 	void UpdateHit();	// Player, Enemy, Item間の当たり判定の更新を行う
+	void UpdateScore();	// EnemyとItemのisDeadをもとに，スコアを追加する
 	bool IsHit(const int (&ps1)[4], const int (&ps2)[4]);	// それぞれのターゲットの位置の配列を渡して，当たり判定を確認し，当たっていたらtrueを返す
 
 	GameBack* mGameBack;
@@ -46,6 +49,8 @@ private:
 	EnemyMgr* mEnemyMgr;
 	ItemMgr* mItemMgr;
 	PlayerHpGauge* mPlHpGauge;
+	TimeCounter* mTimeCounter;
+	ScoreCounter* mScoreCounter;
 	//Appearance* appear;
 	//CharaGraphics mCharaGraphics;
 	//GameCounters gameCtrs;
@@ -75,7 +80,8 @@ private:
 	std::vector<std::map<std::string, bool>> mEneBoolDataMaps;	// EnemyのisAttackingなどを入れているmap
 	bool mEneIsExistings[3];	// 各Enemyが存在しているかどうか（NULLであるかないか），存在していればtrue
 
-	std::vector<std::map<std::string, float>> mIteDataMaps;	// 各Itemのx, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmapのvector
+	std::vector<std::map<std::string, float>> mIteIntDataMaps;	// 各Itemのx, y, hitRangeW, hitRangeH, healPower, speedPower, attackPowerなどを入れているmapのvector
+	std::vector<std::map<std::string, float>> mIteBoolDataMaps;	// 各ItemのisDeadなどを入れているvector
 	bool mIteIsExistings[2];	// 各Itemが存在しているかどうか（NULLであるかないか），存在していればtrue
 
 	std::map<std::string, std::vector<bool>> mPlIsHitMap;	// Playerの当たり判定の情報を入れたmap, キーは対称の物体の種類（item, enemy, enemyAttack, plAToItem, plAToEnemy）, PlayerMgrに渡す

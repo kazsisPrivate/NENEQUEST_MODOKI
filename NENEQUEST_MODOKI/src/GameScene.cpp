@@ -58,7 +58,8 @@ void GameScene::Initialize() {
 	}
 
 	for (int i = 0; i < ITEM_NUM; i++) {
-		mIteDataMaps.push_back({});
+		mIteIntDataMaps.push_back({});
+		mIteBoolDataMaps.push_back({});
 		mIteIsHitMaps.push_back({});
 		mPlIsHitMap["item"].push_back(false);
 		mPlIsHitMap["plAToItem"].push_back(false);
@@ -71,6 +72,8 @@ void GameScene::Initialize() {
 	mEnemyMgr = EnemyMgr::GetInstance();
 	mItemMgr = ItemMgr::GetInstance();
 	mPlHpGauge = new PlayerHpGauge();
+	mTimeCounter = new TimeCounter();
+	mScoreCounter = new ScoreCounter();
 
 	/*appear = new Appearance();
 	appear->GetEnemyAppear(eneAppear);
@@ -89,12 +92,17 @@ void GameScene::Initialize() {
 	mEnemyMgr->Initialize();
 	mItemMgr->Initialize();
 	mPlHpGauge->Initialize();
+	mTimeCounter->Initialize();
+	mScoreCounter->Initialize();
 
 	/*m_plDeadFlag = false;
 	m_bsDeadFlag = false;*/
 
 	mSoundHandle = LoadSoundMem("sounds/NENEQUEST.ogg");
 	PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
+
+	// Timerを開始する
+	mTimeCounter->StartTime();
 }
 
 void GameScene::Finalize() {
@@ -107,6 +115,8 @@ void GameScene::Finalize() {
 	mEnemyMgr->Finalize();
 	mItemMgr->Finalize();
 	mPlHpGauge->Finalize();
+	mTimeCounter->Finalize();
+	mScoreCounter->Finalize();
 	//delete mCharaGraphics;
 	//delete mGameBack;
 	//delete mPlayerMgr;
@@ -170,7 +180,7 @@ void GameScene::Update() {
 	// Player, Enemy, Itemの情報を取得
 	mPlayerMgr->GetPlData(&mPlIntDataMap, &mPlBoolDataMap);
 	mEnemyMgr->GetEneData(&mEneIntDataMaps, &mEneAXYMapVecs, &mEneBoolDataMaps, mEneIsExistings);
-	mItemMgr->GetIteData(&mIteDataMaps, mIteIsExistings);
+	mItemMgr->GetIteData(&mIteIntDataMaps, &mIteBoolDataMaps, mIteIsExistings);
 
 	// Playerに渡すEnemyの攻撃力を一つの配列にまとめる
 	int eneAPs[3];	// ENEMY_NUM = 3
@@ -184,7 +194,7 @@ void GameScene::Update() {
 	}
 
 	// Player, Enemy, Item間で使用する情報をお互いに渡す
-	mPlayerMgr->SetIteDataMaps(mIteDataMaps);
+	mPlayerMgr->SetIteDataMaps(mIteIntDataMaps);
 	mPlayerMgr->SetEneAPowers(eneAPs);
 	mEnemyMgr->SetPlDataMap(&mPlIntDataMap);
 	mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
@@ -197,6 +207,9 @@ void GameScene::Update() {
 	mEnemyMgr->SetIsHits(mEneIsHits);
 	mItemMgr->SetIsHitMaps(mIteIsHitMaps);
 
+	// スコアを更新する
+	UpdateScore();
+
 	// 各オブジェクトの描画順を更新する
 	UpdateDOrder();
 
@@ -206,6 +219,8 @@ void GameScene::Update() {
 	mEnemyMgr->Update();
 	mItemMgr->Update();
 	mPlHpGauge->Update();
+	mTimeCounter->Update();
+	mScoreCounter->Update();
 	
 
 	if (CheckSoundMem(mSoundHandle) == 0) {
@@ -306,6 +321,12 @@ void GameScene::Draw() {
 	// Playerのhpゲージの描画
 	mPlHpGauge->Draw();
 
+	// 経過時間の表示
+	mTimeCounter->Draw();
+
+	// 合計スコアの表示
+	mScoreCounter->Draw();
+
 	//DrawFormatString(400, 500, GetColor(255, 255, 255), "eneapp = %d", iNum);
 }
 
@@ -331,7 +352,7 @@ void GameScene::UpdateDOrder() {
 	// Itemのy座標情報をセット
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mIteIsExistings[i]) {
-			mDOrderVec.push_back({ (int)mIteDataMaps.at(i)["y"], {2, i} });
+			mDOrderVec.push_back({ (int)mIteIntDataMaps.at(i)["y"], {2, i} });
 		}
 	}
 
@@ -475,17 +496,17 @@ void GameScene::UpdateHit() {
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mIteIsExistings[i]) {	// Itemが存在していたら
 			// Itemの当たり判定範囲
-			int iteLX = mIteDataMaps.at(i)["x"] - mIteDataMaps.at(i)["hitRangeW"];
-			int iteRX = mIteDataMaps.at(i)["x"] + mIteDataMaps.at(i)["hitRangeW"];
-			int iteTY = mIteDataMaps.at(i)["y"] - mIteDataMaps.at(i)["hitRangeH"];
-			int iteBY = mIteDataMaps.at(i)["y"] + mIteDataMaps.at(i)["hitRangeH"];
+			int iteLX = mIteIntDataMaps.at(i)["x"] - mIteIntDataMaps.at(i)["hitRangeW"];
+			int iteRX = mIteIntDataMaps.at(i)["x"] + mIteIntDataMaps.at(i)["hitRangeW"];
+			int iteTY = mIteIntDataMaps.at(i)["y"] - mIteIntDataMaps.at(i)["hitRangeH"];
+			int iteBY = mIteIntDataMaps.at(i)["y"] + mIteIntDataMaps.at(i)["hitRangeH"];
 			int itePs[] = { iteLX, iteRX, iteTY, iteBY };
 
 			// 当たり判定チェックをする
 			mPlIsHitMap["item"].at(i) = IsHit(plPs, itePs);
 			
 			// PlayerAttack-Item間の当たり判定
-			if (mPlBoolDataMap["isAttacking"] && mIteDataMaps.at(i)["itemId"] >= 12) {	// Playerが攻撃中で箱系アイテムだったら
+			if (mPlBoolDataMap["isAttacking"] && mIteIntDataMaps.at(i)["itemId"] >= 12) {	// Playerが攻撃中で箱系アイテムだったら
 				// Playerの攻撃の当たり判定範囲
 				int plALX = mPlIntDataMap["ax"] - mPlIntDataMap["hitRangeAW"];
 				int plARX = mPlIntDataMap["ax"] + mPlIntDataMap["hitRangeAW"];
@@ -524,4 +545,27 @@ bool GameScene::IsHit(const int (&ps1)[4], const int(&ps2)[4]) {
 	}
 
 	return isHit;
+}
+
+
+void GameScene::UpdateScore() {
+	// Enemy
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEneIsExistings[i]) {
+			if (mEneBoolDataMaps.at(i)["isDead"]) {	// EnemyがPlayerに倒され，消えるとき
+				// 取得（破壊）下アイテムのスコアを追加する
+				mScoreCounter->AddScore(mEneIntDataMaps.at(i)["score"]);
+			}
+		}
+	}
+
+	// Item
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mIteIsExistings[i]) {
+			if (mIteBoolDataMaps.at(i)["isDead"]) {	// ItemがPlayerに取得（破壊）され，消えるとき
+				// 取得（破壊）下アイテムのスコアを追加する
+				mScoreCounter->AddScore(mIteIntDataMaps.at(i)["score"]);
+			}
+		}
+	}
 }
