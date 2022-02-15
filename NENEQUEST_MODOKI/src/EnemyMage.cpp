@@ -26,7 +26,6 @@ void EnemyMage::Initialize() {
 	// 移動速度や攻撃力の設定
 	mSpeed = 3.0f;
 	mDirecY = 1;
-	//mAttack = 1;
 
 	// 火の玉攻撃で使用するクラスのオブジェクトを取得する
 	mMageFire = new MageFire();
@@ -49,7 +48,9 @@ void EnemyMage::Initialize() {
 	mHidingFrameCnt = 0;
 	mAttackFrameCnt = 0;
 	mRoutineDoneCnt = 0;
-	mIsDead = false;
+	mHasFinishedRos = false;
+	mIsAttacking = false;
+	mMageIsDead = false;
 }
 
 
@@ -59,8 +60,10 @@ void EnemyMage::Finalize() {
 
 
 void EnemyMage::Update() {
-	if (mIsDead && !mIsAttacking) {	// EnemyMageが死んでいて，火の玉攻撃が終わっているとき
-		mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -3000, -3000);	// -3000は適当に画面外の数値にしている
+	if (mMageIsDead || mHasFinishedRos) {	// 動作が終わっているか，EnemyMageが死んでいるとき
+		if (!mIsAttacking) {	// 火の玉攻撃が終わっているとき
+			mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -3000, -3000);	// -3000は適当に画面外の数値にしている
+		}	
 	}
 
 	// 火の玉攻撃が終わっているかどうかを取得する
@@ -81,7 +84,7 @@ void EnemyMage::Update() {
 	}
 
 	// EnemyMage自体の更新を行う
-	if (!mIsDead) {	// 死んでいなければ（hpが0になった後の死んだことを認識させるための10フレームの硬直を終えていなかったら）
+	if (!mMageIsDead && !mHasFinishedRos) {	// 動作をし終えていなくて，死んでいなければ
 		// hpの更新
 		UpdateHp();
 
@@ -95,18 +98,18 @@ void EnemyMage::Update() {
 			Hide();
 		}
 		else {	// 姿を現しているとき（動作順番2）
-			if (mHp <= 0) {	// 体力が0以下となったとき
-				// 死んだことを認識させるための10フレームの硬直
-				if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
-					mIsDead = true;
-				}
+			//if (mHp <= 0) {	// 体力が0以下となったとき
+			//	// 死んだことを認識させるための10フレームの硬直
+			//	if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
+			//		mMageIsDead = true;
+			//	}
 
-				// ダメージをくらったことがわかる画像にする
-				mHandleId += 4;
+			//	// ダメージをくらったことがわかる画像にする
+			//	mHandleId += 4;
 
-				mGodFrameCnt++;
-			}
-			else if (mRoutineDoneCnt == 0) {	// 1回目の動作のとき（ただy座標移動している（敵を倒すための猶予時間））
+			//	mGodFrameCnt++;
+			//}
+			if (mRoutineDoneCnt == 0) {	// 1回目の動作のとき（ただy座標移動している（敵を倒すための猶予時間））
 				if (mAttackFrameCnt == WALK_FRAME_NUM) {
 					// フェードアウトを始める
 					mIsFadingOut = true;
@@ -135,16 +138,36 @@ void EnemyMage::Update() {
 		}
 
 		// 無敵時間の際の画像の点滅処理
-		if (mHp > 0 && mIsGod) {	// 無敵時間かつ hp > 0 のとき
-			if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
-				mIsGod = false;
-				mGodFrameCnt = 0;
-			}
-			else {	// 無敵時間中なら
-				// 無敵時間であることを表す画像にする
-				if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
-					mHandleId += 4;
+		if (mIsGod) {
+			if (mHp > 0) {	// hp > 0 のとき
+				if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
+					mIsGod = false;
+					mGodFrameCnt = 0;
 				}
+				else {	// 無敵時間中なら
+					// 無敵時間であることを表す画像にする
+					if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
+						mHandleId += 4;
+					}
+
+					mGodFrameCnt++;
+				}
+			}
+			else {	// hpが0以下となったとき
+					// 死んだことを認識させるための10フレームの硬直
+				if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
+					mMageIsDead = true;
+				}
+				else if (mGodFrameCnt == 0) {	// 倒した瞬間，スコアが入るようにする
+					mIsDead = true;
+				}
+				else {
+					mIsDead = false;
+				}
+
+				// ダメージをくらったことがわかる画像にする
+				mHandleId += 4;
+				mAlphaValue = 255;
 
 				mGodFrameCnt++;
 			}
@@ -155,7 +178,7 @@ void EnemyMage::Update() {
 
 void EnemyMage::Draw() {
 	// EnemyMageの描画
-	if (!mIsDead) {	// hp > 0，もしくは hp <= 0 かつ mGodFrameCnt <= 10のとき
+	if (!mMageIsDead && !mHasFinishedRos) {	// 動作をし終えていなくて，死んでいなければ
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, mAlphaValue);
 		DrawGraph(mX - mImgW / 2, mY - mImgH / 2 - 11, mEneHandle[mHandleId], TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -196,12 +219,16 @@ void EnemyMage::FadeIn() {
 		mIsFadingIn = false;
 
 		if (mRoutineDoneCnt >= 1) {	// 2回目の動作以降
-			// 火の玉攻撃を始める
 			// 使用する火の玉攻撃の種類を決める
 			// (1: ジグザグ攻撃，2: 回転攻撃)
 			// 1～2のランダムな数値を生成
 			srand((unsigned int)time(NULL));
-			int attackType = rand() % 2 + 1;
+			int attackType;
+			for (int i = 0; i < mEneIdx + 1; i++) {
+				attackType = rand() % 2 + 1;
+			}
+
+			// 火の玉攻撃を始める
 			mMageFire->StartFire(mX, mY, mFireType, attackType);
 		}
 	}
@@ -230,8 +257,8 @@ void EnemyMage::FadeOut() {
 			mIsHiding = true;
 		}
 		else {	// 動作の回数が終了回数に達していたら
-			// EnemyMage自体は死んだ扱いにする
-			mIsDead = true;
+			// 動作を終えたことにする
+			mHasFinishedRos = true;
 		}
 	}
 }
@@ -278,20 +305,22 @@ void EnemyMage::GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::ve
 	std::map<std::string, bool>* eneBoolDataMap) {
 	Enemy::GetEneDataMap(eneIntDataMap, eneAXYMapVec, eneBoolDataMap);
 
-	// フェードアウトしているときとフェードインしているとき，
-	// 姿を消しているとき，EnemyMageは死んでいるとき（しかし火の玉は残っているとき）は
+	// フェードアウトしているときと姿を消しているとき，
+	// 動作を終えたとき，EnemyMageは死んでいるとき（しかし火の玉は残っているとき）は
 	// 敵の当たり判定は画面外に設定する
-	if (mIsFadingIn || mIsFadingOut || mIsHiding || mIsDead) {
+	if (mIsFadingOut || mIsHiding || mMageIsDead || mHasFinishedRos) {
 		(*eneIntDataMap)["x"] = -3000;
 		(*eneIntDataMap)["y"] = -3000;
 	}
 	
 	// 各火の玉の当たり判定関連の情報を渡す
-	for (int i = 0; i < mFireNum; i++) {
-		(*eneAXYMapVec).at(i)["ax"] = mAXs.at(i);
-		(*eneAXYMapVec).at(i)["ay"] = mAYs.at(i);
-		(*eneAXYMapVec).at(i)["hitRangeAW"] = mHitRangeAW;
-		(*eneAXYMapVec).at(i)["hitRangeAH"] = mHitRangeAH;
+	if (mIsAttacking) {	// 攻撃中のとき
+		for (int i = 0; i < mFireNum; i++) {
+			(*eneAXYMapVec).at(i)["ax"] = mAXs.at(i);
+			(*eneAXYMapVec).at(i)["ay"] = mAYs.at(i);
+			(*eneAXYMapVec).at(i)["hitRangeAW"] = mHitRangeAW;
+			(*eneAXYMapVec).at(i)["hitRangeAH"] = mHitRangeAH;
+		}
 	}
 }
 

@@ -33,7 +33,7 @@ protected:
 	const int ENE_MAGE_Y_MAX = 610;	// EnemyMageのWalkの際のy座標の移動範囲（最大）
 	const int ENE_MAGE_Y_MIN = 290;	// EnemyMageのWalkの際のy座標の移動範囲（最小）
 	int mAlphaValue;	// EnemyMageの透明度，FadeIn, FadeOutで透けるために使用する
-	int DELTA_ALPHA = 3;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
+	int DELTA_ALPHA = 5;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
 	int mRoutineDoneCnt;	// 動作を終えた回数，特定の回数終わらせた後に自動的に消すようにするために使用する
 							// 動作とは，（フェードイン → 火の玉攻撃 → フェードアウト）のセットで1回とカウントする
 							// ただし，最初の一回目は，（フェードイン → 歩行 → フェードアウト）のセットとする
@@ -43,7 +43,8 @@ protected:
 	bool mIsHiding;	// 動作の間に姿を隠している（消している）ときtrue
 	int mHidingFrameCnt;	// フェードインとフェードアウトの間に姿を隠している（消している）フレーム数のカウント
 	const int HIDING_FRAME_NUM_MIN = 60;	// 最悪でも個のフレーム数分，フェードインとフェードアウトの間に姿を隠している（消している）
-	bool mIsDead;	// mHpが0，かつ消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
+	bool mMageIsDead;	// mHpが0，かつEnemyMage自体を消していいとき（死んだことを認識させるための固定時間後など）にtrueになる
+	bool mHasFinishedRos;	// 動作をmDeleteRoDoneNumの数までおわらしたときにtrueとなる
 	int mAttackFrameCnt;	// 攻撃をしている際（火の玉を出し始めてから）のフレーム数をカウントする，フェードアウトの開始などで使用する
 	const int WALK_FRAME_NUM = 150;	// フェードインで入ってきてから移動している時間（1回目の動作の時のみ使用）
 	const int ATTACK_STATE_FRAME_NUM = 300;	// 攻撃をしてから（火の玉を出し始めてから），フェードアウトを始めるまでのフレーム数（2回目以降の動作の時使用）
