@@ -132,22 +132,22 @@ void MageFire::Draw() {
 void MageFire::Move() {
 	if (mAttackType == 1) {	// ジグザグ攻撃
 		// 各火の玉のxy座標を更新
-		//for (int i = 0; i < FIRE_NUM; i++) {
-		//	if (mFrameCnt >= FIRES_STOP_FRAME_NUMS[i]) {
-		//		if (mYs[i] > SCREEN_BOTTOM_Y || mYs[i] < SCREEN_TOP_Y) {	// 火の玉のy座標が上下のどちらかの端に行ったら
-		//			// y軸の進行方向を反転する
-		//			mDYs[i] *= -1;
-		//		}
+		for (int i = 0; i < FIRE_NUM; i++) {
+			if (mFrameCnt >= FIRES_STOP_FRAME_NUMS[i]) {
+				if (mYs[i] > SCREEN_BOTTOM_Y || mYs[i] < SCREEN_TOP_Y) {	// 火の玉のy座標が上下のどちらかの端に行ったら
+					// y軸の進行方向を反転する
+					mDYs[i] *= -1;
+				}
 
-		//		// xy座標の更新
-		//		mXs[i] += mDX;
-		//		mYs[i] += mDYs[i];
-		//	}
-		//}
+				// xy座標の更新
+				mXs[i] += mDX;
+				mYs[i] += mDYs[i];
+			}
+		}
 
 
 
-		if (mFrameCnt > 60) {
+		/*if (mFrameCnt > 60) {
 			for (int i = 0; i < 3; i++) {
 				if (mYs[i] > SCREEN_BOTTOM_Y || mYs[i] < SCREEN_TOP_Y) {
 					mDYs[i] *= -1;
@@ -174,7 +174,7 @@ void MageFire::Move() {
 
 			mXs[0] += mDX / 3;
 			mYs[0] += mDYs[0] / 1.5;
-		}
+		}*/
 	}
 	else {	// 回転攻撃
 		// それぞれの火の玉の回転角を更新
