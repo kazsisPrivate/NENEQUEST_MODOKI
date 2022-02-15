@@ -31,6 +31,7 @@
     <ClCompile Include="src\Enemy4.cpp" />
     <ClCompile Include="src\Enemy5.cpp" />
     <ClCompile Include="src\Enemy6.cpp" />
+    <ClCompile Include="src\Enemy7.cpp" />
     <ClCompile Include="src\EnemyBoar.cpp" />
     <ClCompile Include="src\EnemyMage.cpp" />
     <ClCompile Include="src\EnemyMgr.cpp" />
@@ -65,6 +66,9 @@
     <ClCompile Include="src\Player3.cpp" />
     <ClCompile Include="src\Player4.cpp" />
     <ClCompile Include="src\SceneMgr.cpp" />
+    <ClCompile Include="src\ScoreCounter.cpp" />
+    <ClCompile Include="src\Slash.cpp" />
+    <ClCompile Include="src\TimeCounter.cpp" />
     <ClCompile Include="src\UpdateKey.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +86,7 @@
     <ClInclude Include="src\Enemy4.h" />
     <ClInclude Include="src\Enemy5.h" />
     <ClInclude Include="src\Enemy6.h" />
+    <ClInclude Include="src\Enemy7.h" />
     <ClInclude Include="src\EnemyBoar.h" />
     <ClInclude Include="src\EnemyChanger.h" />
     <ClInclude Include="src\EnemyMage.h" />
@@ -119,6 +124,9 @@
     <ClInclude Include="src\Player4.h" />
     <ClInclude Include="src\SceneChanger.h" />
     <ClInclude Include="src\SceneMgr.h" />
+    <ClInclude Include="src\ScoreCounter.h" />
+    <ClInclude Include="src\Slash.h" />
+    <ClInclude Include="src\TimeCounter.h" />
     <ClInclude Include="src\UpdateKey.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
