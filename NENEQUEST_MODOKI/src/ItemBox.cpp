@@ -45,9 +45,16 @@ void ItemBox::Update() {
 	else if (mIsJumping) {	// 箱が割られて，itemが箱から飛び出しているとき
 		if (mJumpFrameCnt == JUMP_FRAME_NUM) {	// 箱から飛び出したItemが着地したら
 			mItemChanger->ChangeItem(mItemIdx, mBoxItemEnum, mBoxItemX, mBoxItemY);
-			mIsDead = true;
 		}
 		else {
+			// 箱が割られた瞬間にスコアが入るようにする
+			if (mJumpFrameCnt == 0) {
+				mIsDead = true;
+			}
+			else {
+				mIsDead = false;
+			}
+
 			Jump();
 		}
 	}
