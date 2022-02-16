@@ -63,6 +63,9 @@ void Player2::Update() {
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
 
+		// Enemyとの当たり判定を考慮したEnemyから受けるダメージの更新
+		UpdateEneDamage();
+
 		// アイテムとの当たり判定を考慮したアイテムの効果の更新
 		UpdateIteEffect();
 

@@ -76,6 +76,9 @@ void Player4::Update() {
 			StartBossStage();
 		}
 		else {
+			// Enemyとの当たり判定を考慮したEnemyから受けるダメージの更新
+			UpdateEneDamage();
+
 			// アイテムとの当たり判定を考慮したアイテムの効果の更新
 			UpdateIteEffect();
 
@@ -346,6 +349,13 @@ void Player4::PrepareSAttack() {	// 強い攻撃（弓矢が遠くまで飛ぶ，入力Sキー）
 
 
 void Player4::UpdateArrowIsHit() {
+	// 弓矢-Enemy間
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mPlAIsHitMap["enemy"].at(i)) {
+			mArrowIsHit = true;
+		}
+	}
+	// 弓矢-Item間
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mPlAIsHitMap["item"].at(i)) {
 			mArrowIsHit = true;
