@@ -98,8 +98,12 @@ void GameScene::Initialize() {
 	/*m_plDeadFlag = false;
 	m_bsDeadFlag = false;*/
 
+	// 音源の初期化
 	mSoundHandle = LoadSoundMem("sounds/NENEQUEST.ogg");
 	PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
+
+	// フレーム数のカウントの初期化
+	mFrameCnt = 0;
 
 	// Timerを開始する
 	mTimeCounter->StartTime();
@@ -213,6 +217,19 @@ void GameScene::Update() {
 	// 各オブジェクトの描画順を更新する
 	UpdateDOrder();
 
+	// 新しいEnemyとItemを出現させる（かどうかを決める）
+	if (mFrameCnt >= 300) {	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+		// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
+		if (mFrameCnt % CREATION_FRAME_NUM == 0) {
+			mItemMgr->CreateItem();
+		}
+		else if ((mFrameCnt + CREATION_FRAME_NUM / 2) % CREATION_FRAME_NUM == 0) {	
+			mEnemyMgr->CreateEnemy();
+		}
+	}
+	
+	
+
 	// 更新
 	mGameBack->Update();
 	mPlayerMgr->Update();
@@ -222,10 +239,13 @@ void GameScene::Update() {
 	mTimeCounter->Update();
 	mScoreCounter->Update();
 	
-
-	if (CheckSoundMem(mSoundHandle) == 0) {
+	// 音源がループするようにする
+	if (CheckSoundMem(mSoundHandle) == 0) {	// 音源が最後まで終わっていたら
+		// 再度最初から流す
 		PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
 	}
+
+	mFrameCnt++;
 }
 
 void GameScene::Draw() {
@@ -273,14 +293,14 @@ void GameScene::Draw() {
 
 	int tmpA = 0;
 	for (int i = 0; i < ENEMY_NUM; i++) {
-		if (mEneIsExistings[i]) {
-			tmpA = 1;
+		if (mIteIsExistings[i]) {
+			tmpA += 1;
 		}
 	}
 	
 
 	mGameBack->Draw();
-	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mEneIntDataMaps.at(1)["x"], mEneIntDataMaps.at(1)["y"], mEneIntDataMaps.at(1)["hp"]);
+	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
 
 	/*for (int i = 1; i < 7; i++) {
 		if (drawNum[0] == i) {
