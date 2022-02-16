@@ -18,7 +18,7 @@ void Item6::Initialize() {
 	mIsDead = false;
 
 	// “¾‚ç‚ê‚éƒXƒRƒA
-	mScore = 500;
+	mScore = 1000;
 
 	// ‚»‚Ì‘¼‚Ìİ’è
 	mSpeed = 2.0f;
