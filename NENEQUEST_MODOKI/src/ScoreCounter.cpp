@@ -33,7 +33,7 @@ void ScoreCounter::Draw() {
 
 	// ÉXÉRÉAÇÃï`âÊ
 	DrawFormatStringToHandle(SCORE_STR_RX - mTotalScoreStrW, 55, GetColor(0, 0, 0), mScoreFontHandle, "%d", mTotalScore);
-	DrawFormatStringToHandle(SCORE_STR_RX, 205, GetColor(0, 0, 0), mScoreFontHandle, "%d", mTotalScoreStrW);
+	DrawFormatStringToHandle(770, 30, GetColor(255, 241, 15), mStrFontHandle, "SCORE");
 }
 
 
