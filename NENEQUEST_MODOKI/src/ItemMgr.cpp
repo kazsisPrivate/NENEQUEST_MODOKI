@@ -15,7 +15,8 @@
 #include "Item13.h"
 #include "Item14.h"
 #include "ItemMgr.h"
-
+#include <cmath>
+#include <random>
 
 ItemMgr* ItemMgr::mItemMgr;
 
@@ -39,8 +40,8 @@ void ItemMgr::Initialize() {
 		mItesNextX[i] = 1300 + 500 * i;
 		mItesNextY[i] = 300 + 150 * i;
 	}
-	mItesNext[0] = eItem12;	// デバッグ用に入れいている
-	mItesNext[1] = eItem14;	// デバッグ用に入れいている
+	mItesNext[0] = eItemNone;	// デバッグ用に入れいている
+	mItesNext[1] = eItemNone;	// デバッグ用に入れいている
 }
 
 
@@ -131,16 +132,6 @@ void ItemMgr::Update() {
 }
 
 
-//void ItemMgr::Draw() {
-//	// 各Itemの描画
-//	for (int i = 0; i < ITEM_NUM; i++) {
-//		if (mItems[i]) {	// NULLが入っていなければ
-//			mItems[i]->Draw();
-//		}
-//	}
-//}
-
-
 void ItemMgr::Draw(const int itemIdx) {
 	if (mItems[itemIdx]) {
 		mItems[itemIdx]->Draw();
@@ -177,6 +168,63 @@ void ItemMgr::SetIsHitMaps(std::vector<std::map<std::string, bool>>& isHitMaps) 
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (mItems[i]) {
 			mItems[i]->SetIsHits(isHitMaps);
+		}
+	}
+}
+
+
+void ItemMgr::CreateItem() {
+	// mItemsの中にItemがセットされている数を数える
+	int existingIteNum = 0;
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (mItems[i]) {
+			existingIteNum++;
+		}
+	}
+
+	// Itemの生成確率（0～10000, 10000で100%）を求める
+	// Itemがセットされていればいるほど生成確立が下がる
+	int creationProb = 3000 * std::pow(0.3, existingIteNum);
+		
+	// 1～10000のランダムな数値を生成
+	std::random_device rnd;
+	int randNum = rnd() % 10000 + 1;
+
+	// Itemを生成（10000 - creationProbの確率でItemは生成されない）
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (!mItems[i]) {
+			if (randNum >= 10000 - creationProb) {	// Itemを生成するとき
+				// 次のItemのxyを決めておく
+				mItesNextX[i] = ITEM_FIRST_X;	// x座標は固定
+				mItesNextY[i] = rnd() % (ITEM_FIRST_Y_MAX - ITEM_FIRST_Y_MIN) + ITEM_FIRST_Y_MIN;
+
+				// randNumを1～creationProbの範囲にしたのち，1～100の範囲の値に正規化する
+				randNum = 10000 - randNum + 1;
+				randNum = (randNum / (float)creationProb) * 100;
+
+				if (randNum <= 20) {	// 20%の確率で
+					// 赤りんご
+					mItesNext[i] = eItem1;
+				}
+				else if (randNum <= 30) {	// 10%の確率で
+					// 青りんご
+					mItesNext[i] = eItem2;
+				}
+				else if (randNum <= 60) {	// 30%の確率で
+					// 樽1
+					mItesNext[i] = eItem12;
+				}
+				else if (randNum <= 75) {	// 15%の確率で
+					// 樽2
+					mItesNext[i] = eItem13;
+				}
+				else {	// 25%の確率で
+					// 箱（武器が出る）
+					mItesNext[i] = eItem14;
+				}
+
+				break;
+			}
 		}
 	}
 }
