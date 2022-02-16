@@ -1,7 +1,7 @@
 // Enemy4～6の魔法使いの敵の基底クラス
 #include "EnemyMage.h"
 #include "DxLib.h"
-#include <time.h>
+#include <random>
 
 
 EnemyMage::EnemyMage(EnemyChanger* changer, const int* graph, const int eneIdx, const int x, const int y)
@@ -45,6 +45,8 @@ void EnemyMage::Initialize() {
 	mIsFadingOut = false;
 	mIsHiding = false;
 	mAlphaValue = 0;	// 最初は消えていて，フェードインで入ってくるため，α値は0
+	// 火の玉の準備時間を受け取る
+	mFireStopFrameNum = 0;
 	mHidingFrameCnt = 0;
 	mAttackFrameCnt = 0;
 	mRoutineDoneCnt = 0;
@@ -160,6 +162,11 @@ void EnemyMage::Update() {
 				}
 				else if (mGodFrameCnt == 0) {	// 倒した瞬間，スコアが入るようにする
 					mIsDead = true;
+
+					if (mAttackFrameCnt < mFireStopFrameNum) {	// 倒したとき攻撃準備段階だったら
+						// 火の玉攻撃を消す
+						mMageFire->MakeFiresExistFalse();
+					}
 				}
 				else {
 					mIsDead = false;
@@ -183,8 +190,6 @@ void EnemyMage::Draw() {
 		DrawGraph(mX - mImgW / 2, mY - mImgH / 2 - 11, mEneHandle[mHandleId], TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-	//DrawBox(x - hitRangeX, y - hitRangeY, x + hitRangeX, y + hitRangeY, GetColor(0, 0, 0), TRUE);
-	//DrawFormatString(800, 300, GetColor(255, 255, 255), "px = %d", count);
 
 	// 火の玉攻撃の描画
 	if (mIsAttacking) {	// 火の玉攻撃をしているとき（画面内に1つでも火の玉があるとき）
@@ -222,14 +227,14 @@ void EnemyMage::FadeIn() {
 			// 使用する火の玉攻撃の種類を決める
 			// (1: ジグザグ攻撃，2: 回転攻撃)
 			// 1～2のランダムな数値を生成
-			srand((unsigned int)time(NULL));
+			std::random_device rnd;
 			int attackType;
-			for (int i = 0; i < mEneIdx + 1; i++) {
-				attackType = rand() % 2 + 1;
-			}
+			attackType = rnd() % 2 + 1;
 
 			// 火の玉攻撃を始める
 			mMageFire->StartFire(mX, mY, mFireType, attackType);
+			// 火の玉攻撃の攻撃準備に要するフレーム数を取得する
+			mFireStopFrameNum = mMageFire->GetFireStopFrameNum(attackType);
 		}
 	}
 }
@@ -271,21 +276,17 @@ void EnemyMage::Hide() {
 		mHidingFrameCnt = 0;
 
 		// 次のxy座標を決める
-		srand((unsigned int)time(NULL));
+		std::random_device rnd;
 		
 		int xNext, yNext;
 		// Playerから遠い側のx座標にする
 		if (mPlX > 600) {	// 右側にいたら
-			for (int i = 0; i < mEneIdx + 1; i++) {	// for文は同じフレームにおいてrand()の値が他のmIdxのEnemyと一致しないようにするため
-				xNext = rand() % (150 + 1) + 80;
-				yNext = rand() % (ENE_MAGE_Y_MAX - ENE_MAGE_Y_MIN + 1) + ENE_MAGE_Y_MIN;
-			}
+			xNext = rnd() % (150 + 1) + 80;
+			yNext = rnd() % (ENE_MAGE_Y_MAX - ENE_MAGE_Y_MIN + 1) + ENE_MAGE_Y_MIN;
 		}
 		else {	// 左側にいたら
-			for (int i = 0; i < mEneIdx + 1; i++) {
-				xNext = rand() % (150 + 1) + 1000;
-				yNext = rand() % (ENE_MAGE_Y_MAX - ENE_MAGE_Y_MIN + 1) + ENE_MAGE_Y_MIN;
-			}
+			xNext = rnd() % (150 + 1) + 1000;
+			yNext = rnd() % (ENE_MAGE_Y_MAX - ENE_MAGE_Y_MIN + 1) + ENE_MAGE_Y_MIN;
 		}
 		
 		// 新しいxy座標をセットする

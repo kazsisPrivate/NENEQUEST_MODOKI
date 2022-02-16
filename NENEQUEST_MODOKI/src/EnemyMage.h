@@ -26,6 +26,7 @@ protected:
 	MageFire* mMageFire;
 	int mFireType;	// 使用する火の玉の種類（1: 赤い火の玉（速度普通），2: 青い火の玉（速度速い））
 	int mFireNum;	// 使用する火の玉の数（MageFireクラスから受け取る）
+	int mFireStopFrameNum;	// 火の玉攻撃が動き始めるまでの時間（攻撃準備時間，火の玉が画面に見えてはいる）
 	std::vector<int> mAXs;	// 各火の玉のx座標
 	std::vector<int> mAYs;	// 各火の玉のy座標
 	int mHitRangeAW, mHitRangeAH;	// 火の玉の当たり判定範囲

@@ -2,7 +2,7 @@
 #include "Item13.h"
 #include "DxLib.h"
 #include "ItemGraphics.h"
-#include <time.h>
+#include <random>
 
 
 Item13::Item13(ItemChanger* changer, const int itemIdx, const int x, const int y)
@@ -25,20 +25,10 @@ void Item13::Initialize() {
 }
 
 
-void Item13::Draw() {
-	ItemBox::Draw();
-}
-
-
-void Item13::Update() {
-	ItemBox::Update();
-}
-
-
 void Item13::CreateBoxItem() {
 	// 1～100のランダムな数値を生成
-	srand((unsigned int)time(NULL));
-	int randNum = rand() % 100 + 1;
+	std::random_device rnd;
+	int randNum = rnd() % 100 + 1;
 
 	if (randNum <= 10) {	// 10%の確率で
 		// 赤りんご（Item1）

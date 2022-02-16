@@ -2,7 +2,7 @@
 #include "Enemy7.h"
 #include "DxLib.h"
 #include "CharaGraphics.h"
-#include <time.h>
+#include <random>
 
 
 Enemy7::Enemy7(EnemyChanger* changer, const int eneIdx, const int x, const int y)
@@ -37,7 +37,7 @@ void Enemy7::Initialize() {
 	mSlash = new Slash();
 
 	// 動作回数の設定
-	mDeleteRoDoneNum = 5;
+	mDeleteRoDoneNum = 2;
 
 	// その他
 	mIsFadingIn = true;	// 最初はフェードインで入ってくるため，true
@@ -252,20 +252,18 @@ void Enemy7::Hide() {
 		mHidingFrameCnt = 0;
 
 		// 乱数のシード値を更新
-		srand((unsigned int)time(NULL));
+		std::random_device rnd;
 
 		// 次の攻撃の種類を決める
 		for (int i = 0; i < mEneIdx + 1; i++) {	// for文は同じフレームにおいてrand()の値が他のmIdxのEnemyと一致しないようにするため
-			mAttackType = rand() % 2 * (-2) + 1;	// 1か-1が入る
+			mAttackType = rnd() % 2 * (-2) + 1;	// 1か-1が入る
 		}
 		
 		// 次のxy座標を決める
 		int xNext, yNext;
 		if (mAttackType == 1) {	// 固定位置の斬撃攻撃（Playerの目前に現れ切りつける）
 			// 攻撃の向きを決める
-			for (int i = 0; i < mEneIdx + 1; i++) {
-				mAttackDirec = rand() % 2 * (-2) + 1;	// 1か-1が入る
-			}
+			mAttackDirec = rnd() % 2 * (-2) + 1;	// 1か-1が入る
 
 			xNext = mPlX - 150 * mAttackDirec;	// Playerの左側か右側に現れる
 			yNext = mPlY;
@@ -273,18 +271,14 @@ void Enemy7::Hide() {
 		else {	// 飛ばす斬撃攻撃
 			// Playerから遠い側のx座標にする
 			if (mPlX > 600) {	// 右側にいたら
-				for (int i = 0; i < mEneIdx + 1; i++) {
-					xNext = rand() % (150 + 1) + 80;
-					yNext = mPlY + 50;
-					mAttackDirec = 1;
-				}
+				xNext = rnd() % (150 + 1) + 80;
+				yNext = mPlY + 50;
+				mAttackDirec = 1;
 			}
 			else {	// 左側にいたら
-				for (int i = 0; i < mEneIdx + 1; i++) {
-					xNext = rand() % (150 + 1) + 1000;
-					yNext = mPlY + 50;
-					mAttackDirec = -1;
-				}
+				xNext = rnd() % (150 + 1) + 1000;
+				yNext = mPlY + 50;
+				mAttackDirec = -1;
 			}
 		}
 		
