@@ -9,6 +9,8 @@
 #include "Enemy7.h"	// ここからその他
 //#include "EnemyBoss.h"
 #include "EnemyMgr.h"
+#include <cmath>
+#include <random>
 
 
 EnemyMgr* EnemyMgr::mEnemyMgr;
@@ -30,12 +32,14 @@ void EnemyMgr::Initialize() {
 		mEnemies[i] = NULL;
 		mEnesNext[i] = eEnemy1;	// デバッグ用に入れいている
 
-		mEnesNextX[i] = 1200;//1300 + 500 * i;
+		mEnesNextX[i] = 100;//1200;//1300 + 500 * i;
 		mEnesNextY[i] = 300 + 150 * i;
 	}
 	mEnesNext[0] = eEnemyNone;	// デバッグ用に入れいている
-	mEnesNext[1] = eEnemy7;	// デバッグ用に入れいている
+	mEnesNext[1] = eEnemyNone;	// デバッグ用に入れいている
 	mEnesNext[2] = eEnemyNone;	// デバッグ用に入れいている
+
+	mPlX = 0;
 }
 
 
@@ -105,16 +109,6 @@ void EnemyMgr::Update() {
 }
 
 
-//void EnemyMgr::Draw() {
-//	// 各Enemyの描画
-//	for (int i = 0; i < ENEMY_NUM; i++) {
-//		if (mEnemies[i]) {	// NULLが入っていなければ
-//			mEnemies[i]->Draw();
-//		}
-//	}
-//}
-
-
 void EnemyMgr::Draw(const int eneIdx) {
 	if (mEnemies[eneIdx]) {
 		mEnemies[eneIdx]->Draw();
@@ -164,6 +158,98 @@ void EnemyMgr::SetPlDataMap(std::map<std::string, int>* plDataMap) {
 	for (int i = 0; i < ENEMY_NUM; i++) {
 		if (mEnemies[i]) {
 			mEnemies[i]->SetPlParams(plDataMap);
+		}
+	}
+
+	// CreateEnemyで使うPlayerのx座標を入れておく
+	mPlX = (*plDataMap)["x"];
+}
+
+
+void EnemyMgr::CreateEnemy() {
+	// mEnemiesの中にEnemyがセットされている数を数える
+	int existingEneNum = 0;
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (mEnemies[i]) {
+			existingEneNum++;
+		}
+	}
+
+	// Enemyの生成確率（0～10000, 10000で100%）を求める
+	// Enemyがセットされていればいるほど生成確立が下がる
+	int creationProb = 2000 * std::pow(0.3, existingEneNum);
+
+	// 1～10000のランダムな数値を生成
+	std::random_device rnd;
+	int randNum = rnd() % 10000 + 1;
+
+	// Enemyを生成（10000 - creationProbの確率でEnemyは生成されない）
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		if (!mEnemies[i]) {
+			if (randNum >= 10000 - creationProb) {	// Enemyを生成するとき
+				// 次のEnemyのy座標を決めておく
+				mEnesNextY[i] = rnd() % (ITEM_FIRST_Y_MAX - ITEM_FIRST_Y_MIN) + ITEM_FIRST_Y_MIN;
+
+				// randNumを1～creationProbの範囲にしたのち，1～100の範囲の値に正規化する
+				randNum = 10000 - randNum + 1;
+				randNum = (randNum / (float)creationProb) * 100;
+
+				if (randNum <= 50) {	// 50%の確率で
+					// イノシシの敵
+					// x座標を決めておく
+					mEnesNextX[i] = 1400;
+
+					if (randNum <= 30) {	// 30%の確率で
+						// Enemy1
+						mEnesNext[i] = eEnemy1;
+					}
+					else if (randNum <= 40) {	// 10%の確率で
+						// Enemy2
+						mEnesNext[i] = eEnemy2;
+					}
+					else {	// 10%の確率で
+						// Enemy3
+						mEnesNext[i] = eEnemy3;
+					}
+				}
+				else if (randNum <= 90) {	// 40%の確率で
+					// 魔法使い
+					// x座標を決めておく(Playerから離れた位置に出現させる)
+					if (mPlX > 600) {	// Playerが右側にいたら
+						mEnesNextX[i] = rand() % (150 + 1) + 80;
+					}
+					else {	// Playerが左側にいたら
+						mEnesNextX[i] = rand() % (150 + 1) + 1000;
+					}
+
+					if (randNum <= 70) {	// 20%の確率で
+						// Enemy4
+						mEnesNext[i] = eEnemy4;
+					}
+					else if (randNum <= 80) {	// 10%の確率で
+						// Enemy5
+						mEnesNext[i] = eEnemy5;
+					}
+					else {	// 10%の確率で
+						// Enemy6
+						mEnesNext[i] = eEnemy6;
+					}
+				}
+				else {	// 10%の確率で
+					// 鎌使い（Enemy7）
+					// x座標を決めておく(Playerから離れた位置に出現させる)
+					if (mPlX > 600) {	// Playerが右側にいたら
+						mEnesNextX[i] = rand() % (150 + 1) + 80;
+					}
+					else {	// Playerが左側にいたら
+						mEnesNextX[i] = rand() % (150 + 1) + 1000;
+					}
+					
+					mEnesNext[i] = eEnemy7;
+				}
+
+				break;
+			}
 		}
 	}
 }
