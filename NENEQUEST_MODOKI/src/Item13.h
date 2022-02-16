@@ -9,8 +9,6 @@ class Item13 : public ItemBox {
 public:
 	Item13(ItemChanger* changer, const int itemIdx, const int x, const int y);
 	void Initialize() override;
-	void Update() override;
-	void Draw() override;
 
 private:
 	void CreateBoxItem() override;	// ” ‚Ì’†‚©‚ço‚·item‚ğŒˆ‚ßCì¬‚·‚é
