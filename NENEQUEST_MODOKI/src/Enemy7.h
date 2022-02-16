@@ -27,7 +27,7 @@ protected:
 	int mAX, mAY;	// 斬撃のxy座標
 	int mHitRangeAW, mHitRangeAH;	// 斬撃の当たり判定範囲
 	int mAlphaValue;	// Enemy7の透明度，FadeIn, FadeOutで透けるために使用する
-	int DELTA_ALPHA = 7;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
+	int DELTA_ALPHA = 9;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
 	int mRoutineDoneCnt;	// 動作を終えた回数，特定の回数終わらせた後に自動的に消すようにするために使用する
 							// 動作とは，（フェードイン → 火の玉攻撃 → フェードアウト）のセットで1回とカウントする
 							// ただし，最初の一回目は，（フェードイン → 一瞬固定立ち → フェードアウト）のセットとする
