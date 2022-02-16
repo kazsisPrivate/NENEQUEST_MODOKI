@@ -15,8 +15,10 @@ public:
 																								// fireType(1: 赤い火の玉（速度普通），2: 青い火の玉（速度速い）)
 																								// attackType(1: ジグザグ攻撃，2: 回転攻撃)
 	int GetFireNum() const;	// 火の玉の数を返す，Enemy側に使用する火の玉を把握させるのに使用する
+	int GetFireStopFrameNum(const int attackType) const;	// 火の玉が動き出す前の時間を返す
 	std::pair<int, int> GetFiresHitRange();	// 火の玉の当たり判定の範囲を返す，Enemy側で把握させるのに使用する
 	bool GetFiresExist() const;	// 火の玉が残っているかどうか，3つの火の玉のうち1つでも画面内に残っていればtrueを返す
+	void MakeFiresExistFalse();	// 火の玉を消すために使用する, EnemyMageが攻撃を放つ前にやられたら呼びだす
 	void GetFiresXYs(std::vector<int>& xs, std::vector<int>& ys);	// 各火の玉のxy座標を返す，Enemy側で把握させるのに使用する
 
 private:

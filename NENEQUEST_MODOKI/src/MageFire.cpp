@@ -214,6 +214,16 @@ int MageFire::GetFireNum() const {
 }
 
 
+int MageFire::GetFireStopFrameNum(const int attackType) const {
+	if (attackType == 1) {	// ƒWƒOƒUƒOUŒ‚
+		return FIRES_STOP_FRAME_NUMS[0];
+	}
+	else {	// ‰ñ“]UŒ‚
+		return FIRES_STOP_FRAME_NUM;
+	}
+}
+
+
 std::pair<int, int> MageFire::GetFiresHitRange() {
 	// ‰Î‚Ì‹Ê‚Ì“–‚½‚è”»’è‚Ì”ÍˆÍ
 	int hitRangeW = IMG_W / 2 - 30;
@@ -226,6 +236,12 @@ std::pair<int, int> MageFire::GetFiresHitRange() {
 bool MageFire::GetFiresExist() const {
 	return mFiresExist;
 }
+
+
+void MageFire::MakeFiresExistFalse() {
+	mFiresExist = false;
+}
+
 
 
 void MageFire::GetFiresXYs(std::vector<int>& xs, std::vector<int>& ys) {
