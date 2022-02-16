@@ -530,6 +530,12 @@ void Player::UpdateHp() {
 		mHp += mIteHP;
 
 		mIteHP = 0;
+
+		if (mIteHP < 0) {	// アイテムによってダメージを受けたら
+			// 少しの間無敵になる
+			mIsGod = true;
+			mGodFrameCnt = 0;
+		}
 	}
 
 	// 敵によるダメージ

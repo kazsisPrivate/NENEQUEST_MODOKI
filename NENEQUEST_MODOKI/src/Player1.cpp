@@ -53,9 +53,10 @@ void Player1::Update() {
 		if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
 			mIsDead = true;
 		}
-
-		// ダメージをくらったことがわかる画像にする
-		mHandleId = 12;
+		else if (mGodFrameCnt == 0) {	// 最初に通ったとき
+			// ダメージをくらったことがわかる画像にする
+			mHandleId += 12;
+		}
 
 		mGodFrameCnt++;
 	}
