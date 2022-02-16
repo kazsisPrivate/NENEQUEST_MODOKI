@@ -19,7 +19,7 @@ void Item::Update() {
 		mIsDead = true;
 	}
 	else if (mX < ITEM_DELETE_X) {	// Item‚ª‰æ–ÊŠO‚ÉˆÚ“®‚µ‚½‚Æ‚«
-
+		mItemChanger->ChangeItem(mItemIdx, eItemNULL, -1000, -1000);
 	}
 
 	// ˆÚ“®
