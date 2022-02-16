@@ -37,7 +37,7 @@ GameScene* GameScene::GetInstance() {
 
 
 void GameScene::Initialize() {
-	mImageHandle = NULL;//LoadGraph("images/clouds1.png");
+	//mImageHandle = NULL;//LoadGraph("images/clouds1.png");
 	/*for (int i = 0; i < 5; i++) {
 		dnCheck[i] = false;
 	}*/
@@ -74,6 +74,7 @@ void GameScene::Initialize() {
 	mPlHpGauge = new PlayerHpGauge();
 	mTimeCounter = new TimeCounter();
 	mScoreCounter = new ScoreCounter();
+	mGameOver = new GameOver();
 
 	/*appear = new Appearance();
 	appear->GetEnemyAppear(eneAppear);
@@ -94,6 +95,7 @@ void GameScene::Initialize() {
 	mPlHpGauge->Initialize();
 	mTimeCounter->Initialize();
 	mScoreCounter->Initialize();
+	mGameOver->Initialize();
 
 	/*m_plDeadFlag = false;
 	m_bsDeadFlag = false;*/
@@ -104,6 +106,9 @@ void GameScene::Initialize() {
 
 	// フレーム数のカウントの初期化
 	mFrameCnt = 0;
+
+	// Playerは死んでいない状態として設定
+	mPlIsDead = false;
 
 	// Timerを開始する
 	mTimeCounter->StartTime();
@@ -121,6 +126,7 @@ void GameScene::Finalize() {
 	mPlHpGauge->Finalize();
 	mTimeCounter->Finalize();
 	mScoreCounter->Finalize();
+	mGameOver->Finalize();
 	//delete mCharaGraphics;
 	//delete mGameBack;
 	//delete mPlayerMgr;
@@ -181,77 +187,93 @@ void GameScene::Update() {
 		mSceneChanger->ChangeScene(eSceneMenu);
 	}
 
-	// Player, Enemy, Itemの情報を取得
-	mPlayerMgr->GetPlData(&mPlIntDataMap, &mPlBoolDataMap);
-	mEnemyMgr->GetEneData(&mEneIntDataMaps, &mEneAXYMapVecs, &mEneBoolDataMaps, mEneIsExistings);
-	mItemMgr->GetIteData(&mIteIntDataMaps, &mIteBoolDataMaps, mIteIsExistings);
+	if (mPlIsDead) {	// Playerが死んでいたら
+		// GameOver画面の更新
+		mGameOver->Update();
+	}
+	else {	// Playerが死んでいなかったら
+		// Player, Enemy, Itemの情報を取得
+		mPlayerMgr->GetPlData(&mPlIntDataMap, &mPlBoolDataMap);
+		mEnemyMgr->GetEneData(&mEneIntDataMaps, &mEneAXYMapVecs, &mEneBoolDataMaps, mEneIsExistings);
+		mItemMgr->GetIteData(&mIteIntDataMaps, &mIteBoolDataMaps, mIteIsExistings);
 
-	// Playerに渡すEnemyの攻撃力を一つの配列にまとめる
-	int eneAPs[3];	// ENEMY_NUM = 3
-	for (int i = 0; i < ENEMY_NUM; i++) {
-		if (mEneIsExistings) {
-			eneAPs[i] = mEneIntDataMaps.at(i)["attack"];
+		// Playerに渡すEnemyの攻撃力を一つの配列にまとめる
+		int eneAPs[3];	// ENEMY_NUM = 3
+		for (int i = 0; i < ENEMY_NUM; i++) {
+			if (mEneIsExistings) {
+				eneAPs[i] = mEneIntDataMaps.at(i)["attack"];
+			}
+			else {
+				eneAPs[i] = 0;
+			}
 		}
-		else {
-			eneAPs[i] = 0;
+
+		// Player, Enemy, Item間で使用する情報をお互いに渡す
+		mPlayerMgr->SetIteDataMaps(mIteIntDataMaps);
+		mPlayerMgr->SetEneAPowers(eneAPs);
+		mEnemyMgr->SetPlDataMap(&mPlIntDataMap);
+		mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
+
+		// Playerが死んでいるかどうかを入れる
+		mPlIsDead = mPlBoolDataMap["isDead"];
+
+		// 各オブジェクトの当たり判定を確認
+		UpdateHit();
+
+		// 当たり判定の確認結果のデータを各オブジェクトに渡す
+		mPlayerMgr->SetIsHitMap(&mPlIsHitMap);
+		mEnemyMgr->SetIsHits(mEneIsHits);
+		mItemMgr->SetIsHitMaps(mIteIsHitMaps);
+
+		// スコアを更新する
+		UpdateScore();
+
+		// 各オブジェクトの描画順を更新する
+		UpdateDOrder();
+
+		// 新しいEnemyとItemを出現させる（かどうかを決める）
+		if (mFrameCnt >= 300) {	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+			// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
+			if (mFrameCnt % CREATION_FRAME_NUM == 0) {
+				mItemMgr->CreateItem();
+			}
+			else if ((mFrameCnt + CREATION_FRAME_NUM / 2) % CREATION_FRAME_NUM == 0) {
+				mEnemyMgr->CreateEnemy();
+			}
+		}
+
+		// 更新
+		mGameBack->Update();
+		mPlayerMgr->Update();
+		mEnemyMgr->Update();
+		mItemMgr->Update();
+		mPlHpGauge->Update();
+		mTimeCounter->Update();
+		mScoreCounter->Update();
+
+		// 音源がループするようにする
+		if (CheckSoundMem(mSoundHandle) == 0) {	// 音源が最後まで終わっていたら
+			// 再度最初から流す
+			PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
+		}
+
+		if (mPlIsDead) {	// 次のフレームでGameOver画面に移行するとき
+			// 音源を止める
+			StopSoundMem(mSoundHandle);
 		}
 	}
 
-	// Player, Enemy, Item間で使用する情報をお互いに渡す
-	mPlayerMgr->SetIteDataMaps(mIteIntDataMaps);
-	mPlayerMgr->SetEneAPowers(eneAPs);
-	mEnemyMgr->SetPlDataMap(&mPlIntDataMap);
-	mPlHpGauge->SetPlayerHp(mPlIntDataMap["hp"]);
 
-	// 各オブジェクトの当たり判定を確認
-	UpdateHit();
-
-	// 当たり判定の確認結果のデータを各オブジェクトに渡す
-	mPlayerMgr->SetIsHitMap(&mPlIsHitMap);
-	mEnemyMgr->SetIsHits(mEneIsHits);
-	mItemMgr->SetIsHitMaps(mIteIsHitMaps);
-
-	// スコアを更新する
-	UpdateScore();
-
-	// 各オブジェクトの描画順を更新する
-	UpdateDOrder();
-
-	// 新しいEnemyとItemを出現させる（かどうかを決める）
-	if (mFrameCnt >= 300) {	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
-		// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
-		if (mFrameCnt % CREATION_FRAME_NUM == 0) {
-			mItemMgr->CreateItem();
-		}
-		else if ((mFrameCnt + CREATION_FRAME_NUM / 2) % CREATION_FRAME_NUM == 0) {	
-			mEnemyMgr->CreateEnemy();
-		}
-	}
 	
 	
-
-	// 更新
-	mGameBack->Update();
-	mPlayerMgr->Update();
-	mEnemyMgr->Update();
-	mItemMgr->Update();
-	mPlHpGauge->Update();
-	mTimeCounter->Update();
-	mScoreCounter->Update();
-	
-	// 音源がループするようにする
-	if (CheckSoundMem(mSoundHandle) == 0) {	// 音源が最後まで終わっていたら
-		// 再度最初から流す
-		PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
-	}
 
 	mFrameCnt++;
 }
 
 void GameScene::Draw() {
-	BaseScene::Draw();
-	DrawString(0, 0, "ゲーム画面です。", GetColor(255, 255, 255));
-	DrawString(0, 20, "Escキーを押すとメニュー画面に戻ります。", GetColor(255, 255, 255));
+	//BaseScene::Draw();
+	//DrawString(0, 0, "ゲーム画面です。", GetColor(255, 255, 255));
+	//DrawString(0, 20, "Escキーを押すとメニュー画面に戻ります。", GetColor(255, 255, 255));
 
 	//if (m_plDeadFlag) {
 	//	gameOver.Draw();
@@ -291,61 +313,69 @@ void GameScene::Draw() {
 	//	gameCtrs.Draw();
 	//}
 
-	int tmpA = 0;
-	for (int i = 0; i < ENEMY_NUM; i++) {
-		if (mIteIsExistings[i]) {
-			tmpA += 1;
-		}
+
+	if (mPlIsDead) {	// Playerが死んでいたら
+		mGameOver->Draw();
 	}
-	
+	else {	// Playerが死んでいなかったら
+		int tmpA = 0;
+		for (int i = 0; i < ENEMY_NUM; i++) {
+			if (mIteIsExistings[i]) {
+				tmpA += 1;
+			}
+		}
 
-	mGameBack->Draw();
-	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
 
-	/*for (int i = 1; i < 7; i++) {
-		if (drawNum[0] == i) {
-			mPlayerMgr->Draw();
-		}
-		else if (drawNum[1] == i) {
-			enemyMgr->Draw0();
-		}
-		else if (drawNum[2] == i) {
-			enemyMgr->Draw1();
-		}
-		else if (drawNum[3] == i) {
-			enemyMgr->Draw2();
-		}
-		else if (drawNum[4] == i) {
-			itemMgr->Draw0();
-		}
-		else {
-			itemMgr->Draw1();
-		}
-	}*/
+		mGameBack->Draw();
+		DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
 
-	for (const auto& dOrder : mDOrderVec) {
-		int objId = dOrder.second.first;
-		int idx = dOrder.second.second;
+		/*for (int i = 1; i < 7; i++) {
+			if (drawNum[0] == i) {
+				mPlayerMgr->Draw();
+			}
+			else if (drawNum[1] == i) {
+				enemyMgr->Draw0();
+			}
+			else if (drawNum[2] == i) {
+				enemyMgr->Draw1();
+			}
+			else if (drawNum[3] == i) {
+				enemyMgr->Draw2();
+			}
+			else if (drawNum[4] == i) {
+				itemMgr->Draw0();
+			}
+			else {
+				itemMgr->Draw1();
+			}
+		}*/
 
-		if (objId == 0) {	// Playerの描画
-			mPlayerMgr->Draw();
+		for (const auto& dOrder : mDOrderVec) {
+			int objId = dOrder.second.first;
+			int idx = dOrder.second.second;
+
+			if (objId == 0) {	// Playerの描画
+				mPlayerMgr->Draw();
+			}
+			else if (objId == 1) {	// Enemyの描画
+				mEnemyMgr->Draw(idx);
+			}
+			else {	// Itemの描画
+				mItemMgr->Draw(idx);
+			}
 		}
-		else if (objId == 1) {	// Enemyの描画
-			mEnemyMgr->Draw(idx);
-		}
-		else {	// Itemの描画
-			mItemMgr->Draw(idx);
-		}
+
+		// Playerのhpゲージの描画
+		mPlHpGauge->Draw();
+
+		// 経過時間の表示
+		mTimeCounter->Draw();
+
+		// 合計スコアの表示
+		mScoreCounter->Draw();
 	}
+
 	
-	// Playerのhpゲージの描画
-	mPlHpGauge->Draw();
-
-	// 経過時間の表示
-	mTimeCounter->Draw();
-
-	// 合計スコアの表示
-	mScoreCounter->Draw();
 
 	//DrawFormatString(400, 500, GetColor(255, 255, 255), "eneapp = %d", iNum);
 }
