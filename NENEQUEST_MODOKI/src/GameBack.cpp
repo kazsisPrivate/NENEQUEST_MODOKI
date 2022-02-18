@@ -1,87 +1,211 @@
 #include "DxLib.h"
 #include "GameBack.h"
-//#include "PlayerData.h"
-//#include "EnemyData.h"
-
-GameBack::GameBack() : mMountain1X(0), mMountain2X(END_RIGHT_X), mClouds1X(0), mClouds2X(END_RIGHT_X), mBoStX(END_RIGHT_X), mUpdFraCnt(1), mBackChCnt(0), mIsBossStage(false) {
-	//PlayerData::SetBossFlag(false);
-}
 
 
 void GameBack::Initialize() {
-	mMo1Handle = LoadGraph("images/mountain.png");
-	mMo2Handle = LoadGraph("images/mountain.png");
-	mCl1Handle = LoadGraph("images/clouds1.jpg");
-	mCl2Handle = LoadGraph("images/clouds2.jpg");
-	mBoStHandle = LoadGraph("images/bossMountain.png");
+	// 背景画像の読み込み
+	mNorStHandles[0] = LoadGraph("images/normalstage.png");
+	mNorStHandles[1] = LoadGraph("images/normalstage.png");
+	mCloudHandles[0] = LoadGraph("images/clouds1.jpg");
+	mCloudHandles[1] = LoadGraph("images/clouds2.jpg");
+	mBsStHandle = LoadGraph("images/bossstage.png");
+
+	// 背景画像の位置
+	mNorStXs[0] = 0;
+	mNorStXs[1] = BACK_X_MAX;
+	mCloudXs[0] = 0;
+	mCloudXs[1] = BACK_X_MIN;
+	mBsStX = BACK_X_MAX;
+
+	// BossStageに入っているか関連の設定
+	mIsChangingSt = false;
+	for (int i = 0; i < 2; i++) {
+		mIsMovingNorSts[i] = true;
+	}
+	mIsMovingBsSt = false;
+	mIsAtBsSt = false;	
 }
 
 
 void GameBack::Finalize() {
-	DeleteGraph(mMo1Handle);
-	DeleteGraph(mMo2Handle);
-	DeleteGraph(mCl1Handle);
-	DeleteGraph(mCl2Handle);
-	DeleteGraph(mBoStHandle);
+	// 背景画像の削除
+	for (int i = 0; i < 2; i++) {
+		DeleteGraph(mNorStHandles[i]);
+		DeleteGraph(mCloudHandles[i]);
+	}
+	DeleteGraph(mBsStHandle);
 }
 
 
 void GameBack::Update() {
-	if (mIsBossStage == false) {
-		UpdateNormal();
+	if (!mIsAtBsSt) {	// BossStageでないとき
+		UpdateNormalBack();
 	}
-	else {
-		UpdateBoss();
+	else {	// BossStageのとき
+		UpdateBossBack();
 	}
 }
 
 
 void GameBack::Draw() {
-	DrawGraph(mClouds1X, 0, mCl1Handle, TRUE);
-	DrawGraph(mClouds2X, 0, mCl2Handle, TRUE);
-	if (mIsBossStage == false) {
-		DrawGraph(mMountain1X, 0, mMo1Handle, TRUE);
-		DrawGraph(mMountain2X, 0, mMo2Handle, TRUE);
+	// 雲の描画
+	for (int i = 0; i < 2; i++) {
+		DrawGraph(mCloudXs[i], 0, mCloudHandles[i], TRUE);
 	}
-	else {
-		DrawGraph(mBoStX, 0, mBoStHandle, TRUE);
 
-		if (mMountain1X != END_LEFT_X && mMountain1X != END_RIGHT_X) {
+	//// NormalStageの描画
+	//for (int i = 0; i < 2; i++) {
+	//	DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
+	//}
+	/*DrawGraph(mClouds1X, 0, mCl1Handle, TRUE);
+	DrawGraph(mClouds2X, 0, mCl2Handle, TRUE);*/
+	
+	if (mIsChangingSt) {	// BossStageに移行中のとき
+		// BossStageの描画
+		if (mIsMovingBsSt) {	// BossStageの画像を動かしているとき
+			DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
+		}
+		
+		// NormalStageの描画
+		for (int i = 0; i < 2; i++) {
+			if (mIsMovingNorSts[i]) {	// NormalStageの画像を動かしているとき
+				DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
+			}
+		}
+		/*if (mMountain1X != END_LEFT_X && mMountain1X != END_RIGHT_X) {
 			DrawGraph(mMountain1X, 0, mMo1Handle, TRUE);
 		}
 		else if (mMountain2X != END_LEFT_X && mMountain2X != END_RIGHT_X) {
 			DrawGraph(mMountain2X, 0, mMo2Handle, TRUE);
-		}
+		}*/
 
 	}
+	else if (!mIsAtBsSt) {	// NormalStageであるとき（BossStageでないとき）
+		// NormalStageの描画
+		for (int i = 0; i < 2; i++) {
+			DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
+		}
+		//// 山の描画
+		//for (int i = 0; i < 2; i++) {
+		//	DrawGraph(mMountainXs[i], 0, mMountainHandles[i], TRUE);
+		//}
+		/*DrawGraph(mMountain1X, 0, mMo1Handle, TRUE);
+		DrawGraph(mMountain2X, 0, mMo2Handle, TRUE);*/
+	}
+	else {	// BossStageのとき
+		// BossStageの描画
+		DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
+	}
 
-	DrawFormatString(500, 200, GetColor(255, 255, 255), "ys = %d", mBackChCnt);
+	//DrawFormatString(500, 200, GetColor(255, 255, 255), "ys = %d", mBackChCnt);
 }
 
-void GameBack::UpdateNormal() {
+
+void GameBack::UpdateNormalBack() {
+	if (mIsChangingSt) {	// BossStageへの変更中のとき
+		// NormalStageと雲の位置の更新
+		for (int i = 0; i < 2; i++) {
+			if (mIsMovingNorSts[i]) {	// NormalStageの画像を動かしているとき
+				mNorStXs[i] -= 1;
+			}
+			
+			mCloudXs[i] -= 0.5f;
+		}
+
+		for (int i = 0; i < 2; i++) {
+			if (mIsMovingNorSts[i] &&	// NormalStageの画像を動かしているときで
+				mNorStXs[i] < BACK_X_MAX - BRIDGE_LX && mNorStXs[i] > 0) {	// 画面内で橋が映りこまないとき
+				// BossStageの画像を動き始めさせる
+				mIsMovingBsSt = true;
+				mBsStX = mNorStXs[i];
+
+				// NormalStageの画像の動きを止める
+				mIsMovingNorSts[i] = false;
+				mNorStXs[i] = BACK_X_MAX;
+			}
+		}
+
+		// NormalStageの画像が移動範囲の左端に行っていた際の処理
+		for (int i = 0; i < 2; i++) {
+			if (mNorStXs[i] <= BACK_X_MIN) {
+				// NormalStageの画像の動きを止める
+				mIsMovingNorSts[i] = false;
+				mNorStXs[i] = BACK_X_MAX;
+				
+				if (!mIsMovingBsSt) {	// BossStageの画像を動き出させていなければ
+					mIsMovingBsSt = true;
+				}
+
+				break;
+			}
+		}
+
+		// 雲の画像が移動範囲の左端に行っていた際の処理
+		for (int i = 0; i < 2; i++) {
+			if (mCloudXs[i] <= BACK_X_MIN) {
+				mCloudXs[i] = BACK_X_MAX;
+			}
+		}
+
+		// BossStageの位置の更新
+		if (mIsMovingBsSt) {
+			if (mBsStX > 0) {	// 画面の左端にBossStageの画像がいっていなければ
+				mBsStX -= 1;
+			}
+			else {	// 画面の左端にBossStageの画像がいっていれば
+				// BossStageが移動を止める
+				mIsMovingBsSt = false;
+				mIsChangingSt = false;
+				// BossStageに入ったことにする
+				mIsAtBsSt = true;
+			}
+		}
+	}
+	else {	// BossStageでなく，BossStageへ変更中でないとき
+		// 位置の更新
+		for (int i = 0; i < 2; i++) {
+			mNorStXs[i] -= 1;
+			mCloudXs[i] -= 0.5f;
+		}
+
+		// 山の画像が移動範囲の左端に行っていた際の処理
+		for (int i = 0; i < 2; i++) {
+			if (mNorStXs[i] <= BACK_X_MIN) {
+				mNorStXs[i] = BACK_X_MAX;
+			}
+		}
+
+		// 雲の画像が移動範囲の左端に行っていた際の処理
+		for (int i = 0; i < 2; i++) {
+			if (mCloudXs[i] <= BACK_X_MIN) {
+				mCloudXs[i] = BACK_X_MAX;
+			}
+		}
+	}
+
 	// 位置の更新
-	mMountain1X -= 1;
+	/*mMountain1X -= 1;
 	mMountain2X -= 1;
 	mClouds1X -= 0.5f;
-	mClouds2X -= 0.5f;
+	mClouds2X -= 0.5f;*/
 
-	// 山の画像が画面の端に行っていた際の処理
-	if (mMountain1X <= END_LEFT_X) {
+	// 山の画像が移動範囲の左端に行っていた際の処理
+	/*if (mMountain1X <= END_LEFT_X) {
 		mMountain1X = END_RIGHT_X;
 		mBackChCnt++;
 	}
 	else if (mMountain2X <= END_LEFT_X) {
 		mMountain2X = END_RIGHT_X;
 		mBackChCnt++;
-	}
+	}*/
 
-	// 雲の画像が画面の端に行っていた際の処理
-	if (mClouds1X <= END_LEFT_X) {
+	// 雲の画像が移動範囲の左端に行っていた際の処理
+	/*if (mClouds1X <= END_LEFT_X) {
 		mClouds1X = END_RIGHT_X;
 	}
 	else if (mClouds2X <= END_LEFT_X) {
 		mClouds2X = END_RIGHT_X;
-	}
+	}*/
 
 	// BossStageに移行するかしないかの判定
 	/*if (mBackChCnt == 1) {
@@ -91,7 +215,19 @@ void GameBack::UpdateNormal() {
 	}*/
 }
 
-void GameBack::UpdateBoss() {
+void GameBack::UpdateBossBack() {
+	// 雲の位置の更新
+	for (int i = 0; i < 2; i++) {
+		mCloudXs[i] -= 0.5f;
+	}
+
+	// 雲の画像が移動範囲の左端に行っていた際の処理
+	for (int i = 0; i < 2; i++) {
+		if (mCloudXs[i] <= BACK_X_MIN) {
+			mCloudXs[i] = BACK_X_MAX;
+		}
+	}
+
 	//if (mUpdFraCnt <= END_RIGHT_X) { //mountainの背景が端から端まで移動し終わるのにかかる時間
 	//	if (mUpdFraCnt % UPDATE_FRAME_NUM == 0) {
 	//		mClouds1X -= 1;
@@ -130,4 +266,15 @@ void GameBack::UpdateBoss() {
 	//}
 
 	//mUpdFraCnt++;
+}
+
+
+void GameBack::SetIsChangingSt(const bool isChangingSt) {
+	// BossStageへ移行中かどうかをセットする
+	mIsChangingSt = isChangingSt;
+}
+
+
+bool GameBack::GetIsAtBsSt() {
+	return mIsAtBsSt;
 }
