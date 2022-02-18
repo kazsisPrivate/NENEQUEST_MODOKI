@@ -25,10 +25,8 @@ public:
 	void SetIsHitMap(std::map<std::string, std::vector<bool>>* isHitMap);	// Item, Enemy, EnemyAttackとの当たり判定の確認結果のMapを受け取る
 	void SetIteDataMaps(std::vector<std::map<std::string, float>>& iteDataMaps);	// Itemの効果の情報を受け取る，Player側でのItemの効果の把握のために使用する
 	void SetEneAPowers(const int* const eneAPs);	// 各Enemyの攻撃力を受け取る，Player側でのEnemyの攻撃力の把握のために使用する
-	//bool GetDead(); //playerのhpが0かどうかを得る　GameOverの画面に移行するのに使う　Game.cppにて使用している
-	
-	
-	
+	void SetIsChangingSt(const bool isChangingSt);	// BossStageへ変化させているかどうかをセットする，PlayerをBossStage前の強制移動のために利用し，GameScene側からセットする
+	void SetIsAtBsSt(const bool isAtBsSt);	// BossStageにいるかどうかをセットする，PlayerをBossStageの挙動にするために利用し，GameScene側からセットする
 
 private:
 	Player* mPlayer;
@@ -40,6 +38,7 @@ private:
 															// キーは対称の物体の種類（item, enemy, enemyAttack, plAToEnemy, plAToItem）, PlayerMgrに渡す
 	const int ENEMY_NUM = 3;	// セットできるEnemyの数
 	const int ITEM_NUM = 2;	// セットできるitemの数
+	//bool mIsChangingSt;	// BossStageへ変化させているときはtrueになる
 
 private:
 	static PlayerMgr* mPlayerMgr;

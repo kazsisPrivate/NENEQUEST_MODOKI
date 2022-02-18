@@ -27,6 +27,8 @@ public:
 	void SetIsHits(std::map<std::string, std::vector<bool>>* isHitMap);	// Item, Enemy, EnemyAttackとの当たり判定の確認結果を受け取り，mPlIsHitとmPlAIsHitに代入する
 	void SetEneAPowers(const int* const eneAPs);	// 各Enemyの攻撃力を受け取る，Player側でのEnemyの攻撃力の把握のために使用する
 	void SetIteParams(std::vector<std::map<std::string, float>>& iteDataMaps);	// 各Itemの情報を受け取る，Player側でのItemの効果の把握のために使用する
+	void SetIsChangingSt(const bool isChangingSt);	// BossStageへ変化させているかどうかをセットする，PlayerをBossStage前の強制移動のために利用し，PlayerMgr側からセットする
+	void SetIsAtBsSt(const bool isAtBsSt);	// BossStageにいるかどうかをセットする，PlayerをBossStageの挙動にするために利用し，PlayerMgr側からセットする
 	
 protected:
 	virtual void Walk() override;
@@ -37,7 +39,7 @@ protected:
 	void UpdateIteEffect();	// 当たり判定を考慮したItemの効果の更新
 	void UpdateEneDamage();	// 当たり判定を考慮したEnemyから受けるダメージの更新
 	void UpdateHp() override;	// itemやEnemyの当たり判定を考慮したhpの更新
-	virtual void StartBossStage();	// bossStageに入ってからの一定時間の動き
+	virtual void StartBossStage() = 0;	// BossStageに入ってからの一定時間の動き
 
 	PlayerChanger* mPlayerChanger;
 	PlayerMgr* mPlayerMgr;	// EnemyやItemなどとの当たり判定などの情報の取得に使用する
@@ -80,19 +82,23 @@ protected:
 	bool mIteIsHits[2];	// itemとの当たり判定の配列
 	std::map<std::string, std::vector<bool>> mPlAIsHitMap;	// itemとenemyをキーとして持ち，それぞれに対して攻撃が当たったかどうかを入れている
 															// Player4の弓矢の処理で使用する
-	bool mIsAtBsSt;	// bossStageに入っていればtrue
-	const int X_MIN_N = 53;	// normal stageの左端のx座標
-	const int X_MAX_N = 1147;	// normal stageの右端のx座標
-	const int Y_MIN_N = 242;	// normal stageの上端のy座標
-	const int Y_MAX_N = 598;	// normal stageの下端のy座標
-	const int X_MIN_B = 53;	// boss stageの左端のx座標
-	const int X_MAX_B = 690;	// boss stageの右端（橋の左端まで）のx座標
-	const int Y_MIN_B = 242;	// boss stageの上端のy座標
-	const int Y_MAX_B = 598;	// boss stageの下端のy座標
-	const int X_MIN_BR = 690;	// boss stageの橋の左端のx座標
-	const int X_MAX_BR = 904;	// boss stageの橋の右端のx座標
-	const int Y_MIN_BR = 401;	// boss stageの橋の上端のy座標
-	const int Y_MAX_BR = 494;	// boss stageの橋の下端のy座標
+	bool mIsChangingSt;	// BossStageに変更中のときtrue
+	const int PL_FIRST_X_AT_BSST = 350;	// BossStageが始まる際のPlayerの最初のx座標，ステージ移行中にこの付近の座標に強制移動する
+	const int PL_FIRST_Y_AT_BSST = 450;	// BossStageが始まる際のPlayerの最初のx座標，ステージ移行中にこの付近の座標に強制移動する
+	const int SPEED_CHANGING_ST = 2;	// BossStageに移行する際の強制移動でのPlayerの移動速度（xy座標の増加（減少）量）
+	bool mIsAtBsSt;	// BossStageに入っていればtrue
+	const int X_MIN_N = 53;	// NormalStageの左端のx座標
+	const int X_MAX_N = 1147;	// NormalStageの右端のx座標
+	const int Y_MIN_N = 242;	// NormalStageの上端のy座標
+	const int Y_MAX_N = 598;	// NormalStageの下端のy座標
+	const int X_MIN_B = 53;	// BossStageの左端のx座標
+	const int X_MAX_B = 690;	// BossStageの右端（橋の左端まで）のx座標
+	const int Y_MIN_B = 242;	// BossStageの上端のy座標
+	const int Y_MAX_B = 598;	// BossStageの下端のy座標
+	const int X_MIN_BR = 690;	// BossStageの橋の左端のx座標
+	const int X_MAX_BR = 904;	// BossStageの橋の右端のx座標
+	const int Y_MIN_BR = 401;	// BossStageの橋の上端のy座標
+	const int Y_MAX_BR = 494;	// BossStageの橋の下端のy座標
 	//std::map<std::string, int> mPlIntDataMap;	// x, y, hp, hitRangeW, hitRangeH, hitRangeAW, hitRangeAH, effectFrameCnt, bsStopFrameCnt, effectIdなどを入れているmap，他のクラスに渡す用
 	//std::map<std::string, bool> mPlBoolDataMap;	// isDead, isAttackingなどを入れているmap，他のクラスに渡す用
 	int mEneAPs[3];	// 各Enemyの攻撃力を入れた配列

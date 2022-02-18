@@ -34,16 +34,18 @@ void PlayerMgr::Initialize() {
 	std::map<std::string, bool> plBoolDataMap;
 	plIntDataMap["x"] = 290;
 	plIntDataMap["y"] = 500;
-	plIntDataMap["hp"] = 5;
+	plIntDataMap["hp"] = 10;
 	plIntDataMap["effectFrameCnt"] = 0;
 	plIntDataMap["bsStopFrameCnt"] = 0;
 	plIntDataMap["effectId"] = 0;
 	plIntDataMap["godFrameCnt"] = 0;
 	plBoolDataMap["isDead"] = false;
 	plBoolDataMap["isGod"] = false;
+	plBoolDataMap["isChanginSt"] = false;
+	plBoolDataMap["isAtBsSt"] = false;
 
 	// 最初に使用するPlayerの初期化
-	mPlayer = (Player*)Player1::GetInstance();
+	mPlayer = (Player*)Player4::GetInstance();
 	mPlayer->SetPlParams(&plIntDataMap, &plBoolDataMap);
 	mPlayer->Initialize();
 
@@ -177,4 +179,16 @@ void PlayerMgr::SetIteDataMaps(std::vector<std::map<std::string, float>>& iteDat
 		mIteDataMaps.at(i)["attackPower"] = iteDataMaps.at(i)["attackPower"];
 		mIteDataMaps.at(i)["itemId"] = iteDataMaps.at(i)["itemId"];
 	}
+}
+
+
+void PlayerMgr::SetIsChangingSt(const bool isChangingSt) {
+	// BossStageへ変更中かどうかセット
+	mPlayer->SetIsChangingSt(isChangingSt);
+}
+
+
+void PlayerMgr::SetIsAtBsSt(const bool isAtBsSt) {
+	// BossStageに入っているかどうかセット
+	mPlayer->SetIsAtBsSt(isAtBsSt);
 }
