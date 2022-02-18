@@ -21,7 +21,6 @@ protected:
 	void Walk() override;
 	void Jump() override;
 	void Attack() override;
-	//void UpdateHit() override; //Player_4‚É‚¨‚¢‚Ä‚Ì‚İUŒ‚‚Ì“–‚½‚è”»’è‚Ìæ‚è•û‚ªˆÙ‚È‚é‚½‚ß
 	void StartBossStage() override;
 
 private:

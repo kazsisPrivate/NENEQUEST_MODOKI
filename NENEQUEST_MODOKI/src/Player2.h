@@ -12,13 +12,11 @@ public:
 	void Initialize() override;
 	void Finalize() override;
 	void Update() override;
-	//void Draw() override;
 
 protected:
-	//void UpdateSAP() override;
 	void Walk() override;
 	void Jump() override;
-	//void Attack() override;
+	void StartBossStage() override;
 
 private:
 	static Player2* mPlayer2;
