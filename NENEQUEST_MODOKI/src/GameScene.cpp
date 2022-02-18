@@ -110,6 +110,10 @@ void GameScene::Initialize() {
 	// Playerは死んでいない状態として設定
 	mPlIsDead = false;
 
+	// Stage関連の設定
+	mIsChangingSt = false;
+	mIsAtBsSt = false;
+
 	// Timerを開始する
 	mTimeCounter->StartTime();
 }
@@ -232,13 +236,46 @@ void GameScene::Update() {
 		UpdateDOrder();
 
 		// 新しいEnemyとItemを出現させる（かどうかを決める）
-		if (mFrameCnt >= 300) {	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+		if (mFrameCnt >= 300 &&	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+			mFrameCnt < BOSS_START_FRAME_NUM) {	// BossStageの移行を始めようとしていなかったら
 			// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
 			if (mFrameCnt % CREATION_FRAME_NUM == 0) {
 				mItemMgr->CreateItem();
 			}
 			else if ((mFrameCnt + CREATION_FRAME_NUM / 2) % CREATION_FRAME_NUM == 0) {
 				mEnemyMgr->CreateEnemy();
+			}
+		}
+
+		// BossStageへの移行を始めるかどうかを決める
+		if (!mIsAtBsSt) {	// BossStageに入っていないとき
+			if (!mIsChangingSt) {	// BossStageへの移行を始めていないとき
+				if (mFrameCnt >= BOSS_START_FRAME_NUM) {	// BossStageの移行を始めたい時間を超えているとき
+					bool eneIteIsExisting = false;
+					for (int i = 0; i < ENEMY_NUM; i++) {
+						if (mEneIsExistings[i]) eneIteIsExisting = true;
+					}
+					for (int i = 0; i < ITEM_NUM; i++) {
+						if (mIteIsExistings[i]) eneIteIsExisting = true;
+					}
+
+					if (!eneIteIsExisting) {	// EnemyとItemが存在しない状態になったら
+						// BossStageへの移行を始める
+						mIsChangingSt = true;
+						mGameBack->SetIsChangingSt(mIsChangingSt);
+						mPlayerMgr->SetIsChangingSt(mIsChangingSt);
+					}
+				}
+			}
+			else {	// BossStageへの移行中のとき
+				// BossStageへの移行が完了したかどうかを確認する
+				mIsAtBsSt = mGameBack->GetIsAtBsSt();
+
+				if (mIsAtBsSt) {	// 移行が完了していたら
+					mIsChangingSt = false;
+					mPlayerMgr->SetIsChangingSt(mIsChangingSt);
+					mPlayerMgr->SetIsAtBsSt(mIsAtBsSt);
+				}
 			}
 		}
 
