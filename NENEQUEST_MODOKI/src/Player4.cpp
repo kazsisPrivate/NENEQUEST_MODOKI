@@ -73,7 +73,7 @@ void Player4::Update() {
 		// boss stageに突入しているかしていないかチェック
 		//mIsAtBsSt = PlayerData::GetBossFlag();
 
-		if (mIsAtBsSt && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
+		if (mIsChangingSt) {	// BossStageの始まる際の強制的な移動処理
 			StartBossStage();
 		}
 		else {
@@ -193,24 +193,24 @@ void Player4::UpdateSAP() {
 	// 移動速度の更新
 	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
 		if (mIsJumping) {	// ジャンプしているとき
-			mSpeed = 0.8f;
+			mSpeed = 4 * 0.8f;
 		}
 		else if (mIsAttacking || mIsPreparingWA || mIsPreparingSA) {	// 攻撃しているときor攻撃準備中のとき
-			mSpeed = 0.5f;
+			mSpeed = 4 * 0.5f;
 		}
 		else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
-			mSpeed = 0.625f;
+			mSpeed = 4 * 0.625f;
 		}
 		else {
-			mSpeed = 1.0f;
+			mSpeed = 4 * 1.0f;
 		}
 	}
 	else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
 		if (mIsAttacking || mIsPreparingWA || mIsPreparingSA) {	// 攻撃しているときor攻撃準備中のとき
-			mSpeed = 0.5f;
+			mSpeed = 4 * 0.5f;
 		}
 		else {
-			mSpeed = 0.80f;
+			mSpeed = 4 * 0.80f;
 		}
 	}
 
@@ -321,6 +321,7 @@ void Player4::PrepareWAttack() {	// 弱い攻撃（弓矢が近くに落ちる，入力Dキー）
 	}
 }
 
+
 void Player4::PrepareSAttack() {	// 強い攻撃（弓矢が遠くまで飛ぶ，入力Sキー）
 	mHandleId += 2;
 
@@ -375,80 +376,165 @@ void Player4::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<st
 }
 
 
+//void Player4::StartBossStage() {
+//
+//	//attackFlag = mArrow->GetArrowFlag();
+//
+//	//if (attackFlag == true) {
+//	//	mArrow->Update();
+//	//}
+//
+//	//prev_x = x;
+//	//prev_y = y;
+//	//prev_xcount = xcount;
+//	//prev_ycount = ycount;
+//
+//	//if (x > 353) {
+//	//	x -= 2;
+//
+//	//	/*if (xcount > 0) {
+//	//	xcount = 0;
+//	//	}*/
+//	//	--xcount;
+//	//}
+//	//if (x < 349) {
+//	//	x += 2;
+//
+//	//	/*if (xcount < 0) {
+//	//	xcount = 0;
+//	//	}*/
+//	//	++xcount;
+//	//}
+//	//if (y > 453) {
+//	//	y -= 2;
+//
+//	//	/*if (ycount > 0) {
+//	//	ycount = 0;
+//	//	}*/
+//	//	--ycount;
+//	//}
+//	//if (y < 449) {
+//	//	prev_y = y;
+//	//	y += 2;
+//
+//	//	/*if (ycount < 0) {
+//	//	ycount = 0;
+//	//	}*/
+//	//	++ycount;
+//	//}
+//
+//
+//	//if (y == prev_y && x == prev_x) {
+//	//	handleNumber = 0;
+//	//}
+//	//else {
+//	//	if (xcount != prev_xcount) {
+//	//		ix = abs(xcount) % 40 / 20;
+//
+//	//		if (xcount > 0) {
+//	//			ix += 0;
+//	//			handleNumber = ix;
+//	//		}
+//	//		else if (xcount < 0) {
+//	//			ix += 8;
+//	//			handleNumber = ix;
+//	//		}
+//	//	}
+//
+//	//	if (prev_ycount != prev_ycount && ycount != 0) {
+//	//		if ((handleNumber > 5 && handleNumber < 12) || handleNumber > 17) {
+//	//			iy += 8;
+//	//		}
+//
+//	//		handleNumber = iy;
+//	//	}
+//	//}
+//
+//	//PlayerData::SetBscount(bscount + 1);
+//	//bscount++;
+//}
+
 void Player4::StartBossStage() {
+	// 弓矢の更新
+	mIsAttacking = mArrow->GetArrowExists();
 
-	//attackFlag = mArrow->GetArrowFlag();
+	if (mIsAttacking) {
+		mArrow->Update();
+	}
 
-	//if (attackFlag == true) {
-	//	mArrow->Update();
-	//}
+	// x座標の更新
+	if (mX < PL_FIRST_X_AT_BSST - SPEED_CHANGING_ST) {	// セットしたい位置付近より左側にいたら
+		mX += SPEED_CHANGING_ST;
+		mHandleId = 0;
 
-	//prev_x = x;
-	//prev_y = y;
-	//prev_xcount = xcount;
-	//prev_ycount = ycount;
+		if (mXFrameCnt < 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが左側に移動中だったとき）
+			mXFrameCnt = 0;
+		}
 
-	//if (x > 353) {
-	//	x -= 2;
+		mXFrameCnt++;
+	}
+	else if (mX > PL_FIRST_X_AT_BSST + SPEED_CHANGING_ST) {	// セットしたい位置付近より右側にいたら
+		mX -= SPEED_CHANGING_ST;
+		mHandleId = 8;
 
-	//	/*if (xcount > 0) {
-	//	xcount = 0;
-	//	}*/
-	//	--xcount;
-	//}
-	//if (x < 349) {
-	//	x += 2;
+		if (mXFrameCnt > 0) {	// BossStageに入ったときにmXFrameCntが0より大きいとき（Playerが右側に移動中だったとき）
+			mXFrameCnt = 0;
+		}
 
-	//	/*if (xcount < 0) {
-	//	xcount = 0;
-	//	}*/
-	//	++xcount;
-	//}
-	//if (y > 453) {
-	//	y -= 2;
+		mXFrameCnt--;
+	}
+	else {
+		mHandleId = 0;
+		mXFrameCnt = 0;
+	}
 
-	//	/*if (ycount > 0) {
-	//	ycount = 0;
-	//	}*/
-	//	--ycount;
-	//}
-	//if (y < 449) {
-	//	prev_y = y;
-	//	y += 2;
+	// y座標の更新
+	if (mY < PL_FIRST_Y_AT_BSST - SPEED_CHANGING_ST) {	// セットしたい位置付近より上側にいたら
+		mY += SPEED_CHANGING_ST;
 
-	//	/*if (ycount < 0) {
-	//	ycount = 0;
-	//	}*/
-	//	++ycount;
-	//}
+		if (mYFrameCnt < 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが上側に移動中だったとき）
+			mYFrameCnt = 0;
+		}
 
+		mYFrameCnt++;
+	}
+	else if (mY > PL_FIRST_Y_AT_BSST + SPEED_CHANGING_ST) {	// セットしたい位置付近より下側にいたら
+		mY -= SPEED_CHANGING_ST;
 
-	//if (y == prev_y && x == prev_x) {
-	//	handleNumber = 0;
-	//}
-	//else {
-	//	if (xcount != prev_xcount) {
-	//		ix = abs(xcount) % 40 / 20;
+		if (mYFrameCnt > 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが下側に移動中だったとき）
+			mYFrameCnt = 0;
+		}
 
-	//		if (xcount > 0) {
-	//			ix += 0;
-	//			handleNumber = ix;
-	//		}
-	//		else if (xcount < 0) {
-	//			ix += 8;
-	//			handleNumber = ix;
-	//		}
-	//	}
+		mYFrameCnt--;
+	}
+	else {
+		mYFrameCnt = 0;
+	}
 
-	//	if (prev_ycount != prev_ycount && ycount != 0) {
-	//		if ((handleNumber > 5 && handleNumber < 12) || handleNumber > 17) {
-	//			iy += 8;
-	//		}
+	// 表示するplayerの画像番号の更新を行う
+	int ix = abs(mXFrameCnt) % 40 / 20;
+	int iy = abs(mYFrameCnt) % 40 / 20;
 
-	//		handleNumber = iy;
-	//	}
-	//}
+	if (mXFrameCnt != 0) {
+		mHandleId = ix;
+	}
+	if (mYFrameCnt != 0) {
+		mHandleId = iy;
+	}
 
-	//PlayerData::SetBscount(bscount + 1);
-	//bscount++;
+	if (mXFrameCnt > 0) {
+		ix += 0;
+		mHandleId = ix;
+	}
+	else if (mXFrameCnt < 0) {
+		ix += 8;
+		mHandleId = ix;
+	}
+	if (mYFrameCnt != 0) {
+		if ((mHandleId > 7 && mHandleId < 16) || mHandleId > 23) {	// 左を向いているとき
+			iy += 8;
+		}
+
+		mHandleId = iy;
+	}
 }

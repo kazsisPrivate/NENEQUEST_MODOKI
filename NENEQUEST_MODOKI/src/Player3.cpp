@@ -74,7 +74,7 @@ void Player3::Update() {
 		UpdateHp();
 
 
-		if (mIsAtBsSt && mBsStopFrameCnt <= 1280) {	// boss stageの始まる際の強制的な移動処理
+		if (mIsChangingSt) {	// BossStageの始まる際の強制的な移動処理
 			StartBossStage();
 		}
 		else {
@@ -198,4 +198,83 @@ void Player3::Jump() {
 
 	// playerの座標の更新を行う
 	Player::Jump();
+}
+
+
+void Player3::StartBossStage() {
+	// x座標の更新
+	if (mX < PL_FIRST_X_AT_BSST - SPEED_CHANGING_ST) {	// セットしたい位置付近より左側にいたら
+		mX += SPEED_CHANGING_ST;
+		mHandleId = 0;
+
+		if (mXFrameCnt < 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが左側に移動中だったとき）
+			mXFrameCnt = 0;
+		}
+
+		mXFrameCnt++;
+	}
+	else if (mX > PL_FIRST_X_AT_BSST + SPEED_CHANGING_ST) {	// セットしたい位置付近より右側にいたら
+		mX -= SPEED_CHANGING_ST;
+		mHandleId = 6;
+
+		if (mXFrameCnt > 0) {	// BossStageに入ったときにmXFrameCntが0より大きいとき（Playerが右側に移動中だったとき）
+			mXFrameCnt = 0;
+		}
+
+		mXFrameCnt--;
+	}
+	else {
+		mHandleId = 0;
+		mXFrameCnt = 0;
+	}
+
+	// y座標の更新
+	if (mY < PL_FIRST_Y_AT_BSST - SPEED_CHANGING_ST) {	// セットしたい位置付近より上側にいたら
+		mY += SPEED_CHANGING_ST;
+
+		if (mYFrameCnt < 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが上側に移動中だったとき）
+			mYFrameCnt = 0;
+		}
+
+		mYFrameCnt++;
+	}
+	else if (mY > PL_FIRST_Y_AT_BSST + SPEED_CHANGING_ST) {	// セットしたい位置付近より下側にいたら
+		mY -= SPEED_CHANGING_ST;
+
+		if (mYFrameCnt > 0) {	// BossStageに入ったときにmXFrameCntが0より小さいとき（Playerが下側に移動中だったとき）
+			mYFrameCnt = 0;
+		}
+
+		mYFrameCnt--;
+	}
+	else {
+		mYFrameCnt = 0;
+	}
+
+	// 表示するplayerの画像番号の更新を行う
+	int ix = abs(mXFrameCnt) % 40 / 20;
+	int iy = abs(mYFrameCnt) % 40 / 20;
+
+	if (mXFrameCnt != 0) {
+		mHandleId = ix;
+	}
+	if (mYFrameCnt != 0) {
+		mHandleId = iy;
+	}
+
+	if (mXFrameCnt > 0) {
+		ix += 0;
+		mHandleId = ix;
+	}
+	else if (mXFrameCnt < 0) {
+		ix += 6;
+		mHandleId = ix;
+	}
+	if (mYFrameCnt != 0) {
+		if ((mHandleId > 5 && mHandleId < 12) || mHandleId > 17) {	// 左を向いているとき
+			iy += 6;
+		}
+
+		mHandleId = iy;
+	}
 }
