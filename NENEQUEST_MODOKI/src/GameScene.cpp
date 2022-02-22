@@ -221,6 +221,18 @@ void GameScene::Update() {
 		// Playerが死んでいるかどうかを入れる
 		mPlIsDead = mPlBoolDataMap["isDead"];
 
+		// EnemyがBossだった際の特別な処理
+		for (int i = 0; i < ENEMY_NUM; i++) {
+			if (mEneIsExistings[i]) {
+				if (mEneBoolDataMaps.at(i)["isBoss"]) {	// Bossだったとき
+					if (mEneBoolDataMaps.at(i)["isCreatingIteB"]) {	// ItemBoxを生成してほしいときだったら
+						mItemMgr->CreateItem(mEneIntDataMaps.at(i)["itemBoxKind"],
+							mEneIntDataMaps.at(i)["itemBoxX"], mEneIntDataMaps.at(i)["itemBoxY"]);
+					}
+				}
+			}
+		}
+
 		// 各オブジェクトの当たり判定を確認
 		UpdateHit();
 
@@ -236,7 +248,7 @@ void GameScene::Update() {
 		UpdateDOrder();
 
 		// 新しいEnemyとItemを出現させる（かどうかを決める）
-		if (mFrameCnt >= 300 &&	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+		if (mFrameCnt >= 2000 &&	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
 			mFrameCnt < BOSS_START_FRAME_NUM) {	// BossStageの移行を始めようとしていなかったら
 			// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
 			if (mFrameCnt % CREATION_FRAME_NUM == 0) {
@@ -262,8 +274,9 @@ void GameScene::Update() {
 					if (!eneIteIsExisting) {	// EnemyとItemが存在しない状態になったら
 						// BossStageへの移行を始める
 						mIsChangingSt = true;
-						mGameBack->SetIsChangingSt(mIsChangingSt);
+						mGameBack->StartChangingSt();
 						mPlayerMgr->SetIsChangingSt(mIsChangingSt);
+						mEnemyMgr->CreateEnemyBoss(mGameBack->GetBsStX());
 					}
 				}
 			}
