@@ -20,6 +20,7 @@ void EnemyBoar::Initialize() {
 
 	// ‚»‚Ì‘¼
 	mExistingFrameCnt = 0;
+	mIsBoss = false;
 }
 
 

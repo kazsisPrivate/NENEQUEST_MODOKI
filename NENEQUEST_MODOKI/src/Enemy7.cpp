@@ -50,6 +50,7 @@ void Enemy7::Initialize() {
 	mHasFinishedRos = false;
 	mIsAttacking = false;
 	mEne7IsDead = false;
+	mIsBoss = false;
 
 	// “|‚µ‚½‚ç“¾‚ç‚ê‚éƒXƒRƒA‚Ìİ’è
 	mScore = 2000;

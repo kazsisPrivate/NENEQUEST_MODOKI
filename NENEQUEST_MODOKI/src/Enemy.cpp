@@ -41,6 +41,7 @@ void Enemy::GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector
 
 	(*eneBoolDataMap)["isDead"] = mIsDead;
 	(*eneBoolDataMap)["isAttacking"] = mIsAttacking;
+	(*eneBoolDataMap)["isBoss"] = mIsBoss;
 }
 
 

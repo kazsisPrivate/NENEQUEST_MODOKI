@@ -53,6 +53,7 @@ void EnemyMage::Initialize() {
 	mHasFinishedRos = false;
 	mIsAttacking = false;
 	mMageIsDead = false;
+	mIsBoss = false;
 }
 
 

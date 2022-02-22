@@ -41,6 +41,7 @@ protected:
 	const int GOD_FRAME_NUM = 100;	// 攻撃を受けてから無敵でいられるフレーム数
 	const int DEAD_STOP_FRAME_NUM = 10;	// hpが0になってから死んだことを認識させるためのEnemyの硬直時間（フレーム数）
 	bool mIsDead;	// EnemyがPlayerに倒されたときにtrueになる
+	bool mIsBoss;	// EnemyがBossだったときtrue, EnemyBoss以外はfalse, GameSceneの方で行う処理でBossの時のみ行う処理があり使用する
 	//const int type; //そのenemyの攻撃や移動のパターンの番号
 	//int plPower; //Playerから攻撃を受けたときのPlayerの攻撃力
 	//bool paJudge; //Playerの攻撃との当たり判定
