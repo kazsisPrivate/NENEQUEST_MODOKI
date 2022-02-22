@@ -7,7 +7,7 @@
 #include "Enemy5.h"
 #include "Enemy6.h"
 #include "Enemy7.h"	// ここからその他
-//#include "EnemyBoss.h"
+#include "EnemyBoss.h"
 #include "EnemyMgr.h"
 #include <cmath>
 #include <random>
@@ -87,6 +87,9 @@ void EnemyMgr::Update() {
 			case eEnemy7:
 				mEnemies[i] = (Enemy*) new Enemy7(this, i, mEnesNextX[i], mEnesNextY[i]);
 				break;
+			case eEnemyBoss:
+				mEnemies[i] = (Enemy*) new EnemyBoss(this, i, mEnesNextX[i], mEnesNextY[i]);
+				break;
 			default:	// case eEnemyNULL
 				mEnemies[i] = NULL;
 				break;
@@ -117,10 +120,26 @@ void EnemyMgr::Draw(const int eneIdx) {
 
 
 void EnemyMgr::ChangeEnemy(const int eneIdx, EEnemy eneNext, const int eneNextX, const int eneNextY) {
-	mEnesNext[eneIdx] = eneNext;
+	if (eneIdx == -1) {
+		// mEnemiesで空いているところがあればセットする
+		for (int i = 0; i < ENEMY_NUM; i++) {
+			if (!mEnemies[i]) {
+				mEnesNext[i] = eneNext;
 
-	mEnesNextX[eneIdx] = eneNextX;
-	mEnesNextY[eneIdx] = eneNextY;
+				mEnesNextX[i] = eneNextX;
+				mEnesNextY[i] = eneNextY;
+
+				break;
+			}
+		}
+	}
+	else {
+		mEnesNext[eneIdx] = eneNext;
+
+		mEnesNextX[eneIdx] = eneNextX;
+		mEnesNextY[eneIdx] = eneNextY;
+	}
+	
 }
 
 
@@ -188,7 +207,7 @@ void EnemyMgr::CreateEnemy() {
 		if (!mEnemies[i]) {
 			if (randNum >= 10000 - creationProb) {	// Enemyを生成するとき
 				// 次のEnemyのy座標を決めておく
-				mEnesNextY[i] = rnd() % (ITEM_FIRST_Y_MAX - ITEM_FIRST_Y_MIN) + ITEM_FIRST_Y_MIN;
+				mEnesNextY[i] = rnd() % (ENEMY_FIRST_Y_MAX - ENEMY_FIRST_Y_MIN) + ENEMY_FIRST_Y_MIN;
 
 				// randNumを1～creationProbの範囲にしたのち，1～100の範囲の値に正規化する
 				randNum = 10000 - randNum + 1;
@@ -252,4 +271,11 @@ void EnemyMgr::CreateEnemy() {
 			}
 		}
 	}
+}
+
+
+void EnemyMgr::CreateEnemyBoss(const int bossBackX) {
+	mEnesNext[0] = eEnemyBoss;
+	mEnesNextX[0] = bossBackX + 1160;
+	mEnesNextY[0] = 400;
 }
