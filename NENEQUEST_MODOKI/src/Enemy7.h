@@ -9,10 +9,10 @@
 class Enemy7 : public Enemy {
 public:
 	Enemy7(EnemyChanger* changer, const int eneIdx, const int x, const int y);
-	virtual void Initialize() override;
-	virtual void Finalize() override;
-	virtual void Update();
-	virtual void Draw();
+	void Initialize() override;
+	void Finalize() override;
+	void Update() override;
+	void Draw() override;
 	void GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector<std::map<std::string, int>>* eneAXYMapVec,
 		std::map<std::string, bool>* eneBoolDataMap) override;	// Enemyのデータを渡すために使用する
 

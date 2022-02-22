@@ -11,8 +11,8 @@ public:
 	EnemyMage(EnemyChanger* changer, const int* graph, const int eneIdx, const int x, const int y);
 	virtual void Initialize() override;
 	virtual void Finalize() override;
-	virtual void Update();
-	virtual void Draw();
+	virtual void Update() override;
+	virtual void Draw() override;
 	void GetEneDataMap(std::map<std::string, int>* eneIntDataMap, std::vector<std::map<std::string, int>>* eneAXYMapVec,
 		std::map<std::string, bool>* eneBoolDataMap) override;	// Enemyのデータを渡すために使用する
 
