@@ -83,11 +83,8 @@ const int* CharaGraphics::GetGraHandle(const int type, const int charaId) {
 		else if (charaId <= 7) {
 			return mEne3to7Handles[charaId-3];
 		}
-		else if (charaId == 8){
-			return mEneBossHandle;
-		}
 		else {
-			return NULL;
+			return mEneBossHandle;
 		}
 	}
 }
