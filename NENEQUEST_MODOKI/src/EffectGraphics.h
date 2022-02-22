@@ -11,6 +11,6 @@ private:
 	static int mArrowHitHandle;	// Arrowが当たったときのエフェクト
 	static int mMgFireHandles[2];	// Enemy4, 5, 6が使用する火の玉（Enemy4, 5は赤い火の玉，Enemy6は青い火の玉）
 	static int mSlashHandle[4];	// Enemy7が使用する鎌攻撃のエフェクト
-	static int mBsFireHandles[2][2];	// EnemyBossが吐く火の玉(通常モードの火の玉と怒りモードの火の玉)
+	static int mBsFireBallHandles[2][2];	// EnemyBossが吐く火の玉(通常モードの火の玉と怒りモードの火の玉)
 	static int mBsFireBreHandles[2];	// EnemyBossが吐く火の息の玉(通常モードの火の玉と怒りモードの火の玉)
 };
