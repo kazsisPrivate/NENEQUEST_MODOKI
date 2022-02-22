@@ -6,7 +6,7 @@ int EffectGraphics::mEfe1to3Handles[3];
 int EffectGraphics::mArrowHitHandle;
 int EffectGraphics::mMgFireHandles[2];
 int EffectGraphics::mSlashHandle[4];
-int EffectGraphics::mBsFireHandles[2][2];
+int EffectGraphics::mBsFireBallHandles[2][2];
 int EffectGraphics::mBsFireBreHandles[2];
 
 
@@ -27,8 +27,8 @@ void EffectGraphics::Initialize() {	// 画像の読み込み
 	LoadDivGraph("images/slash.png", 4, 2, 2, 250, 150, mSlashHandle);
 	
 	// EnemyBossが吐く火の玉(通常モードの火の玉と怒りモードの火の玉)の画像の読み込み
-	LoadDivGraph("images/bossfire1.png", 2, 1, 2, 208, 208, mBsFireHandles[0]);
-	LoadDivGraph("images/bossfire2.png", 2, 1, 2, 208, 208, mBsFireHandles[1]);
+	LoadDivGraph("images/bossfireball1.png", 2, 1, 2, 208, 208, mBsFireBallHandles[0]);
+	LoadDivGraph("images/bossfireball2.png", 2, 1, 2, 208, 208, mBsFireBallHandles[1]);
 
 	// EnemyBossが吐く火の息の玉(通常モードの火の玉と怒りモードの火の玉)の画像の読み込み
 	mBsFireBreHandles[0] = LoadGraph("images/bossfirebreath1.png");
@@ -58,7 +58,7 @@ void EffectGraphics::Finalize() {	// 画像の削除
 	// EnemyBossが吐く火の玉(通常モードの火の玉と怒りモードの火の玉)の画像の削除
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
-			DeleteGraph(mBsFireHandles[i][j]);
+			DeleteGraph(mBsFireBallHandles[i][j]);
 		}
 	}
 
@@ -83,7 +83,7 @@ int* EffectGraphics::GetGraHandle(const int efeId) {
 		return mSlashHandle;
 	}
 	else if (efeId <= 9) {	// EnemyBossが吐く火の玉(通常モードの火の玉と怒りモードの火の玉)
-		return mBsFireHandles[efeId - 8];
+		return mBsFireBallHandles[efeId - 8];
 	}
 	else {	// EnemyBossが吐く火の息の玉(通常モードの火の玉と怒りモードの火の玉)
 		return &mBsFireBreHandles[efeId - 10];
