@@ -22,7 +22,7 @@ void GameBack::Initialize() {
 	for (int i = 0; i < 2; i++) {
 		mIsMovingNorSts[i] = true;
 	}
-	mIsMovingBsSt = false;
+	//mIsMovingBsSt = false;
 	mIsAtBsSt = false;	
 }
 
@@ -62,9 +62,10 @@ void GameBack::Draw() {
 	
 	if (mIsChangingSt) {	// BossStageに移行中のとき
 		// BossStageの描画
-		if (mIsMovingBsSt) {	// BossStageの画像を動かしているとき
-			DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
-		}
+		DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
+		//if (mIsMovingBsSt) {	// BossStageの画像を動かしているとき
+		//	DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
+		//}
 		
 		// NormalStageの描画
 		for (int i = 0; i < 2; i++) {
@@ -112,18 +113,18 @@ void GameBack::UpdateNormalBack() {
 			mCloudXs[i] -= 0.5f;
 		}
 
-		for (int i = 0; i < 2; i++) {
-			if (mIsMovingNorSts[i] &&	// NormalStageの画像を動かしているときで
-				mNorStXs[i] < BACK_X_MAX - BRIDGE_LX && mNorStXs[i] > 0) {	// 画面内で橋が映りこまないとき
-				// BossStageの画像を動き始めさせる
-				mIsMovingBsSt = true;
-				mBsStX = mNorStXs[i];
+		//for (int i = 0; i < 2; i++) {
+		//	if (mIsMovingNorSts[i] &&	// NormalStageの画像を動かしているときで
+		//		mNorStXs[i] < BACK_X_MAX - BRIDGE_LX && mNorStXs[i] > 0) {	// 画面内で橋が映りこまないとき
+		//		// BossStageの画像を動き始めさせる
+		//		mIsMovingBsSt = true;
+		//		mBsStX = mNorStXs[i];
 
-				// NormalStageの画像の動きを止める
-				mIsMovingNorSts[i] = false;
-				mNorStXs[i] = BACK_X_MAX;
-			}
-		}
+		//		// NormalStageの画像の動きを止める
+		//		mIsMovingNorSts[i] = false;
+		//		mNorStXs[i] = BACK_X_MAX;
+		//	}
+		//}
 
 		// NormalStageの画像が移動範囲の左端に行っていた際の処理
 		for (int i = 0; i < 2; i++) {
@@ -132,9 +133,9 @@ void GameBack::UpdateNormalBack() {
 				mIsMovingNorSts[i] = false;
 				mNorStXs[i] = BACK_X_MAX;
 				
-				if (!mIsMovingBsSt) {	// BossStageの画像を動き出させていなければ
-					mIsMovingBsSt = true;
-				}
+				//if (!mIsMovingBsSt) {	// BossStageの画像を動き出させていなければ
+				//	mIsMovingBsSt = true;
+				//}
 
 				break;
 			}
@@ -148,17 +149,15 @@ void GameBack::UpdateNormalBack() {
 		}
 
 		// BossStageの位置の更新
-		if (mIsMovingBsSt) {
-			if (mBsStX > 0) {	// 画面の左端にBossStageの画像がいっていなければ
-				mBsStX -= 1;
-			}
-			else {	// 画面の左端にBossStageの画像がいっていれば
-				// BossStageが移動を止める
-				mIsMovingBsSt = false;
-				mIsChangingSt = false;
-				// BossStageに入ったことにする
-				mIsAtBsSt = true;
-			}
+		if (mBsStX > 0) {	// 画面の左端にBossStageの画像がいっていなければ(BossStageの背景への移行が終わっていなければ)
+			mBsStX -= 1;
+		}
+		else {	// 画面の左端にBossStageの画像がいっていれば
+			// BossStageへの移行を終了する
+			//mIsMovingBsSt = false;
+			mIsChangingSt = false;
+			// BossStageに入ったことにする
+			mIsAtBsSt = true;
 		}
 	}
 	else {	// BossStageでなく，BossStageへ変更中でないとき
@@ -269,9 +268,39 @@ void GameBack::UpdateBossBack() {
 }
 
 
-void GameBack::SetIsChangingSt(const bool isChangingSt) {
-	// BossStageへ移行中かどうかをセットする
-	mIsChangingSt = isChangingSt;
+void GameBack::StartChangingSt() {
+	// BossStageの背景画像のx座標をセットする
+	bool hasSetBsStX = false;	// BossStageの背景画像のx座標をセットしたかどうか
+	// NormalStageの背景画像と入れ替えられる位置にNormalStageの背景画像があれば交換する
+	for (int i = 0; i < 2; i++) {
+		if (mIsMovingNorSts[i] &&	// NormalStageの画像を動かしているときで
+			mNorStXs[i] < BACK_X_MAX && mNorStXs[i] > BACK_X_MAX - BRIDGE_LX) {	// 画面内で橋が映りこまないとき
+			// BossStageの画像をセットする
+			mBsStX = mNorStXs[i];
+			hasSetBsStX = true;
+
+			// BossStageといれかえて映す必要のなくなったNormalStageの画像の動きを止める
+			mIsMovingNorSts[i] = false;
+			mNorStXs[i] = BACK_X_MAX;
+		}
+	}
+	if (!hasSetBsStX) {	// BossStageの画像のx座標をセットしていなかったら
+		// 2つのNormalStageの画像右側にある画像の右端のx座標をBossStageのx座標としてセットする
+		if (mNorStXs[0] > mNorStXs[1]) {
+			mBsStX = mNorStXs[0] + STAGE_IMG_W;
+		}
+		else {
+			mBsStX = mNorStXs[1] + STAGE_IMG_W;
+		}
+	}
+
+	// BossStageへ移行中を始める
+	mIsChangingSt = true;
+}
+
+
+int GameBack::GetBsStX() {
+	return mBsStX;
 }
 
 
