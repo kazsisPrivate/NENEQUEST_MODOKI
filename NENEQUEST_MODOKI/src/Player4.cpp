@@ -456,9 +456,9 @@ void Player4::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<st
 
 void Player4::StartBossStage() {
 	// ‹|–î‚ÌXV
-	mIsAttacking = mArrow->GetArrowExists();
+	mArrowExists = mArrow->GetArrowExists();
 
-	if (mIsAttacking) {
+	if (mArrowExists) {
 		mArrow->Update();
 	}
 
@@ -537,4 +537,7 @@ void Player4::StartBossStage() {
 
 		mHandleId = iy;
 	}
+
+	mIsAttacking = false;
+	mIsJumping = false;
 }
