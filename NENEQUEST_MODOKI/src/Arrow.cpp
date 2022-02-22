@@ -12,6 +12,7 @@ void Arrow::Initialize() {
 	mArrowExists = false;
 
 	// 弓矢の画像や当たったときのエフェクト画像の取得
+	mHitEffectHandle = EffectGraphics::GetGraHandle(4);
 }
 
 
@@ -32,7 +33,6 @@ void Arrow::StartArrow(const int x, const int y, const int type) {
 	mArrowExists = true;
 
 	// 弓矢の当たったときに使用する変数
-	mHitEffectHandle = EffectGraphics::GetGraHandle(4);
 	mIsHit = false;
 	mHitFrameCnt = 0;
 
