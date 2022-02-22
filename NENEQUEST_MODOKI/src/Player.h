@@ -47,7 +47,7 @@ protected:
 	int mHitRangeAW, mHitRangeAH; // Playerの攻撃の当たり判定の中心座標からの範囲(width, height)
 	int mAFrameCnt;	// 攻撃したあと，次に攻撃できるようになるまでのインターバルとして使用する
 	bool mIsJumping;	// ジャンプ中ならばtrue
-	int mYStart, mYPrev;	// ジャンプ処理で使用する。以前のy座標を表す
+	int mYStart, mYPrev;	// ジャンプ処理で使用する，以前のy座標を表す
 	const int* mPlHandle;	// Playerの画像
 	const int HP_MAX = 10;	// PlayerのmHpの上限 
 	int mAttackBase;	// 攻撃力アップ系のアイテムの効果を受けていない状態のときの攻撃力，攻撃力更新で使用する
@@ -96,7 +96,7 @@ protected:
 	const int Y_MIN_B = 242;	// BossStageの上端のy座標
 	const int Y_MAX_B = 598;	// BossStageの下端のy座標
 	const int X_MIN_BR = 690;	// BossStageの橋の左端のx座標
-	const int X_MAX_BR = 904;	// BossStageの橋の右端のx座標
+	const int X_MAX_BR = 850;	// BossStageの橋の右端のx座標
 	const int Y_MIN_BR = 401;	// BossStageの橋の上端のy座標
 	const int Y_MAX_BR = 494;	// BossStageの橋の下端のy座標
 	//std::map<std::string, int> mPlIntDataMap;	// x, y, hp, hitRangeW, hitRangeH, hitRangeAW, hitRangeAH, effectFrameCnt, bsStopFrameCnt, effectIdなどを入れているmap，他のクラスに渡す用
