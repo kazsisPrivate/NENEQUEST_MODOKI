@@ -103,7 +103,7 @@ void Player::Draw() {
 void Player::UpdateSAP() {
 	// 移動速度の更新
 	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
-		if (mIsJumping == true) {	// ジャンプしているとき
+		if (mIsJumping) {	// ジャンプしているとき
 			mSpeed = 4 * 0.8f;
 		}
 		else if (mIsAttacking) {	// 攻撃しているとき
@@ -161,8 +161,8 @@ void Player::UpdateSAP() {
 void Player::Walk() {
 	// stageごとに構成が変わるため，stageの移動範囲に合わせたplayerの座標更新を行う
 	if (!mIsAtBsSt) {	// boss stageではないとき
-		if (key[KEY_INPUT_LEFT] != 0) {
-			if (mX > X_MIN_N) {
+		if (key[KEY_INPUT_LEFT] != 0) {	// 左側に移動するとき
+			if (mX > X_MIN_N) {	// 左端でないとき
 				mX -= (int)(mSpeed);
 			}
 
@@ -173,8 +173,8 @@ void Player::Walk() {
 			}
 			--mXFrameCnt;
 		}
-		if (key[KEY_INPUT_RIGHT] != 0) {
-			if (mX < X_MAX_N) {
+		if (key[KEY_INPUT_RIGHT] != 0) {	// 右側に移動するとき
+			if (mX < X_MAX_N) {	// 右端でないとき
 				mX += (int)(mSpeed);
 			}
 
@@ -185,8 +185,8 @@ void Player::Walk() {
 			}
 			++mXFrameCnt;
 		}
-		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {
-			if (mY > Y_MIN_N) {
+		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {	// 上側に移動するときでジャンプ中でないとき
+			if (mY > Y_MIN_N) {	// 上端でないとき
 				mY -= (int)(mSpeed);
 			}
 
@@ -197,8 +197,8 @@ void Player::Walk() {
 			}
 			--mYFrameCnt;
 		}
-		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {
-			if (mY < Y_MAX_N) {
+		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {	// 下側に移動するときでジャンプ中でないとき
+			if (mY < Y_MAX_N) {	// 下端でないとき
 				mY += (int)(mSpeed);
 			}
 
@@ -211,8 +211,8 @@ void Player::Walk() {
 		}
 	}
 	else {	// boss stageのとき
-		if (key[KEY_INPUT_LEFT] != 0) {
-			if (mX > X_MIN_B) {
+		if (key[KEY_INPUT_LEFT] != 0) {	// 左側に移動するとき
+			if (mX > X_MIN_B) {	// 左端でないとき
 				mX -= (int)(mSpeed);
 			}
 
@@ -223,16 +223,30 @@ void Player::Walk() {
 			}
 			--mXFrameCnt;
 		}
-		if (key[KEY_INPUT_RIGHT] != 0) {
-			if (mX < X_MAX_B) {
-				mX += (int)(mSpeed);
+		if (key[KEY_INPUT_RIGHT] != 0) {	// 右側に移動するとき
+			if (mIsJumping) {	// ジャンプ中のとき
+				if (mX < X_MAX_B) {	// 右端でないとき
+					mX += (int)(mSpeed);
 
-				if (mX > X_MAX_B) mX = X_MAX_B;
+					if (mX > X_MAX_B) mX = X_MAX_B;
+				}
+				else if (mX < X_MAX_BR && mYStart >= Y_MIN_BR && mYStart <= Y_MAX_BR) {	// ジャンプ前に橋の上にいたとき
+					mX += (int)(mSpeed);
+
+					if (mX > X_MAX_BR) mX = X_MAX_BR;
+				}
 			}
-			else if (mX < X_MAX_BR && mY >= Y_MIN_BR && mY <= Y_MAX_BR) {
-				mX += (int)(mSpeed);
+			else {	// ジャンプ中でないとき
+				if (mX < X_MAX_B) {	// 右端でないとき
+					mX += (int)(mSpeed);
 
-				if (mX > X_MAX_BR) mX = X_MAX_BR;
+					if (mX > X_MAX_B) mX = X_MAX_B;
+				}
+				else if (mX < X_MAX_BR && mY >= Y_MIN_BR && mY <= Y_MAX_BR) {	// 橋の上にいるとき
+					mX += (int)(mSpeed);
+
+					if (mX > X_MAX_BR) mX = X_MAX_BR;
+				}
 			}
 
 			if (mXFrameCnt < 0) {
@@ -240,13 +254,13 @@ void Player::Walk() {
 			}
 			++mXFrameCnt;
 		}
-		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {
-			if (mY > Y_MIN_B && mX <= X_MAX_B) {
+		if (key[KEY_INPUT_UP] != 0 && !mIsJumping) {	// 上側に移動するときでジャンプ中でないとき
+			if (mY > Y_MIN_B && mX <= X_MAX_B) {	// 橋にいなくて，上端でないとき
 				mY -= (int)(mSpeed);
 
-				if (mY < Y_MIN_B) mY = Y_MIN_B;
+				if (mY < Y_MIN_B) mY = Y_MIN_B;	// 更新して
 			}
-			else if (mY > Y_MIN_BR && mX <= X_MAX_BR) {
+			else if (mY > Y_MIN_BR && mX <= X_MAX_BR) {	// 橋の上にいて，橋の右端でないとき
 				mY -= (int)(mSpeed);
 
 				if (mY < Y_MIN_BR) mY = Y_MIN_BR;
@@ -257,13 +271,13 @@ void Player::Walk() {
 			}
 			--mYFrameCnt;
 		}
-		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {
-			if (mY < Y_MAX_B && mX <= X_MAX_B) {
+		if (key[KEY_INPUT_DOWN] != 0 && !mIsJumping) {	// 下側に移動するときでジャンプ中でないとき
+			if (mY < Y_MAX_B && mX <= X_MAX_B) {	// 橋にいなくて，下端でないとき
 				mY += (int)(mSpeed);
 
 				if (mY > Y_MAX_B) mY = Y_MAX_B;
 			}
-			else if (mY < Y_MAX_BR && mX <= X_MAX_BR) {
+			else if (mY < Y_MAX_BR && mX <= X_MAX_BR) {	// 橋の上にいて，橋の左端でないとき
 				mY += (int)(mSpeed);
 
 				if (mY > Y_MAX_BR) mY = Y_MAX_BR;
