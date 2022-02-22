@@ -25,6 +25,7 @@ public:
 																									// isExistingsはmItemsの各インデックス番号においてNULLでなければtrue
 	void SetIsHitMaps(std::vector<std::map<std::string, bool>>& isHitMaps);	// Playerとの当たり判定の確認結果のMapを受け取る
 	void CreateItem();	// 一定の確率でItemを出現させる，Itemの自動生成のために使用し，GameSceneから一定の周期で利用する
+	void CreateItem(const int itemNext, const int itemNextX, const int itemNextY);	// 指定したItemを生成する
 
 private:
 	const int ITEM_NUM = 2;	// セットできるitemの数，mItemsの要素数

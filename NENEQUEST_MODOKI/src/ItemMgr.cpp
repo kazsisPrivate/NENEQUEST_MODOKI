@@ -140,10 +140,25 @@ void ItemMgr::Draw(const int itemIdx) {
 
 
 void ItemMgr::ChangeItem(const int itemIdx, EItem itemNext, const int itemNextX, const int itemNextY) {
-	mItesNext[itemIdx] = itemNext;
-	
-	mItesNextX[itemIdx] = itemNextX;
-	mItesNextY[itemIdx] = itemNextY;
+	if (itemIdx == -1) {
+		// mItemsで空いているところがあればセットする
+		for (int i = 0; i < ITEM_NUM; i++) {
+			if (!mItems[i]) {
+				mItesNext[i] = itemNext;
+
+				mItesNextX[i] = itemNextX;
+				mItesNextY[i] = itemNextY;
+
+				break;
+			}
+		}
+	}
+	else {
+		mItesNext[itemIdx] = itemNext;
+
+		mItesNextX[itemIdx] = itemNextX;
+		mItesNextY[itemIdx] = itemNextY;
+	}
 }
 
 
@@ -225,6 +240,18 @@ void ItemMgr::CreateItem() {
 
 				break;
 			}
+		}
+	}
+}
+
+
+void ItemMgr::CreateItem(const int itemNext, const int itemNextX, const int itemNextY) {
+	// 指定したItemを生成する
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (!mItems[i]) {
+			ChangeItem(i, (EItem)itemNext, itemNextX, itemNextY);
+
+			break;
 		}
 	}
 }
