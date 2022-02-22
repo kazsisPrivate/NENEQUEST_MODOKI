@@ -118,7 +118,7 @@ void Player2::Update() {
 			}
 
 			// ジャンプと攻撃の処理
-			if (!mIsAttacking && (mIsJumping == true || key[KEY_INPUT_A] == 1)) {	// 攻撃中でなく，かつジャンプ中，もしくはジャンプ入力キーを押しているとき
+			if (!mIsAttacking && (mIsJumping || key[KEY_INPUT_A] == 1)) {	// 攻撃中でなく，かつジャンプ中，もしくはジャンプ入力キーを押しているとき
 				Jump();
 			}
 			else if (mIsAttacking || key[KEY_INPUT_S] == 1) {	// 攻撃中であるか，攻撃キーを押しているとき
@@ -275,4 +275,7 @@ void Player2::StartBossStage() {
 
 		mHandleId = iy;
 	}
+
+	mIsAttacking = false;
+	mIsJumping = false;
 }
