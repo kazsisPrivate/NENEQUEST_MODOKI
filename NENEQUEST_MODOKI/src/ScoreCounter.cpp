@@ -37,7 +37,7 @@ void ScoreCounter::Draw() {
 }
 
 
-int ScoreCounter::GetTotalScore() const {
+unsigned long long ScoreCounter::GetTotalScore() const {
 	return mTotalScore;
 }
 
