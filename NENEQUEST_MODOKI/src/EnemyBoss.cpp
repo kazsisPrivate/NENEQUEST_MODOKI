@@ -20,7 +20,7 @@ void EnemyBoss::Initialize() {
 	mHandleId = 0;
 
 	// 体力と攻撃力の設定
-	mHp = 45;
+	mHp = 1;
 	mAttack = 1;	// 怒り状態の前の攻撃力
 	// 攻撃の数の設定
 	mEneANum = 0;	// 攻撃の種類によって変化する（FireBall: 3, FireBreath: 5, SummonItem: 1）
@@ -77,49 +77,73 @@ void EnemyBoss::Update() {
 		}
 	}
 	else {
-		// ベースの画像の設定
-		if (mHp > HP_ANGRY) {	// 通常モードのとき
-			mHandleId = 0;
-		}
-		else {	// 怒りモードのとき
-			mHandleId = 12;
-		}
-
 		// hpの更新
 		UpdateHp();
 
-		// 攻撃力と移動速度の更新
-		UpdateSAP();
+		if (mHp <= 0) {	// 倒されたとき
+			if (mAlphaValue == 0) {	// 透過し終えたら
+				mEnemyChanger->ChangeEnemy(mEneIdx, eEnemyNULL, -1000, -1000);	// -1000は適当に画面外の数値にしている
+				mIsDead = true;
+			}
+			else if (mGodFrameCnt == 0) {	// 倒した瞬間
+				// 攻撃を止める
+				mIsAttacking = false;
+				mIsCreatingIteB = false;
+				mIsSummoningEne = false;
+				mIsFireAttacking = false;
+				mIteBHandle = NULL;
 
-		if (mIsAttacking) {	// 攻撃中のとき
-			Attack();
-		}
-		else {	// 攻撃中でないとき
-			// 移動
-			Walk();
-
-			// 攻撃をするかどうかを決める
-			if (mWatingFrameCnt % ATTACK_FRAME_NUM == 0 && mWatingFrameCnt != 0) {
-				// 行う攻撃を決める
-				SelectAttack();
+				// ダメージをくらったことがわかる画像にする
+				mHandleId += 6;
 			}
 
-			mWatingFrameCnt++;
+			// 徐々に透過させていく
+			mAlphaValue -= 1;
+			if (mAlphaValue < 0) mAlphaValue = 0;
+
+			mGodFrameCnt++;
 		}
-
-
-		if (mIsGod) {	// 攻撃を受けた後の無敵時間のとき
-			if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
-				mIsGod = false;
-				mGodFrameCnt = 0;
+		else {	// 生きているとき
+			// ベースの画像の設定
+			if (mHp > HP_ANGRY) {	// 通常モードのとき
+				mHandleId = 0;
 			}
-			else {	// 無敵時間中なら
-				// 無敵時間であることを表す画像にする
-				if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
-					mHandleId += 6;
+			else {	// 怒りモードのとき
+				mHandleId = 12;
+			}
+
+			// 攻撃力と移動速度の更新
+			UpdateSAP();
+
+			if (mIsAttacking) {	// 攻撃中のとき
+				Attack();
+			}
+			else {	// 攻撃中でないとき
+				// 移動
+				Walk();
+
+				// 攻撃をするかどうかを決める
+				if (mWatingFrameCnt % ATTACK_FRAME_NUM == 0 && mWatingFrameCnt != 0) {
+					// 行う攻撃を決める
+					SelectAttack();
 				}
 
-				mGodFrameCnt++;
+				mWatingFrameCnt++;
+			}
+
+			if (mIsGod) {	// 攻撃を受けた後の無敵時間のとき
+				if (mGodFrameCnt == GOD_FRAME_NUM) {	// 無敵時間が終わったら
+					mIsGod = false;
+					mGodFrameCnt = 0;
+				}
+				else {	// 無敵時間中なら
+					// 無敵時間であることを表す画像にする
+					if ((mGodFrameCnt / 20) % 2 == 0) {	// 点滅処理
+						mHandleId += 6;
+					}
+
+					mGodFrameCnt++;
+				}
 			}
 		}
 	}
