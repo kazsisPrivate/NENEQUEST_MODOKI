@@ -38,6 +38,7 @@
     <ClCompile Include="src\EnemyMage.cpp" />
     <ClCompile Include="src\EnemyMgr.cpp" />
     <ClCompile Include="src\GameBack.cpp" />
+    <ClCompile Include="src\GameClear.cpp" />
     <ClCompile Include="src\GameOver.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\Item10.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="src\EnemyMage.h" />
     <ClInclude Include="src\EnemyMgr.h" />
     <ClInclude Include="src\GameBack.h" />
+    <ClInclude Include="src\GameClear.h" />
     <ClInclude Include="src\GameOver.h" />
     <ClInclude Include="src\GameScene.h" />
     <ClInclude Include="src\Item10.h" />
