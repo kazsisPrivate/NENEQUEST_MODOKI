@@ -65,7 +65,6 @@ void GameScene::Initialize() {
 		mPlIsHitMap["plAToItem"].push_back(false);
 	}
 
-
 	// 画面の各構成要素のインスタンスの取得
 	mGameBack = new GameBack();
 	mPlayerMgr = PlayerMgr::GetInstance();
@@ -75,19 +74,12 @@ void GameScene::Initialize() {
 	mTimeCounter = new TimeCounter();
 	mScoreCounter = new ScoreCounter();
 	mGameOver = new GameOver();
+	mGameClear = new GameClear();
 
-	/*appear = new Appearance();
-	appear->GetEnemyAppear(eneAppear);
-	appear->GetItemAppear(itAppear);
-	enemyMgr = new EnemyMgr(eneAppear);*/
-	
-	//iNum = appear->GetItNum();
-
-	
 	// 画面の各構成要素の初期化
-	CharaGraphics::Initialize();
+	/*CharaGraphics::Initialize();
 	ItemGraphics::Initialize();
-	EffectGraphics::Initialize();
+	EffectGraphics::Initialize();*/
 	mGameBack->Initialize();
 	mPlayerMgr->Initialize();
 	mEnemyMgr->Initialize();
@@ -96,6 +88,7 @@ void GameScene::Initialize() {
 	mTimeCounter->Initialize();
 	mScoreCounter->Initialize();
 	mGameOver->Initialize();
+	mGameClear->Initialize();
 
 	/*m_plDeadFlag = false;
 	m_bsDeadFlag = false;*/
@@ -120,9 +113,9 @@ void GameScene::Initialize() {
 
 void GameScene::Finalize() {
 	// 画面の各構成要素の終了処理
-	CharaGraphics::Finalize();
+	/*CharaGraphics::Finalize();
 	ItemGraphics::Finalize();
-	EffectGraphics::Finalize();
+	EffectGraphics::Finalize();*/
 	mGameBack->Finalize();
 	mPlayerMgr->Finalize();
 	mEnemyMgr->Finalize();
@@ -131,13 +124,7 @@ void GameScene::Finalize() {
 	mTimeCounter->Finalize();
 	mScoreCounter->Finalize();
 	mGameOver->Finalize();
-	//delete mCharaGraphics;
-	//delete mGameBack;
-	//delete mPlayerMgr;
-	//delete enemyMgr;
-	//delete mItemMgr;
-	//delete hpGauge;
-	//delete appear;
+	mGameClear->Finalize();
 
 	// ゲームの音楽の削除
 	StopSoundMem(mSoundHandle);
@@ -148,50 +135,16 @@ void GameScene::Finalize() {
 }
 
 void GameScene::Update() {
-	//if (m_plDeadFlag) {
-	//	gameOver.Update();
-
-	//	if (gameOver.IsChangeScene()) {
-	//		mSceneChanger->ChangeScene(eSceneMenu);
-	//	}
-	//}
-	//else if (m_bsDeadFlag) {
-	//	//ここでGameClear関連の処理をする
-	//	gameClear->Update();
-
-	//	if (!gameClear->IsGmClear()) {
-	//		mSceneChanger->ChangeScene(eSceneMenu);
-	//	}
-	//}
-	//else {
-	//	if (CheckHitKey(KEY_INPUT_ESCAPE) != 0) {
-	//		mSceneChanger->ChangeScene(eSceneMenu);
-	//	}
-
-	//	mGameBack.Update();
-	//	enemyMgr->Update();
-	//	itemMgr->Update();
-	//	mPlayerMgr->Update();
-	//	hpGauge->Update();
-	//	gameCtrs.Update();
-
-	//	m_plDeadFlag = mPlayerMgr->GetDead();
-	//	m_bsDeadFlag = enemyMgr->GetBossDead();
-
-	//	if (m_bsDeadFlag) {
-	//		gameClear = std::make_unique<GameClear>(gameCtrs.GetTime(), gameCtrs.GetScore());
-	//	}
-
-	//	if (CheckSoundMem(mSoundHandle) == 0) {
-	//		PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
-	//	}
-	//}
-
+	// Escキーでゲームを止められるようにする
 	if (CheckHitKey(KEY_INPUT_ESCAPE) != 0) {
 		mSceneChanger->ChangeScene(eSceneMenu);
 	}
 
-	if (mPlIsDead) {	// Playerが死んでいたら
+	if (mHasClearedGame) {	// ゲームクリアして（EnemyBossを倒して）いたら
+		// GameClear画面の更新
+		mGameClear->Update();
+	}
+	else if (mPlIsDead) {	// Playerが死んでいたら
 		// GameOver画面の更新
 		mGameOver->Update();
 	}
@@ -225,6 +178,12 @@ void GameScene::Update() {
 		for (int i = 0; i < ENEMY_NUM; i++) {
 			if (mEneIsExistings[i]) {
 				if (mEneBoolDataMaps.at(i)["isBoss"]) {	// Bossだったとき
+					if (mEneBoolDataMaps.at(i)["isDead"]) {	// Bossが倒されたとき
+						// ゲームクリアとする
+						mHasClearedGame = true;
+						mTimeCounter->StopTime();
+					}
+
 					if (mEneBoolDataMaps.at(i)["isCreatingIteB"]) {	// ItemBoxを生成してほしいときだったら
 						mItemMgr->CreateItem(mEneIntDataMaps.at(i)["itemBoxKind"],
 							mEneIntDataMaps.at(i)["itemBoxX"], mEneIntDataMaps.at(i)["itemBoxY"]);
@@ -307,9 +266,14 @@ void GameScene::Update() {
 			PlaySoundMem(mSoundHandle, DX_PLAYTYPE_BACK);
 		}
 
-		if (mPlIsDead) {	// 次のフレームでGameOver画面に移行するとき
+		if (mPlIsDead || mHasClearedGame) {	// 次のフレームでGameOver画面かGameClear画面に移行するとき
 			// 音源を止める
 			StopSoundMem(mSoundHandle);
+
+			if (mHasClearedGame) {	// 次のフレームでGameClear画面に移行するとき
+				// クリア画面で表示するスコアを渡す
+				mGameClear->SetScores(mScoreCounter->GetTotalScore(), 30 * (999 - mTimeCounter->GetClearTime()));
+			}
 		}
 	}
 
@@ -321,50 +285,10 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	//BaseScene::Draw();
-	//DrawString(0, 0, "ゲーム画面です。", GetColor(255, 255, 255));
-	//DrawString(0, 20, "Escキーを押すとメニュー画面に戻ります。", GetColor(255, 255, 255));
-
-	//if (m_plDeadFlag) {
-	//	gameOver.Draw();
-	//}
-	//else if (m_bsDeadFlag) {
-	//	//gameClear関連
-	//	gameClear->Draw();
-	//}
-	//else {
-	//	YJudge();
-
-	//	mGameBack.Draw();
-	//	DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", yJudge[1], yJudge[2], yJudge[3], yJudge[4]);
-
-	//	for (int i = 1; i < 7; i++) {
-	//		if (drawNum[0] == i) {
-	//			mPlayerMgr->Draw();
-	//		}
-	//		else if (drawNum[1] == i) {
-	//			enemyMgr->Draw0();
-	//		}
-	//		else if (drawNum[2] == i) {
-	//			enemyMgr->Draw1();
-	//		}
-	//		else if (drawNum[3] == i) {
-	//			enemyMgr->Draw2();
-	//		}
-	//		else if (drawNum[4] == i) {
-	//			itemMgr->Draw0();
-	//		}
-	//		else {
-	//			itemMgr->Draw1();
-	//		}
-	//	}
-
-	//	hpGauge->Draw();
-	//	gameCtrs.Draw();
-	//}
-
-
-	if (mPlIsDead) {	// Playerが死んでいたら
+	if (mHasClearedGame) {	// ゲームクリアして（EnemyBossを倒して）いたら
+		mGameClear->Draw();
+	}
+	else if (mPlIsDead) {	// Playerが死んでいたら
 		mGameOver->Draw();
 	}
 	else {	// Playerが死んでいなかったら
@@ -375,30 +299,8 @@ void GameScene::Draw() {
 			}
 		}
 
-
 		mGameBack->Draw();
 		DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
-
-		/*for (int i = 1; i < 7; i++) {
-			if (drawNum[0] == i) {
-				mPlayerMgr->Draw();
-			}
-			else if (drawNum[1] == i) {
-				enemyMgr->Draw0();
-			}
-			else if (drawNum[2] == i) {
-				enemyMgr->Draw1();
-			}
-			else if (drawNum[3] == i) {
-				enemyMgr->Draw2();
-			}
-			else if (drawNum[4] == i) {
-				itemMgr->Draw0();
-			}
-			else {
-				itemMgr->Draw1();
-			}
-		}*/
 
 		for (const auto& dOrder : mDOrderVec) {
 			int objId = dOrder.second.first;

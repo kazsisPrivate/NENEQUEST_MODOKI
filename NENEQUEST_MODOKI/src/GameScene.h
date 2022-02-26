@@ -3,7 +3,6 @@
 #include "BaseScene.h"
 #include "SceneChanger.h"
 #include "GameBack.h"
-//#include "GameClear.h"
 #include "PlayerMgr.h"
 #include "EnemyMgr.h"
 #include "ItemMgr.h"
@@ -11,6 +10,7 @@
 #include "TimeCounter.h"
 #include "ScoreCounter.h"
 #include "GameOver.h"
+#include "GameClear.h"
 #include <memory>
 #include <string>
 #include <map>
@@ -43,6 +43,7 @@ private:
 	//CharaGraphics mCharaGraphics;
 	//GameCounters gameCtrs;
 	GameOver* mGameOver;
+	GameClear* mGameClear;
 	//std::unique_ptr<GameClear> gameClear;
 	std::vector<std::pair<int, std::pair<int, int>>> mDOrderVec;	// 描画するオブジェクトの種類を示すpairを描画順に入れるvector
 														// firstにy座標，secondに物体の種類とインデックス番号を入れたpairのvector
@@ -82,6 +83,7 @@ private:
 
 	bool mIsChangingSt;	// BossStageへ変更中であったらtrue
 	bool mIsAtBsSt;	// BossStageにいたらtrue
+	bool mHasClearedGame;	// Bossを倒したらtrue
 
 private:
 	static GameScene* mGameScene;
