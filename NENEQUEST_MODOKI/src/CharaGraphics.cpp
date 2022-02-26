@@ -67,7 +67,7 @@ void CharaGraphics::Finalize() {	// ‰æ‘œ‚Ìíœ
 }
 
 
-const int* CharaGraphics::GetGraHandle(const int type, const int charaId) {
+int* CharaGraphics::GetGraHandle(const int type, const int charaId) {
 	if (type == 0) {	// Player
 		if (charaId != 4) {
 			return mPl1to3Handles[charaId-1];
