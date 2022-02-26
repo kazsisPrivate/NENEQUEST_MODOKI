@@ -4,6 +4,9 @@
 #include "MenuScene.h"
 //#include "GameOver.h"
 #include "SceneMgr.h"
+#include "CharaGraphics.h"
+#include "ItemGraphics.h"
+#include "EffectGraphics.h"
 
 
 SceneMgr* SceneMgr::mSceneMgr;
@@ -25,12 +28,22 @@ SceneMgr* SceneMgr::GetInstance() {
 
 void SceneMgr::Initialize() {
 	mScene = (BaseScene*)MenuScene::GetInstance();
-	//mScene->Initialize();
+
+	// 使用する画像の読み込みをしておく
+	CharaGraphics::Initialize();
+	ItemGraphics::Initialize();
+	EffectGraphics::Initialize();
 }
 
 
 void SceneMgr::Finalize() {
+	// 使用していたシーンの削除
 	mScene->Finalize();
+
+	// 画像の削除
+	CharaGraphics::Finalize();
+	ItemGraphics::Finalize();
+	EffectGraphics::Finalize();
 
 	delete mSceneMgr;
 	mSceneMgr = NULL;
