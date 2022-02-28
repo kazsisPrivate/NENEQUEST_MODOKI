@@ -88,33 +88,13 @@ void Arrow::Update() {
 		Finalize();	// ‹|–î‚ðÁ‚·
 	}
 
-	/*if (mIsHit == true) {
-		if (mHitFrameCnt == 0) {
-			HitJudge0::SetPlARange(-3000, -3000, 0, 0);
-			HitJudge1::SetPlARange(-3000, -3000, 0, 0);
-			HitJudge2::SetPlARange(-3000, -3000, 0, 0);
-		}
-
-		mHitFrameCnt++;
+	if (mIsHit) {	// ‹|–î‚ª‰½‚©‚É“–‚½‚ê‚Î“®‚«‚ðŽ~‚ß‚é
+		mIsMoving = false;
 	}
-	else {
-		if (mhFlag == true) {
-			Move();
-
-			HitJudge();
-		}
-		
-
-		mAExistingFrameCnt++;
-	}*/
 
 	if (mIsMoving) {	// ‹|–î‚ª“®‚¢‚Ä‚¢‚é‚Æ‚«i‰½‚É‚à‚ ‚½‚Á‚Ä‚¢‚È‚¢‚Æ‚«j
 		Move();
 	}
-	
-
-	//HitJudge();
-
 
 	mAExistingFrameCnt++;
 }
@@ -140,7 +120,7 @@ void Arrow::Move() {
 	mYCenter += (mYCenter - mYPrev) + 1;
 	mYPrev = yTemp;
 
-	if (mYCenter >= mYStart + 80 || mIsHit) {		// “Á’è‚ÌˆÊ’u‚Ü‚Å‰º‚ª‚é‚©C‰½‚©‚É“–‚½‚ê‚Î“®‚«‚ðŽ~‚ß‚é
+	if (mYCenter >= mYStart + 80) {		// “Á’è‚ÌˆÊ’u‚Ü‚Å‰º‚ª‚é‚ê‚Î“®‚«‚ðŽ~‚ß‚é
 		mIsMoving = false;
 	}
 	
