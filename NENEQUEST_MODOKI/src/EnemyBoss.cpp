@@ -2,7 +2,6 @@
 #include "DxLib.h"
 #include "ItemGraphics.h"
 #include <random>
-//#include <math.h>
 
 
 EnemyBoss::EnemyBoss(EnemyChanger* changer, const int eneIdx, const int x, const int y)
@@ -20,7 +19,7 @@ void EnemyBoss::Initialize() {
 	mHandleId = 0;
 
 	// 体力と攻撃力の設定
-	mHp = 1;
+	mHp = 60;
 	mAttack = 1;	// 怒り状態の前の攻撃力
 	// 攻撃の数の設定
 	mEneANum = 0;	// 攻撃の種類によって変化する（FireBall: 3, FireBreath: 5, SummonItem: 1）
@@ -165,8 +164,10 @@ void EnemyBoss::Draw() {
 	// DropItemBoxで行うItemBox落とし攻撃のItemBoxの画像の描画
 	if (mIteBHandle) {	// 描画するItemBoxがセットされていたら
 		DrawGraph(mIteBX - mIteBImgW / 2, mIteBY - mIteBImgH / 2, mIteBHandle[0], TRUE);
-		DrawBox(mIteBX - mIteBHitRangeW, mIteBY - mIteBHitRangeH,
-			mIteBX + mIteBHitRangeW, mIteBY + mIteBHitRangeH, GetColor(255, 0, 0), FALSE);
+
+		// 当たり判定の描画（デバッグ用）
+		/*DrawBox(mIteBX - mIteBHitRangeW, mIteBY - mIteBHitRangeH,
+			mIteBX + mIteBHitRangeW, mIteBY + mIteBHitRangeH, GetColor(255, 0, 0), FALSE);*/
 	}
 
 	// 火の玉攻撃の画像の描画
@@ -272,7 +273,7 @@ void EnemyBoss::SelectAttack() {
 
 
 void EnemyBoss::SummonEnemy() {
-	if (mAFrameCnt == 300) {
+	if (mAFrameCnt == 200) {
 		// 次の攻撃をできるようにする
 		mIsAttacking = false;
 		mIsSummoningEne = false;
@@ -299,7 +300,6 @@ void EnemyBoss::CreateEnemy() {
 	std::random_device rnd;
 
 	int eneX, eneY;	// 生成する敵のxy座標
-	eneY = rnd() % (ENEMY_FIRST_Y_MAX - ENEMY_FIRST_Y_MIN) + ENEMY_FIRST_Y_MIN;
 	
 	// 呼びだす敵の種類を決める
 	EEnemy eneKind;
@@ -308,6 +308,7 @@ void EnemyBoss::CreateEnemy() {
 		if (randNum <= 60) {	// 60%の確率で
 			// イノシシの敵
 			eneX = 1400;
+			eneY = mPlY;
 
 			if (randNum <= 30) {	// 30%の確率で
 				// Enemy1
@@ -324,6 +325,8 @@ void EnemyBoss::CreateEnemy() {
 		}
 		else {	// 40%の確率で
 			// 魔法使いの敵
+			eneY = rnd() % (ENEMY_FIRST_Y_MAX - ENEMY_FIRST_Y_MIN) + ENEMY_FIRST_Y_MIN;
+
 			// x座標はPlayerから離れた位置にする
 			if (mPlX > 600) {	// Playerが右側にいたら
 				eneX = rand() % (150 + 1) + 80;
@@ -346,12 +349,15 @@ void EnemyBoss::CreateEnemy() {
 		if (randNum <= 30) {	// 30%の確率で
 			// イノシシの敵
 			eneX = 1400;
+			eneY = mPlY;
 
 			// Enemy3
 			eneKind = eEnemy3;
 		}
 		else if (randNum <= 60) {	// 30%の確率で
 			// 魔法使いの敵
+			eneY = rnd() % (ENEMY_FIRST_Y_MAX - ENEMY_FIRST_Y_MIN) + ENEMY_FIRST_Y_MIN;
+
 			// x座標はPlayerから離れた位置にする
 			if (mPlX > 600) {	// Playerが右側にいたら
 				eneX = rand() % (150 + 1) + 80;
@@ -365,6 +371,8 @@ void EnemyBoss::CreateEnemy() {
 		}
 		else {	// 40%の確率で
 			// 鎌使い
+			eneY = rnd() % (ENEMY_FIRST_Y_MAX - ENEMY_FIRST_Y_MIN) + ENEMY_FIRST_Y_MIN;
+
 			// x座標はPlayerから離れた位置にする
 			if (mPlX > 600) {	// Playerが右側にいたら
 				eneX = rand() % (150 + 1) + 80;
