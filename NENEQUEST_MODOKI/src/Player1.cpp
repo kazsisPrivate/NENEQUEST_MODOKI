@@ -35,6 +35,9 @@ void Player1::Initialize() {
 	mAttack = mAttackBase;
 	mAFrameNum = 20;
 	
+	// Playerの移動速度倍率
+	mSpeedRate = 1.0f;
+
 	// アイテムや使用武器の設定
 	mIteKindId = 1;
 }

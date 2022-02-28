@@ -36,6 +36,9 @@ void Player4::Initialize() {
 	mAttack = mAttackBase;
 	// mAFrameNum は強い弓：120，弱い弓：90
 
+	// Playerの移動速度倍率
+	mSpeedRate = 1.0f;
+
 	// アイテムや使用武器の設定
 	mIteKindId = 4;
 	// 弓関連の設定
@@ -193,24 +196,24 @@ void Player4::UpdateSAP() {
 	// 移動速度の更新
 	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
 		if (mIsJumping) {	// ジャンプしているとき
-			mSpeed = 4 * 0.8f;
+			mSpeed = 4 * 0.8f * mSpeedRate;
 		}
 		else if (mIsAttacking || mIsPreparingWA || mIsPreparingSA) {	// 攻撃しているときor攻撃準備中のとき
-			mSpeed = 4 * 0.5f;
+			mSpeed = 4 * 0.5f * mSpeedRate;
 		}
 		else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
-			mSpeed = 4 * 0.625f;
+			mSpeed = 4 * 0.625f * mSpeedRate;
 		}
 		else {
-			mSpeed = 4 * 1.0f;
+			mSpeed = 4 * 1.0f * mSpeedRate;
 		}
 	}
 	else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
 		if (mIsAttacking || mIsPreparingWA || mIsPreparingSA) {	// 攻撃しているときor攻撃準備中のとき
-			mSpeed = 4 * 0.5f;
+			mSpeed = 4 * 0.5f * mSpeedRate;
 		}
 		else {
-			mSpeed = 4 * 0.80f;
+			mSpeed = 4 * 0.80f * mSpeedRate;
 		}
 	}
 

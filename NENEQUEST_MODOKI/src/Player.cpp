@@ -93,6 +93,10 @@ void Player::Draw() {
 	// Playerの画像表示
 	DrawGraph(mX - mImgW / 2, mY - mImgH / 2 - 13, mPlHandle[mHandleId], TRUE);
 
+	// 当たり判定の描画（デバッグ用）
+	/*DrawBox(mX - mHitRangeW, mY - mHitRangeH,
+		mX + mHitRangeW, mY + mHitRangeH, GetColor(255, 0, 0), FALSE);*/
+
 	// Effectの画像表示
 	if (mIsEffected) {	// Itemの効果中のとき
 		DrawGraph(mX - 114, mY - 113, *mEffectHandle, TRUE);
@@ -104,24 +108,24 @@ void Player::UpdateSAP() {
 	// 移動速度の更新
 	if (key[KEY_INPUT_LEFT] != 0 || key[KEY_INPUT_RIGHT] != 0) {	// 左右の入力があるとき
 		if (mIsJumping) {	// ジャンプしているとき
-			mSpeed = 4 * 0.8f;
+			mSpeed = 4 * 0.8f * mSpeedRate;
 		}
 		else if (mIsAttacking) {	// 攻撃しているとき
-			mSpeed = 4 * 0.5f;
+			mSpeed = 4 * 0.5f * mSpeedRate;
 		}
 		else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
-			mSpeed = 4 * 0.625f;
+			mSpeed = 4 * 0.625f * mSpeedRate;
 		}
 		else {
-			mSpeed = 4 * 1.0f;
+			mSpeed = 4 * 1.0f * mSpeedRate;
 		}
 	}
 	else if (key[KEY_INPUT_UP] != 0 || key[KEY_INPUT_DOWN] != 0) {	// 上下の入力があるとき
 		if (mIsAttacking) {	// 攻撃しているとき
-			mSpeed = 4 * 0.5f;
+			mSpeed = 4 * 0.5f * mSpeedRate;
 		}
 		else {
-			mSpeed = 4 * 0.80f;
+			mSpeed = 4 * 0.80f * mSpeedRate;
 		}
 	}
 
