@@ -122,11 +122,6 @@ void MageFire::Draw() {
 			DrawGraph((int)mXs[i] - IMG_W / 2, (int)mYs[i] - IMG_H / 2, *mFireHandle, TRUE);
 		}
 	}
-	//DrawGraph(x[0] - sizeX / 2, y[0] - sizeY / 2, fireHandle[0], TRUE);
-	//DrawFormatString(700, 500, GetColor(255, 255, 255), "px = %d, ex = %d", x[0] - sizeX /2, y[0] - sizeY / 2);
-	//for (int i = 0; i < 3; i++) {
-	//	//DrawBox(x[i] - sizeX / 2 + 30, y[i] - sizeY / 2 + 30, x[i] + sizeX / 2 - 30, y[i] + sizeY / 2 - 30, GetColor(0, 0, 0), TRUE);
-	//}
 }
 
 void MageFire::Move() {
@@ -144,37 +139,6 @@ void MageFire::Move() {
 				mYs[i] += mDYs[i];
 			}
 		}
-
-
-
-		/*if (mFrameCnt > 60) {
-			for (int i = 0; i < 3; i++) {
-				if (mYs[i] > SCREEN_BOTTOM_Y || mYs[i] < SCREEN_TOP_Y) {
-					mDYs[i] *= -1;
-				}
-
-				mXs[i] += mDX;
-				mYs[i] += mDYs[i];
-			}
-		}
-		else if (mFrameCnt > 45) {
-			for (int i = 0; i < 2; i++) {
-				if (mYs[i] > SCREEN_BOTTOM_Y || mYs[i] < SCREEN_TOP_Y) {
-					mDYs[i] *= -1;
-				}
-
-				mXs[i] += mDX / 3;
-				mYs[i] += mDYs[i] / 1.5;
-			}
-		}
-		else {
-			if (mYs[0] > SCREEN_BOTTOM_Y || mYs[0] < SCREEN_TOP_Y) {
-				mDYs[0] *= -1;
-			}
-
-			mXs[0] += mDX / 3;
-			mYs[0] += mDYs[0] / 1.5;
-		}*/
 	}
 	else {	// 回転攻撃
 		// それぞれの火の玉の回転角を更新
@@ -195,13 +159,7 @@ void MageFire::Move() {
 
 
 void MageFire::UpdateRotatedFiresXYs() {
-	// 数学座標と同じようにするためにy座標値を反転
-	// x - cX = 0
-	// y = -(mCY + mRadius);
-	// cY = -mCY; 
-	// -mRadius = y - cY と下でなっていることに注意
-	
-	// 各火の玉のxy座標を更新
+	// 回転角を考慮して、各火の玉のxy座標を更新
 	for (int i = 0; i < FIRE_NUM; i++) {
 		mXs[i] = -(-mRadius) * sin(-mThetas[i]) + mCX;
 		mYs[i] = ((-mRadius) * cos(-mThetas[i]) + mCY);
@@ -241,7 +199,6 @@ bool MageFire::GetFiresExist() const {
 void MageFire::MakeFiresExistFalse() {
 	mFiresExist = false;
 }
-
 
 
 void MageFire::GetFiresXYs(std::vector<int>& xs, std::vector<int>& ys) {
