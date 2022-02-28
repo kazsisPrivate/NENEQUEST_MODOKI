@@ -39,26 +39,18 @@ private:
 	PlayerHpGauge* mPlHpGauge;
 	TimeCounter* mTimeCounter;
 	ScoreCounter* mScoreCounter;
-	//Appearance* appear;
-	//CharaGraphics mCharaGraphics;
-	//GameCounters gameCtrs;
 	GameOver* mGameOver;
 	GameClear* mGameClear;
-	//std::unique_ptr<GameClear> gameClear;
+
 	std::vector<std::pair<int, std::pair<int, int>>> mDOrderVec;	// 描画するオブジェクトの種類を示すpairを描画順に入れるvector
 														// firstにy座標，secondに物体の種類とインデックス番号を入れたpairのvector
 														// キャラの種類（0: Player, 1: Enemy, 2: Item）
 	int mSoundHandle;	// 音源
-	//int itAppear[320]; //始めると同時にAppearance.txtを1回だけ読み込んでここに入れてItemMgrにコンストラクタの引数として渡してあげる
-	//int eneAppear[320]; //始めると同時にAppearance.txtを1回だけ読み込んでここに入れてEnemyMgrにコンストラクタの引数として渡してあげる
-	//bool dnCheck[5]; //drawNumを入れ終わっていたらtrue、入っていなければfalse。同じy座標にある場合のため。 checkするためなのでelseの分はない
-	//bool m_plDeadFlag; //Playerの体力が0になったときtrue
-	//bool m_bsDeadFlag; //Bossの体力が0になったときtrue
-	//void Sort(int num[]); //YJudgeで使用するソートのための関数
 	unsigned long long mFrameCnt;	// フレーム数のカウント，EnemyやItemの出現，Bossへの突入の管理のために使用する
-	const int CREATION_FRAME_NUM = 60;	// 60フレーム(約1秒)毎にEnemyやItemを出現させるかどうかを決める
+	const int ENE_CREATION_FRAME_NUM = 120;	// このフレーム毎にEnemyを出現させるかどうかを決める
+	const int ITE_CREATION_FRAME_NUM = 60;	// このフレーム毎にItemを出現させるかどうかを決める
 	bool mPlIsDead;	// Playerが死んでいたら（PlayerのmIsDeadがtrueになっていたら）true, GameOver画面への移行に使う
-	const int BOSS_START_FRAME_NUM = 300;	// このフレーム数を超えたら，ボスステージに入る準備を始める
+	const unsigned long long BOSS_START_FRAME_NUM = 9000;	// このフレーム数を超えたら，ボスステージに入る準備を始める(9000フレーム=約2分30秒)
 
 	const int ITEM_NUM = 2;	// 管理できるitemの数
 	const int ENEMY_NUM = 3;	// 管理できるEnemyの数
@@ -87,5 +79,4 @@ private:
 
 private:
 	static GameScene* mGameScene;
-	static int tmpNum;
 };
