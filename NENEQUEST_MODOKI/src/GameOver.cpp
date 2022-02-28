@@ -36,6 +36,9 @@ void GameOver::Finalize() {
 	for (int i = 0; i < LETTER_NUM; i++) {
 		DeleteGraph(mLetterHandles[i]);
 	}
+
+	// ƒtƒHƒ“ƒg‚Ìíœ
+	DeleteFontToHandle(mStrFontHandle);
 }
 
 

@@ -46,6 +46,10 @@ void MenuScene::Initialize() {
 
 
 void MenuScene::Finalize() {
+	// ƒtƒHƒ“ƒg‚Ìíœ
+	DeleteFontToHandle(mTitleFontHandle);
+	DeleteFontToHandle(mOptionFontHandle);
+
 	delete mMenuScene;
 	mMenuScene = NULL;
 }

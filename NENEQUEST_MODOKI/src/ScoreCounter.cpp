@@ -19,6 +19,13 @@ void ScoreCounter::Initialize() {
 }
 
 
+void ScoreCounter::Finalize() {
+	// フォントの削除
+	DeleteFontToHandle(mScoreFontHandle);
+	DeleteFontToHandle(mStrFontHandle);
+}
+
+
 void ScoreCounter::Update() {
 	// 文字列の合計スコアの更新
 	mTotalScoreStr = std::to_string(mTotalScore);

@@ -16,6 +16,15 @@ void TimeCounter::Initialize() {
 }
 
 
+void TimeCounter::Finalize() {
+	// 画像の削除
+	DeleteGraph(mTimeFrameHandle);
+
+	// フォントの削除
+	DeleteFontToHandle(mTimeFontHandle);
+}
+
+
 void TimeCounter::Update() {
 	// 経過時間の更新
 	mElapsedTime = (int)(clock() - mStartTime) / CLOCKS_PER_SEC;

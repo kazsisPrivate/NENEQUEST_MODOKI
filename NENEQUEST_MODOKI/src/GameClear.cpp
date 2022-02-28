@@ -27,7 +27,16 @@ void GameClear::Initialize() {
 
 
 void GameClear::Finalize() {
+	// ‰æ‘œ‚Ìíœ
 	DeleteGraph(mPlFaceHandle);
+
+	// ƒtƒHƒ“ƒg‚Ìíœ
+	DeleteFontToHandle(mScoStrFontHandle);
+	DeleteFontToHandle(mGameScoFontHandle);
+	DeleteFontToHandle(mTimeScoFontHandle);
+	DeleteFontToHandle(mTotalScoFontHandle);
+	DeleteFontToHandle(mPTotalScoFontHandle);
+	DeleteFontToHandle(mEscStrFontHandle);
 }
 
 
