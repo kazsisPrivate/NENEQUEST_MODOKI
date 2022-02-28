@@ -43,6 +43,7 @@ protected:
 
 	PlayerChanger* mPlayerChanger;
 	PlayerMgr* mPlayerMgr;	// EnemyやItemなどとの当たり判定などの情報の取得に使用する
+	float mSpeedRate;	// mSpeedに掛け合わせる移動速度倍率、Playerの種類によって異なる
 	int mAX, mAY;	// Playerの攻撃の中心のxy座標
 	int mHitRangeAW, mHitRangeAH; // Playerの攻撃の当たり判定の中心座標からの範囲(width, height)
 	int mAFrameCnt;	// 攻撃したあと，次に攻撃できるようになるまでのインターバルとして使用する
