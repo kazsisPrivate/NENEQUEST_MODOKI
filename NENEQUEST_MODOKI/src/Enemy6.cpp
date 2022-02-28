@@ -17,7 +17,7 @@ void Enemy6::Initialize() {
 
 	// UŒ‚‚â‘Ì—Í‚Ìİ’è
 	mHp = 1;
-	mAttack = 1;	// ‰Î‚Ì‹Ê‚ÌUŒ‚—Í
+	mAttack = 2;	// ‰Î‚Ì‹Ê‚ÌUŒ‚—Í
 
 	// ‰Î‚Ì‹Ê‚Ìƒ^ƒCƒv‚Ìİ’è
 	mFireType = 2;	// Â‚¢‰Î‚Ì‹Ê
