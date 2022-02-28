@@ -199,7 +199,7 @@ void ItemMgr::CreateItem() {
 
 	// Itemの生成確率（0～10000, 10000で100%）を求める
 	// Itemがセットされていればいるほど生成確立が下がる
-	int creationProb = 3000 * std::pow(0.3, existingIteNum);
+	int creationProb = 1000 * std::pow(0.1, existingIteNum);
 		
 	// 1～10000のランダムな数値を生成
 	std::random_device rnd;
@@ -217,23 +217,23 @@ void ItemMgr::CreateItem() {
 				randNum = 10000 - randNum + 1;
 				randNum = (randNum / (float)creationProb) * 100;
 
-				if (randNum <= 20) {	// 20%の確率で
+				if (randNum <= 10) {	// 10%の確率で
 					// 赤りんご
 					mItesNext[i] = eItem1;
 				}
-				else if (randNum <= 30) {	// 10%の確率で
+				else if (randNum <= 20) {	// 10%の確率で
 					// 青りんご
 					mItesNext[i] = eItem2;
 				}
-				else if (randNum <= 60) {	// 30%の確率で
+				else if (randNum <= 70) {	// 50%の確率で
 					// 樽1
 					mItesNext[i] = eItem12;
 				}
-				else if (randNum <= 75) {	// 15%の確率で
+				else if (randNum <= 80) {	// 10%の確率で
 					// 樽2
 					mItesNext[i] = eItem13;
 				}
-				else {	// 25%の確率で
+				else {	// 20%の確率で
 					// 箱（武器が出る）
 					mItesNext[i] = eItem14;
 				}
