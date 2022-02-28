@@ -4,16 +4,12 @@
 #include "ItemGraphics.h"
 #include "EffectGraphics.h"
 #include "SceneMgr.h"
-//#include "PlayerMgr.h"
-////#include "EnemyMgr.h"
-//#include "ItemMgr.h"
 #include <mutex>
 #include <vector>
 #include <algorithm>
 
 
 GameScene* GameScene::mGameScene;
-int GameScene::tmpNum = 0;
 
 
 GameScene::GameScene(SceneChanger* changer) : BaseScene(changer) {
@@ -25,11 +21,6 @@ GameScene* GameScene::GetInstance() {
 		SceneMgr* sceneMgr = SceneMgr::GetInstance();
 		GameScene::mGameScene = new GameScene(sceneMgr);
 		GameScene::mGameScene->Initialize();
-		GameScene::tmpNum++;
-	}
-
-	if (GameScene::tmpNum == 2) {
-		GameScene::tmpNum = 100;
 	}
 
 	return GameScene::mGameScene;
@@ -37,11 +28,6 @@ GameScene* GameScene::GetInstance() {
 
 
 void GameScene::Initialize() {
-	//mImageHandle = NULL;//LoadGraph("images/clouds1.png");
-	/*for (int i = 0; i < 5; i++) {
-		dnCheck[i] = false;
-	}*/
-
 	// 情報を保持するためのmap(vector)の初期化
 	for (int i = 0; i < ENEMY_NUM; i++) {
 		mEneIntDataMaps.push_back({});
@@ -77,9 +63,6 @@ void GameScene::Initialize() {
 	mGameClear = new GameClear();
 
 	// 画面の各構成要素の初期化
-	/*CharaGraphics::Initialize();
-	ItemGraphics::Initialize();
-	EffectGraphics::Initialize();*/
 	mGameBack->Initialize();
 	mPlayerMgr->Initialize();
 	mEnemyMgr->Initialize();
@@ -89,9 +72,6 @@ void GameScene::Initialize() {
 	mScoreCounter->Initialize();
 	mGameOver->Initialize();
 	mGameClear->Initialize();
-
-	/*m_plDeadFlag = false;
-	m_bsDeadFlag = false;*/
 
 	// 音源の初期化
 	mSoundHandle = LoadSoundMem("sounds/NENEQUEST.ogg");
@@ -113,9 +93,6 @@ void GameScene::Initialize() {
 
 void GameScene::Finalize() {
 	// 画面の各構成要素の終了処理
-	/*CharaGraphics::Finalize();
-	ItemGraphics::Finalize();
-	EffectGraphics::Finalize();*/
 	mGameBack->Finalize();
 	mPlayerMgr->Finalize();
 	mEnemyMgr->Finalize();
@@ -207,13 +184,14 @@ void GameScene::Update() {
 		UpdateDOrder();
 
 		// 新しいEnemyとItemを出現させる（かどうかを決める）
-		if (mFrameCnt >= 2000 &&	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
+		if (mFrameCnt >= 300 &&	// 最初の300カウントはゲームをしている人に余裕を持たせるために何も出現させない
 			mFrameCnt < BOSS_START_FRAME_NUM) {	// BossStageの移行を始めようとしていなかったら
 			// EnemyとItemの出現は同フレームの処理を軽くするために違うフレームで出現処理をさせる
-			if (mFrameCnt % CREATION_FRAME_NUM == 0) {
+			if (mFrameCnt % ITE_CREATION_FRAME_NUM == 0) {
 				mItemMgr->CreateItem();
 			}
-			else if ((mFrameCnt + CREATION_FRAME_NUM / 2) % CREATION_FRAME_NUM == 0) {
+			
+			if ((mFrameCnt + ITE_CREATION_FRAME_NUM / 2) % ENE_CREATION_FRAME_NUM == 0) {
 				mEnemyMgr->CreateEnemy();
 			}
 		}
@@ -272,14 +250,10 @@ void GameScene::Update() {
 
 			if (mHasClearedGame) {	// 次のフレームでGameClear画面に移行するとき
 				// クリア画面で表示するスコアを渡す
-				mGameClear->SetScores(mScoreCounter->GetTotalScore(), 30 * (999 - mTimeCounter->GetClearTime()));
+				mGameClear->SetScores(mScoreCounter->GetTotalScore(), 50 * (999 - mTimeCounter->GetClearTime()));
 			}
 		}
 	}
-
-
-	
-	
 
 	mFrameCnt++;
 }
@@ -299,8 +273,9 @@ void GameScene::Draw() {
 			}
 		}
 
+		// 背景の描画
 		mGameBack->Draw();
-		DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
+		//DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
 
 		for (const auto& dOrder : mDOrderVec) {
 			int objId = dOrder.second.first;
@@ -326,17 +301,10 @@ void GameScene::Draw() {
 		// 合計スコアの表示
 		mScoreCounter->Draw();
 	}
-
-	
-
-	//DrawFormatString(400, 500, GetColor(255, 255, 255), "eneapp = %d", iNum);
 }
 
 void GameScene::UpdateDOrder() {
 	using namespace std;
-
-	//vector<pair<int, pair<int, int>>> yVec(3);	// firstにy座標，secondに物体の種類とインデックス番号を入れたpairのvector
-												// キャラの種類（0: Player, 1: Enemy, 2: Item）
 
 	// 順序を入れるvectorを空にする
 	mDOrderVec.clear();
@@ -360,67 +328,7 @@ void GameScene::UpdateDOrder() {
 
 	// y座標の昇順に並び替え
 	sort(mDOrderVec.begin(), mDOrderVec.end());
-
-	/*yVec[0] = { mPlIntDataMap["y"] - 73, {0, 0} };
-	yVec[0] = { mIteDataMaps.at(0)["y"], {2, 0} };
-	yVec[0] = { mIteDataMaps.at(1)["y"], {2, 1} };*/
-
-
-	//charaY[1] = CharaY::GetEnemy0Y();
-	//charaY[2] = CharaY::GetEnemy1Y();
-	/*charaY[3] = CharaY::GetEnemy2Y();
-	charaY[4] = CharaY::GetItem0Y();
-	charaY[5] = CharaY::GetItem1Y();*/
-
-	
-	//for (int i = 0; i < 6; i++) {
-	//	yJudge[i] = charaY[i];
-	//}
-
-	//Sort(yJudge);
-
-	//for (int i = 0; i < 6; i++) { //y座標の小さいほうから順に描画するようにするために描画する順番を入れ込んでいる
-	//	if (yJudge[i] == charaY[0] && dnCheck[0] == false) {
-	//		drawNum[0] = i + 1;
-	//		dnCheck[0] = true;
-	//	}
-	//	else if (yJudge[i] == charaY[1] && dnCheck[1] == false) {
-	//		drawNum[1] = i + 1;
-	//		dnCheck[1] = true;
-	//	}
-	//	else if (yJudge[i] == charaY[2] && dnCheck[2] == false) {
-	//		drawNum[2] = i + 1;
-	//		dnCheck[2] = true;
-	//	}
-	//	else if (yJudge[i] == charaY[3] && dnCheck[3] == false) {
-	//		drawNum[3] = i + 1;
-	//		dnCheck[3] = true;
-	//	}
-	//	else if (yJudge[i] == charaY[4] && dnCheck[4] == false) {
-	//		drawNum[4] = i + 1;
-	//		dnCheck[4] = true;
-	//	}
-	//	else {
-	//		drawNum[5] = i + 1;
-	//	}
-	//}
-
-	//for (int i = 0; i < 5; i++) {
-	//	dnCheck[i] = false;
-	//}
 }
-
-//void GameScene::Sort(int num[]) {
-//	for (int i = 0; i < 5; i++) {
-//		for (int j = i + 1; j < 6; j++) {
-//			if (num[i] > num[j]) {
-//				int cmp = num[j];
-//				num[j] = num[i];
-//				num[i] = cmp;
-//			}
-//		}
-//	}
-//}
 
 
 void GameScene::UpdateHit() {
