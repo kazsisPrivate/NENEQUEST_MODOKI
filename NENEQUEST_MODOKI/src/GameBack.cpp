@@ -22,8 +22,9 @@ void GameBack::Initialize() {
 	for (int i = 0; i < 2; i++) {
 		mIsMovingNorSts[i] = true;
 	}
-	//mIsMovingBsSt = false;
-	mIsAtBsSt = false;	
+	mIsAtBsSt = false;
+
+	mStrFontHandle = CreateFontToHandle("MS ゴシック", 60, 1, -1);
 }
 
 
@@ -34,6 +35,9 @@ void GameBack::Finalize() {
 		DeleteGraph(mCloudHandles[i]);
 	}
 	DeleteGraph(mBsStHandle);
+
+	// フォントの削除
+	DeleteFontToHandle(mStrFontHandle);
 }
 
 
@@ -52,20 +56,10 @@ void GameBack::Draw() {
 	for (int i = 0; i < 2; i++) {
 		DrawGraph(mCloudXs[i], 0, mCloudHandles[i], TRUE);
 	}
-
-	//// NormalStageの描画
-	//for (int i = 0; i < 2; i++) {
-	//	DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
-	//}
-	/*DrawGraph(mClouds1X, 0, mCl1Handle, TRUE);
-	DrawGraph(mClouds2X, 0, mCl2Handle, TRUE);*/
 	
 	if (mIsChangingSt) {	// BossStageに移行中のとき
 		// BossStageの描画
 		DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
-		//if (mIsMovingBsSt) {	// BossStageの画像を動かしているとき
-		//	DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
-		//}
 		
 		// NormalStageの描画
 		for (int i = 0; i < 2; i++) {
@@ -73,32 +67,20 @@ void GameBack::Draw() {
 				DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
 			}
 		}
-		/*if (mMountain1X != END_LEFT_X && mMountain1X != END_RIGHT_X) {
-			DrawGraph(mMountain1X, 0, mMo1Handle, TRUE);
-		}
-		else if (mMountain2X != END_LEFT_X && mMountain2X != END_RIGHT_X) {
-			DrawGraph(mMountain2X, 0, mMo2Handle, TRUE);
-		}*/
 
+		// BossStageへ移行中なことを表すための文字の描画
+		DrawFormatStringToHandle(300, 200, GetColor(255, 0, 0), mStrFontHandle, "!BossStage!");
 	}
 	else if (!mIsAtBsSt) {	// NormalStageであるとき（BossStageでないとき）
 		// NormalStageの描画
 		for (int i = 0; i < 2; i++) {
 			DrawGraph(mNorStXs[i], 0, mNorStHandles[i], TRUE);
 		}
-		//// 山の描画
-		//for (int i = 0; i < 2; i++) {
-		//	DrawGraph(mMountainXs[i], 0, mMountainHandles[i], TRUE);
-		//}
-		/*DrawGraph(mMountain1X, 0, mMo1Handle, TRUE);
-		DrawGraph(mMountain2X, 0, mMo2Handle, TRUE);*/
 	}
 	else {	// BossStageのとき
 		// BossStageの描画
 		DrawGraph(mBsStX, 0, mBsStHandle, TRUE);
 	}
-
-	//DrawFormatString(500, 200, GetColor(255, 255, 255), "ys = %d", mBackChCnt);
 }
 
 
@@ -113,29 +95,12 @@ void GameBack::UpdateNormalBack() {
 			mCloudXs[i] -= 0.5f;
 		}
 
-		//for (int i = 0; i < 2; i++) {
-		//	if (mIsMovingNorSts[i] &&	// NormalStageの画像を動かしているときで
-		//		mNorStXs[i] < BACK_X_MAX - BRIDGE_LX && mNorStXs[i] > 0) {	// 画面内で橋が映りこまないとき
-		//		// BossStageの画像を動き始めさせる
-		//		mIsMovingBsSt = true;
-		//		mBsStX = mNorStXs[i];
-
-		//		// NormalStageの画像の動きを止める
-		//		mIsMovingNorSts[i] = false;
-		//		mNorStXs[i] = BACK_X_MAX;
-		//	}
-		//}
-
 		// NormalStageの画像が移動範囲の左端に行っていた際の処理
 		for (int i = 0; i < 2; i++) {
 			if (mNorStXs[i] <= BACK_X_MIN) {
 				// NormalStageの画像の動きを止める
 				mIsMovingNorSts[i] = false;
 				mNorStXs[i] = BACK_X_MAX;
-				
-				//if (!mIsMovingBsSt) {	// BossStageの画像を動き出させていなければ
-				//	mIsMovingBsSt = true;
-				//}
 
 				break;
 			}
@@ -154,7 +119,6 @@ void GameBack::UpdateNormalBack() {
 		}
 		else {	// 画面の左端にBossStageの画像がいっていれば
 			// BossStageへの移行を終了する
-			//mIsMovingBsSt = false;
 			mIsChangingSt = false;
 			// BossStageに入ったことにする
 			mIsAtBsSt = true;
@@ -181,37 +145,6 @@ void GameBack::UpdateNormalBack() {
 			}
 		}
 	}
-
-	// 位置の更新
-	/*mMountain1X -= 1;
-	mMountain2X -= 1;
-	mClouds1X -= 0.5f;
-	mClouds2X -= 0.5f;*/
-
-	// 山の画像が移動範囲の左端に行っていた際の処理
-	/*if (mMountain1X <= END_LEFT_X) {
-		mMountain1X = END_RIGHT_X;
-		mBackChCnt++;
-	}
-	else if (mMountain2X <= END_LEFT_X) {
-		mMountain2X = END_RIGHT_X;
-		mBackChCnt++;
-	}*/
-
-	// 雲の画像が移動範囲の左端に行っていた際の処理
-	/*if (mClouds1X <= END_LEFT_X) {
-		mClouds1X = END_RIGHT_X;
-	}
-	else if (mClouds2X <= END_LEFT_X) {
-		mClouds2X = END_RIGHT_X;
-	}*/
-
-	// BossStageに移行するかしないかの判定
-	/*if (mBackChCnt == 1) {
-		mIsBossStage = true;
-		PlayerData::SetBossFlag(true);
-		EnemyData::SetBossFlag(true);
-	}*/
 }
 
 void GameBack::UpdateBossBack() {
@@ -226,45 +159,6 @@ void GameBack::UpdateBossBack() {
 			mCloudXs[i] = BACK_X_MAX;
 		}
 	}
-
-	//if (mUpdFraCnt <= END_RIGHT_X) { //mountainの背景が端から端まで移動し終わるのにかかる時間
-	//	if (mUpdFraCnt % UPDATE_FRAME_NUM == 0) {
-	//		mClouds1X -= 1;
-	//		mClouds2X -= 1;
-	//		mBoStX -= 2;
-
-	//		if (mMountain1X == END_RIGHT_X) {//END_LEFT_XからEND_RIGHT_Xに移動されているはずだから
-	//			mMountain2X -= 2;
-	//		}
-	//		else { //mMountain2X == END_RIGHT_X　のとき
-	//			mMountain1X -= 2;
-	//		}
-
-	//		if (mClouds1X == END_LEFT_X) {
-	//			mClouds1X = END_RIGHT_X;
-	//		}
-	//		else if (mClouds2X == END_LEFT_X) {
-	//			mClouds2X = END_RIGHT_X;
-	//		}
-	//	}
-	//}
-	//else {
-	//	if (mUpdFraCnt % UPDATE_FRAME_NUM == 0) {
-	//		mClouds1X -= 1;
-	//		mClouds2X -= 1;
-
-	//		if (mClouds1X == END_LEFT_X) {
-	//			mClouds1X = END_RIGHT_X;
-	//		}
-	//		else if (mClouds2X == END_LEFT_X) {
-	//			mClouds2X = END_RIGHT_X;
-	//		}
-
-	//		mUpdFraCnt = END_RIGHT_X; //こうしているとmUpdFraCntは 1281→1282→1281　とループしていくようにできる
-	//	}
-	//}
-
-	//mUpdFraCnt++;
 }
 
 
