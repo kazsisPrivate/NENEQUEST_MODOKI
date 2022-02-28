@@ -64,6 +64,11 @@ void ConfigScene::Initialize() {
 
 
 void ConfigScene::Finalize() {
+	// ƒtƒHƒ“ƒg‚Ìíœ
+	DeleteFontToHandle(mExpStrFontHandles[0]);
+	DeleteFontToHandle(mExpStrFontHandles[1]);
+	DeleteFontToHandle(mEscStrFontHandle);
+
 	delete mConfigScene;
 	mConfigScene = NULL;
 }
