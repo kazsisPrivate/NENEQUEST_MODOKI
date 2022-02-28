@@ -196,7 +196,7 @@ void EnemyMgr::CreateEnemy() {
 
 	// Enemyの生成確率（0～10000, 10000で100%）を求める
 	// Enemyがセットされていればいるほど生成確立が下がる
-	int creationProb = 2000 * std::pow(0.3, existingEneNum);
+	int creationProb = 4000 * std::pow(0.1, existingEneNum);
 
 	// 1～10000のランダムな数値を生成
 	std::random_device rnd;
