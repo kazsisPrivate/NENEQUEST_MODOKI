@@ -8,7 +8,7 @@
 class TimeCounter : public BasicFunc {
 public:
 	void Initialize() override;
-	void Finalize() override {};
+	void Finalize() override;
 	void Update() override;
 	void Draw() override;
 	int GetClearTime() const;	// Game‚ÌƒNƒŠƒAŠÔ‚ğ•Ô‚·
