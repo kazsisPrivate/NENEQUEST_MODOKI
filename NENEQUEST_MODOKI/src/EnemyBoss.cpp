@@ -232,12 +232,12 @@ void EnemyBoss::SelectAttack() {
 		randNum = 10000 - randNum + 1;
 		randNum = (randNum / (float)attackProb) * 100;
 
-		if (randNum <= 25) {	// 50%の確率で
+		if (randNum <= 30) {	// 30%の確率で
 			// Enemy呼び出し攻撃
 			mIsSummoningEne = true;
 			mEneANum = 0;
 		}
-		else if (randNum <= 50) {	// 50%の確率で
+		else if (randNum <= 50) {	// 20%の確率で
 			// ItemBox落とし攻撃
 			mIsDroppingIteB = true;
 			mEneANum = 1;
