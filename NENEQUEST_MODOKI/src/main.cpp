@@ -6,6 +6,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SetBackgroundColor(255, 255, 255);
 
+	// 使用するフォントの追加
+	AddFontResource("fonts/HGRSGU.TTC");
+	AddFontResource("fonts/BROADW.TTC");
+	AddFontResource("fonts/SHOWG.TTC");
+	AddFontResource("fonts/RAVIE.TTC");
+	AddFontResource("fonts/msgothic.TTC");
+
 	SceneMgr* sceneMgr = SceneMgr::GetInstance();
 
 	// while(裏画面を表画面に反映, メッセージ処理, 画面クリア)
@@ -16,6 +23,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	
 	sceneMgr->Finalize();
+
+	// フォントの削除
+	RemoveFontResource("fonts/HGRSGU.TTC");
+	RemoveFontResource("fonts/BROADW.TTC");
+	RemoveFontResource("fonts/SHOWG.TTC");
+	RemoveFontResource("fonts/RAVIE.TTC");
+	RemoveFontResource("fonts/msgothic.TTC");
 
 	// DXライブラリ終了処理
 	DxLib_End(); 
