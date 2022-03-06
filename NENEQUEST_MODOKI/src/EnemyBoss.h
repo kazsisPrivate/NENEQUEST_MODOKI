@@ -64,7 +64,7 @@ private:
 	EItem mIteBKind;	// 落とすItemの種類
 	int mIteBX, mIteBY;	// ItemBox落としで落とすItemBoxのxy座標
 	const int ITEMBOX_FIRST_X_MIN = 300;	// ItemBoxが生成された際の最初のy座標の最小値
-	const int ITEMBOX_FIRST_X_MAX = 600;	// ItemBoxが生成された際の最初のy座標の最大値
+	const int ITEMBOX_FIRST_X_MAX = 650;	// ItemBoxが生成された際の最初のy座標の最大値
 	int mIteBDY;	// ItemBox落としで落とすItemBoxのy座標の増加量
 	int mIteBHitRangeW, mIteBHitRangeH;	// 落とすItemBoxの当たり判定
 	bool mIsCreatingIteB;	// ItemBoxを落下させ終えてから，ItemBoxをItemMgrの方で作ってもらっているときtrue 
