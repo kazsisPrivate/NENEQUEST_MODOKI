@@ -30,14 +30,14 @@ void EnemyMgr::Initialize() {
 	// Enemyが何もセットされていない状態に初期化
 	for (int i = 0; i < ENEMY_NUM; i++) {
 		mEnemies[i] = NULL;
-		mEnesNext[i] = eEnemy1;	// デバッグ用に入れいている
+		mEnesNext[i] = eEnemyNone;
 
-		mEnesNextX[i] = 100;//1200;//1300 + 500 * i;
-		mEnesNextY[i] = 300 + 150 * i;
+		mEnesNextX[i] = -3000;
+		mEnesNextY[i] = -3000;
 	}
-	mEnesNext[0] = eEnemyNone;	// デバッグ用に入れいている
-	mEnesNext[1] = eEnemyNone;	// デバッグ用に入れいている
-	mEnesNext[2] = eEnemyNone;	// デバッグ用に入れいている
+	//mEnesNext[0] = eEnemyNone;	// デバッグ用
+	//mEnesNext[1] = eEnemyNone;	// デバッグ用
+	//mEnesNext[2] = eEnemyNone;	// デバッグ用
 
 	mPlX = 0;
 }
