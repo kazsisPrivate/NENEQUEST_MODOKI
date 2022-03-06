@@ -44,7 +44,7 @@ void PlayerMgr::Initialize() {
 	plBoolDataMap["isAtBsSt"] = false;
 
 	// Å‰‚ÉŽg—p‚·‚éPlayer‚Ì‰Šú‰»
-	mPlayer = (Player*)Player2::GetInstance();
+	mPlayer = (Player*)Player1::GetInstance();
 	mPlayer->SetPlParams(&plIntDataMap, &plBoolDataMap);
 	mPlayer->Initialize();
 
