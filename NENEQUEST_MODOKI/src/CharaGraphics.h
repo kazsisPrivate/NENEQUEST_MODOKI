@@ -1,4 +1,7 @@
 #pragma once
+/*
+* PlayerとEnemyの画像の読み込み及び提供を行うクラス
+*/
 
 static class CharaGraphics {	// 画像の読み込み時間削減のためのクラス
 public:

@@ -159,7 +159,8 @@ void EnemyBoss::Draw() {
 	DrawGraph(mX - IMG_W / 2, mY - IMG_H / 2, mEneHandle[mHandleId], TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawBox(mX - mHitRangeW, mY - mHitRangeH, mX + mHitRangeW, mY + mHitRangeH, GetColor(255, 0, 0), FALSE);
+	//// 当たり判定の描画（デバッグ用）
+	//DrawBox(mX - mHitRangeW, mY - mHitRangeH, mX + mHitRangeW, mY + mHitRangeH, GetColor(255, 0, 0), FALSE);
 
 	// DropItemBoxで行うItemBox落とし攻撃のItemBoxの画像の描画
 	if (mIteBHandle) {	// 描画するItemBoxがセットされていたら

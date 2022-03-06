@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* GameSceneにおける，アイテム（Item）の管理を行うクラス
+*/
 #include "ItemChanger.h"
 #include "BasicFunc.h"
 #include <map>
@@ -30,15 +32,14 @@ public:
 private:
 	const int ITEM_NUM = 2;	// セットできるitemの数，mItemsの要素数
 	Item* mItems[2];
+
 	EItem mItesNext[2];	// 各mItemに次にセットするitemの種類
 	int mItesNextX[2];	// 次にセットするitemの最初のx座標
 	int mItesNextY[2];	// 次にセットするitemの最初のy座標
 	const int ITEM_FIRST_X = 1400;	// itemが生成された際の最初のx座標（固定）
 	const int ITEM_FIRST_Y_MIN = 290;	// itemが生成された際の最初のy座標の最小値
 	const int ITEM_FIRST_Y_MAX = 610;	// itemが生成された際の最初のy座標の最大値
-	//int itAppear[320];
-	//const int ITEM_DELETE_FRAME_NUM = 320;	// itemを出現させてから，itemを削除するまでのフレーム数
-	//int mItemsCnt[2];	// 各itemの出現を出現させてからのフレーム数
+	
 	bool mIsAtBsSt;	// bossStageに入っていればtrue
 
 private:

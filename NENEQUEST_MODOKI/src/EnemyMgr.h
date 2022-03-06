@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* GameSceneにおける，敵（Enemy）の管理を行うクラス
+*/
 #include "EnemyChanger.h"
 #include "BasicFunc.h"
 #include <map>
@@ -28,16 +30,17 @@ public:
 	void SetPlDataMap(std::map<std::string, int>* plDataMap);	// Playerのx, y, 攻撃力を受け取る
 	void CreateEnemy();	// 一定の確率でEnemyを出現させる，Enemyの自動生成のために使用し，GameSceneから一定の周期で利用する
 	void CreateEnemyBoss(const int bossBackX);	// BossStageへの移行を始めたときに呼び出し，EnemyBossをmEnemiesに入れる, BossStage背景の位置に合わせた位置で生成するために背景のx座標を受け取る
-	//bool GetBossDead() const; //Bossの体力が0になったらtrue
 
 private:
 	const int ENEMY_NUM = 3;	// 管理できるenemyの数，mEnemiesの要素数
 	Enemy* mEnemies[3];
 	EEnemy mEnesNext[3];	// 各mEnemiesに次にセットするitemの種類
+
 	int mEnesNextX[3];	// 次にセットするenemyの最初のx座標
 	int mEnesNextY[3];	// 次にセットするenemyの最初のy座標
 	const int ENEMY_FIRST_Y_MIN = 290;	// enemyが生成された際の最初のy座標の最小値
 	const int ENEMY_FIRST_Y_MAX = 610;	// enemyが生成された際の最初のy座標の最大値
+
 	int mPlX;	// Playerのx座標，新しいEnemyの出現の座標の決定で使用する
 
 private:

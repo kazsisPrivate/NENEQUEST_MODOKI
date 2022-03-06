@@ -275,7 +275,7 @@ void GameScene::Draw() {
 
 		// ”wŒi‚Ì•`‰æ
 		mGameBack->Draw();
-		//DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);
+		//DrawFormatString(500, 300, GetColor(255, 255, 255), "px = %d, ex = %d, %d, %d", mPlIntDataMap["hp"], mPlIntDataMap["x"], tmpA, mFrameCnt);	// ƒfƒoƒbƒO—p
 
 		for (const auto& dOrder : mDOrderVec) {
 			int objId = dOrder.second.first;

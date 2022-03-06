@@ -45,7 +45,6 @@ void EnemyMage::Initialize() {
 	mIsFadingOut = false;
 	mIsHiding = false;
 	mAlphaValue = 0;	// 最初は消えていて，フェードインで入ってくるため，α値は0
-	// 火の玉の準備時間を受け取る
 	mFireStopFrameNum = 0;
 	mHidingFrameCnt = 0;
 	mAttackFrameCnt = 0;
@@ -101,17 +100,6 @@ void EnemyMage::Update() {
 			Hide();
 		}
 		else {	// 姿を現しているとき（動作順番2）
-			//if (mHp <= 0) {	// 体力が0以下となったとき
-			//	// 死んだことを認識させるための10フレームの硬直
-			//	if (mGodFrameCnt == DEAD_STOP_FRAME_NUM) {
-			//		mMageIsDead = true;
-			//	}
-
-			//	// ダメージをくらったことがわかる画像にする
-			//	mHandleId += 4;
-
-			//	mGodFrameCnt++;
-			//}
 			if (mRoutineDoneCnt == 0) {	// 1回目の動作のとき（ただy座標移動している（敵を倒すための猶予時間））
 				if (mAttackFrameCnt == WALK_FRAME_NUM) {
 					// フェードアウトを始める

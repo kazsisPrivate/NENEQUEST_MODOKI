@@ -1,4 +1,8 @@
 #pragma once
+/*
+* キー入力の処理を行うクラス
+*/
+
 
 class UpdateKey {
 protected:

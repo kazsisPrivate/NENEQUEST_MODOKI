@@ -1,4 +1,8 @@
 #pragma once
+/*
+* Itemの画像の読み込みおよび提供を行うクラス
+*/
+
 
 static class ItemGraphics {	// 画像の読み込み時間削減のためのクラス
 public:

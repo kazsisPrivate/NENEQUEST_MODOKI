@@ -1,6 +1,8 @@
 #pragma once
-
-// 取得したスコアを表示するためのクラス
+/*
+* GameSceneにおいて取得したスコアを表示するクラス
+* の管理を行うクラス
+*/
 #include "BasicFunc.h"
 #include <string>
 
@@ -16,9 +18,12 @@ public:
 
 private:
 	int mScoreFrameHandle;	// スコアを表示する枠の画像
+
 	int mScoreFontHandle;	// スコアを表示するのに使用するフォント
 	int mStrFontHandle;	// "Score"という文字列を表示するのに使用するフォント
+
 	const int SCORE_STR_RX = 1150;	// スコアを表示する際の，スコアの文字列の右端のx座標，文字列の右寄せで使用する 	
+
 	unsigned long long mTotalScore;	// 合計スコア
 	std::string mTotalScoreStr;	// 描画する用の文字列の合計スコア
 	int mTotalScoreStrW;	// 描画する際の文字列の合計スコアの横幅

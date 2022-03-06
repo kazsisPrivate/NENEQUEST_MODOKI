@@ -8,7 +8,6 @@ Player3* Player3::mPlayer3;
 
 
 Player3::Player3(PlayerChanger* changer) : Player(changer, CharaGraphics::GetGraHandle(0, 3)) {
-	//mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
@@ -64,9 +63,6 @@ void Player3::Update() {
 		mGodFrameCnt++;
 	}
 	else {	// 生きているときの処理
-		// boss stageに突入しているかしていないかチェック
-		//mIsAtBsSt = PlayerData::GetBossFlag();
-
 		// Enemyとの当たり判定を考慮したEnemyから受けるダメージの更新
 		UpdateEneDamage();
 
@@ -149,16 +145,6 @@ void Player3::Update() {
 }
 
 
-//void Player3::Draw() {
-//	Player::Draw();
-//}
-//
-//
-//void Player3::UpdateSAP() {
-//	Player::UpdateSAP();
-//}
-
-
 void Player3::Walk() {
 	// stageごとに構成が変わるため，stageの移動範囲に合わせたplayerの座標更新を行う
 	Player::Walk();
@@ -183,11 +169,6 @@ void Player3::Walk() {
 		mHandleId = iy;
 	}
 }
-
-
-//void Player3::Attack() {
-//	Player::Attack();
-//}
 
 
 void Player3::Jump() {

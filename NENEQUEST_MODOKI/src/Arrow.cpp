@@ -138,28 +138,6 @@ void Arrow::Move() {
 }
 
 
-void Arrow::UpdateHit() {
-	/*if (mIsMoving == true) {
-		HitJudge0::SetPlARange(mX, mY, hitRangeAX, hitRangeAY);
-		HitJudge1::SetPlARange(mX, mY, hitRangeAX, hitRangeAY);
-		HitJudge2::SetPlARange(mX, mY, hitRangeAX, hitRangeAY);
-	}
-	else {
-		HitJudge0::SetPlARange(-3000, -3000, 0, 0);
-		HitJudge1::SetPlARange(-3000, -3000, 0, 0);
-		HitJudge2::SetPlARange(-3000, -3000, 0, 0);
-	}
-
-	bool eneJudge0 = HitJudge0::PaEJudge();
-	bool eneJudge1 = HitJudge1::PaEJudge();
-	bool eneJudge2 = HitJudge2::PaEJudge();
-
-	if (eneJudge0 == true || eneJudge1 == true || eneJudge2 == true) {
-		mIsHit = true;
-	}*/
-}
-
-
 bool Arrow::GetIsMoving() const {
 	return mIsMoving;
 }

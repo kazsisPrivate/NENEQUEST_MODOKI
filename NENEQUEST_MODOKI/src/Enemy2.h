@@ -1,6 +1,7 @@
 #pragma once
-
-// イノシシ2（hp2）
+/*
+* イノシシ2（hp2）
+*/
 #include "EnemyBoar.h"
 
 class Enemy2 : public EnemyBoar {

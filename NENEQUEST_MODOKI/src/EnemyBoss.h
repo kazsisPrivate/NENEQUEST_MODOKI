@@ -1,6 +1,7 @@
 #pragma once
-
-// ボス（ドラゴン）
+/*
+* ボス（ドラゴン）
+*/
 #include "Enemy.h"
 #include "BossFire.h"
 #include "ItemChanger.h"
@@ -29,19 +30,21 @@ private:
 	void FireAttack();	// 火の玉攻撃
 
 	BossFire* mBossFire;
+	int IMG_W = 958, IMG_H = 600;	// EnemyBossの画像サイズ
+
 	const int ENEBOSS_X_MAX = 1210;	// EnemyBossのx軸方向の移動範囲の最大値
 	const int ENEBOSS_X_MIN = 1090;	// EnemyBossのx軸方向の移動範囲の最小値
+	const int ENEBOSS_FIRST_X = 1160;	// BossStageへの移行を終え，BossStageが始まる際のEnemyBossの最初のx座標
 	std::vector<int> mAXs;	// 各攻撃のx座標
 	std::vector<int> mAYs;	// 各攻撃のy座標
 	std::vector<int> mHitRangeAWs;	// 各攻撃の当たり判定の範囲（幅）
 	std::vector<int> mHitRangeAHs;	// 各攻撃の当たり判定の範囲（高さ）
-	const int ENEBOSS_ATTACK_NUM_MAX = 5;	// EnemyBossができる攻撃の最大数（FireBreathの火の玉5個制御が最大）
-
-	int IMG_W = 958, IMG_H = 600;	// EnemyBossの画像サイズ
 	int mDirecX;	// EnemyBossの移動方向の向き（-1: 左向き，1: 右向き）
-	const int HP_ANGRY = 30;	// EnemyBossが怒りだすhp，怒りだすと攻撃の種類や速度，攻撃力等が変化する
 	int mAlphaValue;	// 表示するEnemyBossの画像の透明度，倒されたときに透過していくのに使用する
-	const int ENEBOSS_FIRST_X = 1160;	// BossStageへの移行を終え，BossStageが始まる際のEnemyBossの最初のx座標
+
+	const int ENEBOSS_ATTACK_NUM_MAX = 5;	// EnemyBossができる攻撃の最大数（FireBreathの火の玉5個制御が最大）
+	const int HP_ANGRY = 30;	// EnemyBossが怒りだすhp，怒りだすと攻撃の種類や速度，攻撃力等が変化する
+	
 	unsigned long long mWatingFrameCnt;	// 攻撃と攻撃間のフレーム数のカウント，攻撃の始めるタイミングなどの制御に使用する
 	bool mIsChangingSt;	// BossStageへの移行中のときtrue，EnemyBossのオブジェクトが作成されたときは移行中であり，規定の位置に移動し終えたらfalseになる
 

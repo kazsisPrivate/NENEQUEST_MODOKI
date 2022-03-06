@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* 鎌使いの敵（Enemy7）が使用する斬撃の制御を行うクラス
+*/
 #include "BasicFunc.h"
 #include <utility>
 #include <vector>
@@ -21,15 +23,18 @@ private:
 	void Move();	// 斬撃の移動（飛ばす斬撃攻撃のみで使用）
 
 	int* mSlashHandle;
+	const int IMG_W = 250, IMG_H = 150;	// 斬撃の画像の大きさ
 	int mHandleId;	// 使用している斬撃の画像のid
+
 	int mX, mY;	// 斬撃のxy座標
 	int mHitRangeW, mHitRangeH;	// 斬撃の当たり判定
-	const int IMG_W = 250, IMG_H = 150;	// 斬撃の画像の大きさ
+	
 	int mDirec;	// 攻撃の方向を表す，左向きなら-1，右向きなら1が入っている
 	int mAttackType;	// 斬撃の動きのパターン(1: 固定位置の斬撃攻撃，2: 飛ばす斬撃攻撃)
 	float mDX;	// x座標の1フレームあたりの増加分（飛ばす斬撃攻撃のみで使用）
 	const int SLASH_DELETE_LX = -250;	// この座標まですべての火の玉が移動したとき，自動的に消すようにする(左側)
 	const int SLASH_DELETE_RX = 1450;	// この座標まですべての火の玉が移動したとき，自動的に消すようにする(右側)
+
 	bool mSlashExist;	// 斬撃が残っているかどうか，画面内に残っていればtrue
 	int mFrameCnt;	// フレーム数のカウント，固定位置の斬撃攻撃の制御のために使用する
 	const int SLASH_DELETE_FRAME_NUM = 60;	// このフレーム数を超えたら斬撃を消す（固定位置の斬撃攻撃のみで使用）

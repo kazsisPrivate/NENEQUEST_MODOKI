@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* 魔法使いの敵（EnemyMage）が使用する火の玉の制御を行うクラス
+*/
 #include "BasicFunc.h"
 #include <utility>
 #include <vector>

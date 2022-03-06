@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* ゲームプレイ画面（GameScene）のクラス
+*/
 #include "BaseScene.h"
 #include "SceneChanger.h"
 #include "GameBack.h"
@@ -46,10 +48,10 @@ private:
 														// firstにy座標，secondに物体の種類とインデックス番号を入れたpairのvector
 														// キャラの種類（0: Player, 1: Enemy, 2: Item）
 	int mSoundHandle;	// 音源
+
 	unsigned long long mFrameCnt;	// フレーム数のカウント，EnemyやItemの出現，Bossへの突入の管理のために使用する
 	const int ENE_CREATION_FRAME_NUM = 120;	// このフレーム毎にEnemyを出現させるかどうかを決める
 	const int ITE_CREATION_FRAME_NUM = 60;	// このフレーム毎にItemを出現させるかどうかを決める
-	bool mPlIsDead;	// Playerが死んでいたら（PlayerのmIsDeadがtrueになっていたら）true, GameOver画面への移行に使う
 	const unsigned long long BOSS_START_FRAME_NUM = 9000;	// このフレーム数を超えたら，ボスステージに入る準備を始める(9000フレーム=約2分30秒)
 
 	const int ITEM_NUM = 2;	// 管理できるitemの数
@@ -73,6 +75,7 @@ private:
 	bool mEneIsHits[3];	// 各Enemyにおける，Playerの攻撃との当たり判定を入れた配列
 	std::vector<std::map<std::string, bool>> mIteIsHitMaps;	// 各Itemの当たり判定の情報を入れたmap, キーは対称の物体の種類（player, playerAttack）, ItemMgrに渡す
 
+	bool mPlIsDead;	// Playerが死んでいたら（PlayerのmIsDeadがtrueになっていたら）true, GameOver画面への移行に使う
 	bool mIsChangingSt;	// BossStageへ変更中であったらtrue
 	bool mIsAtBsSt;	// BossStageにいたらtrue
 	bool mHasClearedGame;	// Bossを倒したらtrue

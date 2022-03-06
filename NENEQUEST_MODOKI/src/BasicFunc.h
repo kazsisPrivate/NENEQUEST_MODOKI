@@ -1,6 +1,5 @@
-/*使用する基本的な関数セット*/
-
 #pragma once
+/*使用する基本的な関数セット*/
 
 
 class BasicFunc {

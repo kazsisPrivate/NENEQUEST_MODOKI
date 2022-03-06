@@ -24,9 +24,6 @@ void Item::Update() {
 
 	// 移動
 	Move();
-
-	// 当たり判定の処理
-	//UpdateHit();
 }
 
 
@@ -40,40 +37,7 @@ void Item::Move() {
 }
 
 
-//void Item::UpdateHit() {
-//	if (mItNum == 0) {
-//		if (plJudge == true) {
-//			HitJudge0::SetIRange(-3000, -3000, 0, 0);
-//		}
-//		else {
-//			HitJudge0::SetIRange(x, y, hitRangeX, hitRangeY);
-//			plJudge = HitJudge0::PIJudge();
-//		}
-//	}
-//	else {
-//		if (plJudge == true) {
-//			HitJudge1::SetIRange(-3000, -3000, 0, 0);
-//		}
-//		else {
-//			HitJudge1::SetIRange(x, y, hitRangeX, hitRangeY);
-//			plJudge = HitJudge1::PIJudge();
-//		}
-//	}
-//
-//}
-
-
 void Item::GetIteDataMap(std::map<std::string, float>* iteIntDataMap, std::map<std::string, float>* iteBoolDataMap) {
-	/*mIteIntDataMap["x"] = mX;
-	mIteIntDataMap["y"] = mY;
-	mIteIntDataMap["hitRangeW"] = mHitRangeW;
-	mIteIntDataMap["hitRangeH"] = mHitRangeH;
-	mIteIntDataMap["healPower"] = mHealPower;
-	mIteIntDataMap["speedPower"] = mSpeedPower;
-	mIteIntDataMap["attackPower"] = mAttackPower;
-	mIteIntDataMap["itemKind"] = mItemKind;*/
-
-	//iteDataMap = &mIteIntDataMap;
 	if (mIsDead) {	// 次に消える（or 他のアイテムに交代する）とき
 		// 判定を2回とらないようにするために位置を画面外に設定する
 		(*iteIntDataMap)["x"] = -1000;

@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* PlayerのHpゲージのクラス
+*/
 #include "BasicFunc.h"
 
 

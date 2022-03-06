@@ -90,9 +90,6 @@ void BossFire::StartFire(const int bossX, const int bossY, const int fireType, c
 
 		// 各火の玉の位置の初期化
 		for (int i = 0; i < FIRE_BREATH_NUM; i++) {
-			//// 適当な画面外の位置に初期化
-			//mXs[i] = 3000;
-			//mYs[i] = 3000;
 			// EnemyBossの口の位置に初期化
 			mXs[i] = mBossMouthX;
 			mYs[i] = mBossMouthY;
@@ -232,7 +229,6 @@ void BossFire::FireBreath() {
 			mNextBreathId = (mNextBreathId + 1) % FIRE_BREATH_NUM;
 		}
 	}
-	
 
 	for (int i = 0; i < FIRE_BREATH_NUM; i++) {
 		if (mBreIsExistings[i]) {

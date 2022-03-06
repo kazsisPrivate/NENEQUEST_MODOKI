@@ -1,7 +1,7 @@
 #pragma once
-
-// 樽2（箱，Item1～7がランダムで出てくる）
-
+/*
+* 樽2（箱，Item1～7がランダムで出てくる）
+*/
 #include "ItemBox.h"
 
 

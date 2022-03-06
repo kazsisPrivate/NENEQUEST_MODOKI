@@ -9,7 +9,6 @@ Player4* Player4::mPlayer4;
 
 
 Player4::Player4(PlayerChanger* changer) : Player(changer, CharaGraphics::GetGraHandle(0, 4)) {
-	//mPlayerMgr = PlayerMgr::GetInstance();
 }
 
 
@@ -73,9 +72,6 @@ void Player4::Update() {
 		mGodFrameCnt++;
 	}
 	else {	// 生きているときの処理
-		// boss stageに突入しているかしていないかチェック
-		//mIsAtBsSt = PlayerData::GetBossFlag();
-
 		if (mIsChangingSt) {	// BossStageの始まる際の強制的な移動処理
 			StartBossStage();
 		}
@@ -219,34 +215,12 @@ void Player4::UpdateSAP() {
 
 	// 移動速度（アイテム効果）の更新
 	mSpeed *= mIteSP;
-	//if (mHasIteS) {
-	//	if (mIteSFrameCnt != 0) {	// 効果中のとき
-	//		mSpeed *= mIteSP;
-	//		mIteSFrameCnt--;
-	//	}
-	//	else {	// 効果切れのとき
-	//		mIteSP = 1.0f;
-	//		mEffectHandle = 0;
-	//		mHasIteS = false;
-	//	}
-	//}
 
 	// 攻撃力の更新
 	mAttack = mAttackBase;
 
 	// 攻撃力（アイテム効果）の更新
 	mAttack *= mIteAP;
-	//if (mHasIteA) {
-	//	if (mIteAFrameCnt != 0) {	// 効果中のとき
-	//		mAttack *= mIteAP;
-	//		mIteAFrameCnt--;
-	//	}
-	//	else {	// 効果切れのとき
-	//		mIteAP = 0;
-	//		mEffectHandle = 0;
-	//		mHasIteA = false;
-	//	}
-	//}
 }
 
 
@@ -378,84 +352,6 @@ void Player4::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<st
 	(*plBoolDataMap)["isAttacking"] = mArrow->GetIsMoving();
 }
 
-
-//void Player4::StartBossStage() {
-//
-//	//attackFlag = mArrow->GetArrowFlag();
-//
-//	//if (attackFlag == true) {
-//	//	mArrow->Update();
-//	//}
-//
-//	//prev_x = x;
-//	//prev_y = y;
-//	//prev_xcount = xcount;
-//	//prev_ycount = ycount;
-//
-//	//if (x > 353) {
-//	//	x -= 2;
-//
-//	//	/*if (xcount > 0) {
-//	//	xcount = 0;
-//	//	}*/
-//	//	--xcount;
-//	//}
-//	//if (x < 349) {
-//	//	x += 2;
-//
-//	//	/*if (xcount < 0) {
-//	//	xcount = 0;
-//	//	}*/
-//	//	++xcount;
-//	//}
-//	//if (y > 453) {
-//	//	y -= 2;
-//
-//	//	/*if (ycount > 0) {
-//	//	ycount = 0;
-//	//	}*/
-//	//	--ycount;
-//	//}
-//	//if (y < 449) {
-//	//	prev_y = y;
-//	//	y += 2;
-//
-//	//	/*if (ycount < 0) {
-//	//	ycount = 0;
-//	//	}*/
-//	//	++ycount;
-//	//}
-//
-//
-//	//if (y == prev_y && x == prev_x) {
-//	//	handleNumber = 0;
-//	//}
-//	//else {
-//	//	if (xcount != prev_xcount) {
-//	//		ix = abs(xcount) % 40 / 20;
-//
-//	//		if (xcount > 0) {
-//	//			ix += 0;
-//	//			handleNumber = ix;
-//	//		}
-//	//		else if (xcount < 0) {
-//	//			ix += 8;
-//	//			handleNumber = ix;
-//	//		}
-//	//	}
-//
-//	//	if (prev_ycount != prev_ycount && ycount != 0) {
-//	//		if ((handleNumber > 5 && handleNumber < 12) || handleNumber > 17) {
-//	//			iy += 8;
-//	//		}
-//
-//	//		handleNumber = iy;
-//	//	}
-//	//}
-//
-//	//PlayerData::SetBscount(bscount + 1);
-//	//bscount++;
-//}
 
 void Player4::StartBossStage() {
 	// 弓矢の更新

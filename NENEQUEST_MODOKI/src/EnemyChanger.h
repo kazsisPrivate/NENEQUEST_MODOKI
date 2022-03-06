@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* Enemyの変更を行うための列挙型とクラス
+*/
 
 typedef enum {
 	eEnemy1,

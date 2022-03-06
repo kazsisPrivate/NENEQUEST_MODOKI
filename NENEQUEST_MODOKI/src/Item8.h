@@ -1,7 +1,7 @@
 #pragma once
-
-// 剣1（武器）
-
+/*
+* 剣1（武器）
+*/
 #include "Item.h"
 
 

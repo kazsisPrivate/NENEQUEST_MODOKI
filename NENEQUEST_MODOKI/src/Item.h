@@ -1,10 +1,13 @@
 #pragma once
-
+/*
+* Item1～14の基底クラス
+*/
 #include "BasicFunc.h"
 #include "ItemChanger.h"
 #include <map>
 #include <string>
 #include <vector>
+
 
 class ItemMgr;
 
@@ -21,27 +24,24 @@ public:
 
 protected:
 	virtual void Move();	// 移動
-	//virtual void Jump();	// ジャンプ（Item12～14で使用する）
-	//virtual void UpdateHit();	// 当たり判定の更新
 
 	ItemChanger* mItemChanger;
 	ItemMgr* mItemMgr;	// EnemyやItemなどとの当たり判定などの情報の取得に使用する
 	const int* mIteHandle;	// Itemの画像
 	int mItemIdx;	// 使用しているmItemsのインデックス番号
 	int mItemId;	// 自身のItemのId（Item{}.cppの{}の部分）
-	int mX, mY;	// itemのx座標とy座標
 	int mImgW, mImgH;	// itemの画像の横(width)、縦のサイズ(height)
+
+	int mX, mY;	// itemのx座標とy座標
 	int mHitRangeW, mHitRangeH;	// itemの当たり判定の中心座標からの範囲(width, height)
 	int mScore;	// Playerが取得した際に得ることができるスコア
 	float mSpeed;	// itemの移動速度
 	int mHealPower;	// 回復系のアイテムは0以外の値になる
 	float mSpeedPower;	// 自強化系（移動速度アップ）のアイテムは1以外の値になる，もとの移動速度に掛け合わせる倍率
 	int mAttackPower;	// 自強化系（攻撃力アップ）のアイテムは1以外の値になる，もとの攻撃力に掛け合わせる倍率
+
 	bool mPlIsHit;	// Playerとの当たり判定，当たっているときtrue
 	bool mPlAIsHit;	// Playerの攻撃との当たり判定，当たっているときはtrue
 	const int ITEM_DELETE_X = -90;	// この座標までitemが移動したとき，自動的に消すようにする
 	bool mIsDead;	// ItemがPlayerに取得されたときにtrueになる
-
-	//int type; //そのItemの座標のパターンの番号
-	//bool plJudge; //Playerの攻撃との当たり判定
 };

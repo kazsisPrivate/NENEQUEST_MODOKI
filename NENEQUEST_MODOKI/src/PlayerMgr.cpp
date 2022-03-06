@@ -14,7 +14,6 @@ PlayerMgr* PlayerMgr::mPlayerMgr;
 
 
 PlayerMgr::PlayerMgr() : mPlayerNext(ePlayerNone) {
-	//PlInitialize::SetPlayer(290, 500, 10, -1, -1, 0, 0, false); //Playerの初期状態の設定
 }
 
 
@@ -45,12 +44,9 @@ void PlayerMgr::Initialize() {
 	plBoolDataMap["isAtBsSt"] = false;
 
 	// 最初に使用するPlayerの初期化
-	mPlayer = (Player*)Player4::GetInstance();
+	mPlayer = (Player*)Player2::GetInstance();
 	mPlayer->SetPlParams(&plIntDataMap, &plBoolDataMap);
 	mPlayer->Initialize();
-
-	// 情報やり取りのためにGameSceneクラスのインスタンスを取得
-	//mGameScene = GameScene::GetInstance();
 
 	// 情報を保持するためのmap(vector), 配列の初期化
 	for (int i = 0; i < ENEMY_NUM; i++) {
@@ -124,17 +120,6 @@ void PlayerMgr::Draw() {
 void PlayerMgr::ChangePlayer(EPlayer playerNext) {
 	mPlayerNext = playerNext;
 }
-
-
-//bool PlayerMgr::GetDead() {
-//	return PlayerData::GetDeadFlag();
-//}
-
-
-//void PlayerMgr::GetPlDataMap(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {
-//	// 当たり判定確認に使用するデータの取得
-//	mPlayer->GetPlDataMap(plIntDataMap, plBoolDataMap);
-//}
 
 
 void PlayerMgr::GetPlData(std::map<std::string, int>* plIntDataMap, std::map<std::string, bool>* plBoolDataMap) {

@@ -1,6 +1,7 @@
 #pragma once
-
-// イノシシの敵（Enemy1～3）の元とするクラス
+/*
+* イノシシの敵（Enemy1～3）の基底クラス
+*/
 #include "Enemy.h"
 
 

@@ -54,7 +54,6 @@ void SceneMgr::Update() {
 	if (mSceneNext != eSceneNone) { // 次のシーンがセットされているとき
 		// 現在のシーンの終了処理を実行
 		mScene->Finalize(); 
-		//delete mScene;
 
 		switch (mSceneNext) { // mScenNextで指定されたシーンに変更
 			case eSceneMenu:
@@ -68,10 +67,7 @@ void SceneMgr::Update() {
 				break;
 		}
 		// 次のシーン情報を空にする
-		mSceneNext = eSceneNone;    
-
-		// シーンを初期化
-		//mScene->Initialize();    
+		mSceneNext = eSceneNone;     
 	}
 
 	// シーンの更新

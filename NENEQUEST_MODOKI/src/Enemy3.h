@@ -1,6 +1,7 @@
 #pragma once
-
-// イノシシ3（hp1, 角突き出し攻撃あり）
+/*
+* イノシシ3（hp1, 角突き出し攻撃あり）
+*/
 #include "EnemyBoar.h"
 
 class Enemy3 : public EnemyBoar {

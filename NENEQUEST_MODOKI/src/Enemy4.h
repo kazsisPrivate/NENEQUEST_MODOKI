@@ -1,6 +1,7 @@
 #pragma once
-
-// 魔法使い1（hp1, 赤い火の玉）
+/*
+* 魔法使い1（hp1, 赤い火の玉）
+*/
 #include "EnemyMage.h"
 
 class Enemy4 : public EnemyMage {

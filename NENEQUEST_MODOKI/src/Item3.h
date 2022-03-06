@@ -1,7 +1,7 @@
 #pragma once
-
-// 黄りんご（回復系アイテム，回復量4）
-
+/*
+* 黄りんご（回復系アイテム，回復量4）
+*/
 #include "Item.h"
 
 class Item3 : public Item {

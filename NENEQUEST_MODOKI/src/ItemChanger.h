@@ -1,4 +1,7 @@
 #pragma once
+/*
+* Itemの変更を行うための列挙型とクラス
+*/
 
 typedef enum {
 	eItem1,

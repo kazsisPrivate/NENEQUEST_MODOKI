@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* GameSceneにおける，プレイヤー（Player）の管理を行うクラス
+*/
 #include "PlayerChanger.h"
 #include "BasicFunc.h"
 #include <map>
@@ -8,7 +10,6 @@
 
 
 class Player;
-//class GameScene;
 
 
 class PlayerMgr : public PlayerChanger, BasicFunc {
@@ -31,14 +32,13 @@ public:
 private:
 	Player* mPlayer;
 	EPlayer mPlayerNext;
-	//GameScene* mGameScene;
+
 	int mEneAPs[3];	// 各Enemyの攻撃力を入れた配列
 	std::vector<std::map<std::string, float>> mIteDataMaps;	// 各ItemのhealPower, speedPower, attackPowerなどを入れているmap, Playerに渡す
 	std::map<std::string, std::vector<bool>> mPlIsHitMap;	// Playerの当たり判定の情報を入れたmap
 															// キーは対称の物体の種類（item, enemy, enemyAttack, plAToEnemy, plAToItem）, PlayerMgrに渡す
 	const int ENEMY_NUM = 3;	// セットできるEnemyの数
 	const int ITEM_NUM = 2;	// セットできるitemの数
-	//bool mIsChangingSt;	// BossStageへ変化させているときはtrueになる
 
 private:
 	static PlayerMgr* mPlayerMgr;

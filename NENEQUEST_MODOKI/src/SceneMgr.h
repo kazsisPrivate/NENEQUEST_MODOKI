@@ -1,5 +1,8 @@
 #pragma once
-
+/*
+* メニュー画面（MenuScene），ゲームプレイ画面（GameScene），操作説明画面（ConfigScene）
+* の管理を行うクラス
+*/
 #include "SceneChanger.h"
 #include "BasicFunc.h"
 #include "BaseScene.h"
@@ -21,8 +24,8 @@ public:
 	void ChangeScene(const EScene sceneNext) override;	// 引数SceneNextにシーンを変更する
 
 private:
-	BaseScene* mScene;    //シーン管理変数
-	EScene mSceneNext;    //次のシーン管理変数
+	BaseScene* mScene;    // シーン管理変数
+	EScene mSceneNext;    // 次のシーン管理変数
 
 private:
 	static SceneMgr* mSceneMgr;

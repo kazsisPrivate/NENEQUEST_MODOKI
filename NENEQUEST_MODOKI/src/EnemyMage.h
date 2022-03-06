@@ -1,6 +1,7 @@
 #pragma once
-
-// 魔法使いの敵（Enemy4～6）の元とするクラス
+/*
+* 魔法使いの敵（Enemy4～6）の基底クラス
+*/
 #include "Enemy.h"
 #include "MageFire.h"
 #include <vector>

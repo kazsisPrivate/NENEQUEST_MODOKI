@@ -1,4 +1,7 @@
 #pragma once
+/*
+* Playerの変更を行うための列挙型とクラス
+*/
 
 typedef enum {
 	ePlayer1,

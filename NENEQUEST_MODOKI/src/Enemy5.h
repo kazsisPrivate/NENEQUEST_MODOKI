@@ -1,6 +1,7 @@
 #pragma once
-
-// 魔法使い2（hp2, 赤い火の玉, 攻撃回数1）
+/*
+* 魔法使い2（hp2, 赤い火の玉, 攻撃回数1）
+*/
 #include "EnemyMage.h"
 
 class Enemy5 : public EnemyMage {

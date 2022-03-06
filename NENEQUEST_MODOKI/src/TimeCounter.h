@@ -1,6 +1,8 @@
 #pragma once
-
-// 経過時間を表示するためのクラス
+/*
+* GameSceneにおいて経過時間を表示するクラス
+* の管理を行うクラス
+*/
 #include "time.h" 
 #include "BasicFunc.h"
 
@@ -18,6 +20,7 @@ public:
 private:
 	int mTimeFrameHandle;	// 時間を表示する枠の画像
 	int mTimeFontHandle;	// 経過時間を表示するのに使用するフォント
+
 	clock_t mStartTime;
 	clock_t mEndTime;
 	int mElapsedTime;	// スタートしてからの経過時間（秒単位で管理，999秒以上は999と表示する）

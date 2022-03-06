@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* メニュー画面（GameScene）のクラス
+*/
 #include "BaseScene.h"
 #include "UpdateKey.h"
 #include "SceneChanger.h"
@@ -18,8 +20,8 @@ public :
 private:
 	int mTitleFontHandle;	// タイトルの文字のフォント
 	int mOptionFontHandle;	// 選択肢の文字フォント
+
 	std::string mTitleStrs[2];
-	//const int SCREEN_
 	int mTitleXs[2];// = { 100, 300 };	// タイトルの文字のx座標
 	int mTitleYs[2];// = { 30, 150};	// タイトルの文字のy座標
 	int mTriY;	// 選択に使用する三角形の中心のy座標

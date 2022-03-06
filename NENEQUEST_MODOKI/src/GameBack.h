@@ -1,5 +1,7 @@
 #pragma once
-
+/*
+* GameScene‚É‚¨‚¯‚éC”wŒi‚ÌƒNƒ‰ƒX
+*/
 #include "BasicFunc.h"
 
 class GameBack : BasicFunc {
