@@ -99,6 +99,9 @@ void GameClear::SetScores(const unsigned long long gameScore, const unsigned lon
 	unsigned long long totalScore = gameScore + timeScore;
 	mTotalScore = std::to_string(totalScore);
 
+	// 暗号化、復号化で使用するキー
+	unsigned long long enckey = 0x3cad6e5d;
+
 	// 過去の上位3位までの合計スコアを読みだす
 	std::ifstream readingFile;
 	readingFile.open("score_ranking.txt", std::ios::in | std::ios::binary);
@@ -106,9 +109,9 @@ void GameClear::SetScores(const unsigned long long gameScore, const unsigned lon
 		// ファイルを作成する
 		std::ofstream tmpFile("score_ranking.txt", std::ios::out | std::ios::binary);
 		for (int i = 0; i < PAST_TOTAL_SCORE_NUM; i++) {
-			tmpFile << "0" << std::endl;
+			unsigned long long tmpNum = 0 ^ enckey;
+			tmpFile << std::to_string(tmpNum) << std::endl;
 		}
-		//tmpFile.close();
 
 		// 作成したファイルを開く
 		readingFile.open("score_ranking.txt", std::ios::in | std::ios::binary);
@@ -119,7 +122,7 @@ void GameClear::SetScores(const unsigned long long gameScore, const unsigned lon
 	unsigned long long pastTotalScores[3];
 	for (int i = 0; i < PAST_TOTAL_SCORE_NUM; i++) {
 		std::getline(readingFile, line);
-		pastTotalScores[i] = atoi(line.c_str());
+		pastTotalScores[i] = atoi(line.c_str()) ^ enckey;
 	}
 	readingFile.close();
 
@@ -155,7 +158,8 @@ void GameClear::SetScores(const unsigned long long gameScore, const unsigned lon
 	// ファイルに更新後のランキングを書き込む
 	std::ofstream writingFile("score_ranking.txt", std::ios::out | std::ios::binary);
 	for (int i = 0; i < PAST_TOTAL_SCORE_NUM; i++) {
-		writingFile << mPastTotalScores[i] << std::endl;
+		unsigned long long tmpNum = pastTotalScores[i] ^ enckey;
+		writingFile << tmpNum << std::endl;
 	}
 
 	// それぞれのスコアの表示位置を求める
@@ -169,7 +173,7 @@ void GameClear::SetScores(const unsigned long long gameScore, const unsigned lon
 	mTimeScoreY = mGameScoreY;
 	// mTotalScore
 	int screenW, screenH;
-	GetWindowSize(&screenW, &screenH);
+	GetScreenState(&screenW, &screenH, NULL);
 	mTotalScoreX = (screenW - GetDrawStringWidthToHandle(mTotalScore.c_str(), mTotalScore.length(), mTotalScoFontHandle)) / 2;
 	mTotalScoreY = mGameScoreY + GetFontSizeToHandle(mGameScoFontHandle) + 100;
 	// mPastTotalScores
