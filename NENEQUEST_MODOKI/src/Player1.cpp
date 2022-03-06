@@ -1,5 +1,3 @@
-// 剣1（攻撃力：普通，攻撃範囲：少し広い，攻撃持続時間：普通（次の攻撃までにかかる時間：普通），扱い難易度：普通）
-
 #include "Player1.h"
 #include "DxLib.h"
 #include "PlayerMgr.h"
@@ -264,4 +262,6 @@ void Player1::StartBossStage() {
 
 	mIsAttacking = false;
 	mIsJumping = false;
+	mIsGod = false;
+	mGodFrameCnt = 0;
 }

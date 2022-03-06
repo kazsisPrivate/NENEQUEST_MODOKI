@@ -1,5 +1,3 @@
-// 弓（攻撃力：普通，攻撃範囲：広い，攻撃持続時間：長い（次の攻撃までにかかる時間：長い），扱い難易度：難しい）
-
 #include "Player4.h"
 #include "DxLib.h"
 #include "PlayerMgr.h"
@@ -439,4 +437,6 @@ void Player4::StartBossStage() {
 
 	mIsAttacking = false;
 	mIsJumping = false;
+	mIsGod = false;
+	mGodFrameCnt = 0;
 }

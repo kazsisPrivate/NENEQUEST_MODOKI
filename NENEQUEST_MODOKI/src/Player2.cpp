@@ -1,5 +1,3 @@
-// 剣2（攻撃力：高い，攻撃範囲：普通，攻撃持続時間：普通（次の攻撃までにかかる時間：普通），扱い難易度：少し難しい）
-
 #include "Player2.h"
 #include "DxLib.h"
 #include "PlayerMgr.h"
@@ -262,4 +260,6 @@ void Player2::StartBossStage() {
 
 	mIsAttacking = false;
 	mIsJumping = false;
+	mIsGod = false;
+	mGodFrameCnt = 0;
 }

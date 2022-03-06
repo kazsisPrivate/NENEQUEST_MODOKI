@@ -1,5 +1,3 @@
-// 斧（攻撃力：普通，攻撃範囲：狭い，攻撃持続時間：少し長い（次の攻撃までにかかる時間：少し長い），扱い難易度：少し簡単）
-
 #include "Player3.h"
 #include "DxLib.h"
 #include "PlayerMgr.h"
@@ -264,4 +262,6 @@ void Player3::StartBossStage() {
 
 	mIsAttacking = false;
 	mIsJumping = false;
+	mIsGod = false;
+	mGodFrameCnt = 0;
 }
