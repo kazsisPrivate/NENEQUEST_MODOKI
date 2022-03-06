@@ -35,13 +35,13 @@ void ItemMgr::Initialize() {
 	// Itemが何もセットされていない状態に初期化
 	for (int i = 0; i < ITEM_NUM; i++) {
 		mItems[i] = NULL;
-		mItesNext[i] = eItem1;	// デバッグ用に入れいている
+		mItesNext[i] = eItemNone;
 		
 		mItesNextX[i] = 1300 + 500 * i;
 		mItesNextY[i] = 300 + 150 * i;
 	}
-	mItesNext[0] = eItemNone;	// デバッグ用に入れいている
-	mItesNext[1] = eItemNone;	// デバッグ用に入れいている
+	//mItesNext[0] = eItem12;	// デバッグ用に入れいている
+	//mItesNext[1] = eItemNone;	// デバッグ用に入れいている
 }
 
 
@@ -170,7 +170,6 @@ void ItemMgr::GetIteData(std::vector<std::map<std::string, float>>* iteIntDataMa
 			isExistings[i] = true;
 		}
 		else {
-			//iteDataMap1 = NULL;
 			isExistings[i] = false;
 		}
 	}
