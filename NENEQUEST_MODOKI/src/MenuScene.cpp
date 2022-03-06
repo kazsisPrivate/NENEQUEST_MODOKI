@@ -36,7 +36,7 @@ void MenuScene::Initialize() {
 
 	// タイトル文字の位置の設定
 	int screenW, screenH;
-	GetWindowSize(&screenW, &screenH);
+	GetScreenState(&screenW, &screenH, NULL);
 	for (int i = 0; i < 2; i++) {
 		// x座標は中央寄せの位置に設定する
 		mTitleXs[i] = (screenW - GetDrawStringWidthToHandle(mTitleStrs[i].c_str(), mTitleStrs[i].length(), mTitleFontHandle)) / 2;
