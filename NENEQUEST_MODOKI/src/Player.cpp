@@ -1,12 +1,5 @@
 #include "Player.h"
 #include "DxLib.h"
-//#include <map>
-//#include <string>
-//#include "HitJudge0.h"
-//#include "HitJudge1.h"
-//#include "HitJudge2.h"
-//#include "PlayerData.h"
-//#include "PowerBox.h"
 #include "PlayerMgr.h"
 #include "EffectGraphics.h"
 
