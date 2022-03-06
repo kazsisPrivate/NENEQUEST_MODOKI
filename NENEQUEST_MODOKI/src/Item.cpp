@@ -38,7 +38,7 @@ void Item::Move() {
 
 
 void Item::GetIteDataMap(std::map<std::string, float>* iteIntDataMap, std::map<std::string, float>* iteBoolDataMap) {
-	if (mIsDead) {	// 次に消える（or 他のアイテムに交代する）とき
+	if (mIsDead && mItemId < 12) {	// 次に消える（or 他のアイテムに交代する）とき
 		// 判定を2回とらないようにするために位置を画面外に設定する
 		(*iteIntDataMap)["x"] = -1000;
 		(*iteIntDataMap)["y"] = -1000;
