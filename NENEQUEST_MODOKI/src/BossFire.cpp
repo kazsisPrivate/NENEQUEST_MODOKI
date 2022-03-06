@@ -154,8 +154,10 @@ void BossFire::Draw() {
 		for (int i = 0; i < FIRE_BALL_NUM; i++) {
 			if (mFrameCnt >= mFireBallFrameNums[i]) {	// 火の玉を吐き出し始めていたら
 				DrawGraph((int)mXs[i] - mImgW / 2, (int)mYs[i] - mImgH / 2, mFireHandle[mBallHandleIds[i]], TRUE);
-				DrawBox((int)mXs[i] - mBallHitRangeW, (int)mYs[i] - mBallHitRangeH,
-					(int)mXs[i] + mBallHitRangeW, (int)mYs[i] + mBallHitRangeH, GetColor(255, 0, 0), FALSE);
+
+				// デバッグ用の当たり判定描画
+				/*DrawBox((int)mXs[i] - mBallHitRangeW, (int)mYs[i] - mBallHitRangeH,
+					(int)mXs[i] + mBallHitRangeW, (int)mYs[i] + mBallHitRangeH, GetColor(255, 0, 0), FALSE);*/
 			}
 		}
 	}
@@ -163,8 +165,10 @@ void BossFire::Draw() {
 		for (int i = 0; i < FIRE_BREATH_NUM; i++) {
 			if (mBreIsExistings[i]) {	// 火の玉が存在していたら
 				DrawRotaGraph((int)mXs[i], (int)mYs[i], (double)mFireExpRates[i], 0, *mFireHandle, TRUE);
-				DrawBox((int)(mXs[i] - mBreathHitRangeWs[i]), (int)(mYs[i] - mBreathHitRangeHs[i]),
-					(int)(mXs[i] + mBreathHitRangeWs[i]), (int)(mYs[i] + mBreathHitRangeHs[i]), GetColor(255, 0, 0), FALSE);
+
+				// デバッグ用の当たり判定描画
+				/*DrawBox((int)(mXs[i] - mBreathHitRangeWs[i]), (int)(mYs[i] - mBreathHitRangeHs[i]),
+					(int)(mXs[i] + mBreathHitRangeWs[i]), (int)(mYs[i] + mBreathHitRangeHs[i]), GetColor(255, 0, 0), FALSE);*/
 			}
 		}
 	}
