@@ -35,7 +35,7 @@ protected:
 	const int ENE_MAGE_Y_MAX = 610;	// EnemyMageのWalkの際のy座標の移動範囲（最大）
 	const int ENE_MAGE_Y_MIN = 290;	// EnemyMageのWalkの際のy座標の移動範囲（最小）
 	int mAlphaValue;	// EnemyMageの透明度，FadeIn, FadeOutで透けるために使用する
-	int DELTA_ALPHA = 5;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
+	int DELTA_ALPHA = 7;	// フェードインとフェードアウトの際のα値の1フレーム当たりの増加/減少分
 
 	int mRoutineDoneCnt;	// 動作を終えた回数，特定の回数終わらせた後に自動的に消すようにするために使用する
 							// 動作とは，（フェードイン → 火の玉攻撃 → フェードアウト）のセットで1回とカウントする
