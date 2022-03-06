@@ -8,10 +8,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// 使用するフォントの追加
 	AddFontResource("fonts/HGRSGU.TTC");
-	AddFontResource("fonts/BROADW.TTC");
-	AddFontResource("fonts/SHOWG.TTC");
-	AddFontResource("fonts/RAVIE.TTC");
-	AddFontResource("fonts/msgothic.TTC");
+	AddFontResource("fonts/BROADW.TTF");
+	AddFontResource("fonts/SHOWG.TTF");
+	AddFontResource("fonts/RAVIE.TTF");
+	AddFontResource("fonts/msgothic.ttc");
 
 	SceneMgr* sceneMgr = SceneMgr::GetInstance();
 
