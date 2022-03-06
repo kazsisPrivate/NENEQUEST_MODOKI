@@ -1,7 +1,7 @@
 #pragma once
-
-// 斧（攻撃力：普通，攻撃範囲：狭い，攻撃持続時間：少し長い（次の攻撃までにかかる時間：少し長い），扱い難易度：少し簡単）
-
+/*
+* 斧（攻撃力：普通，攻撃範囲：狭い，攻撃持続時間：少し長い（次の攻撃までにかかる時間：少し長い），移動速度：普通）
+*/
 #include "Player.h"
 
 
@@ -13,7 +13,7 @@ public:
 	void Finalize() override;
 	void Update() override;
 
-protected:
+private:
 	void Walk() override;
 	void Jump() override;
 	void StartBossStage() override;

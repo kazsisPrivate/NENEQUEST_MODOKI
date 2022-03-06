@@ -1,7 +1,7 @@
 #pragma once
-
-// 剣1（攻撃力：普通，攻撃範囲：少し広い，攻撃持続時間：普通（次の攻撃までにかかる時間：普通），扱い難易度：普通）
-
+/*
+* 剣1（攻撃力：普通，攻撃範囲：少し広い，攻撃持続時間：普通（次の攻撃までにかかる時間：普通），移動速度：普通）
+*/
 #include "Player.h"
 
 
@@ -13,7 +13,7 @@ public:
 	void Finalize() override;
 	void Update() override;
 
-protected:
+private:
 	void Walk() override;
 	void Jump() override;
 	void StartBossStage() override;
