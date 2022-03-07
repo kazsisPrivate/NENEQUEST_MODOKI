@@ -51,6 +51,6 @@ protected:
 	bool mHasFinishedRos;	// 動作をmDeleteRoDoneNumの数までおわらしたときにtrueとなる
 	int mAttackFrameCnt;	// 攻撃をしている際（火の玉を出し始めてから）のフレーム数をカウントする，フェードアウトの開始などで使用する
 	const int WALK_FRAME_NUM = 120;	// フェードインで入ってきてから移動している時間（1回目の動作の時のみ使用）
-	const int ATTACK_STATE_FRAME_NUM = 300;	// 攻撃をしてから（火の玉を出し始めてから），フェードアウトを始めるまでのフレーム数（2回目以降の動作の時使用）
+	const int ATTACK_STATE_FRAME_NUM = 240;	// 攻撃をしてから（火の玉を出し始めてから），フェードアウトを始めるまでのフレーム数（2回目以降の動作の時使用）
 };
 
