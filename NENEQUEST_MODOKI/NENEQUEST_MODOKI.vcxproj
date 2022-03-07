@@ -19,20 +19,122 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Arrow.cpp" />
     <ClCompile Include="src\BaseScene.cpp" />
+    <ClCompile Include="src\BossFire.cpp" />
+    <ClCompile Include="src\CharaGraphics.cpp" />
     <ClCompile Include="src\ConfigScene.cpp" />
+    <ClCompile Include="src\EffectGraphics.cpp" />
+    <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\Enemy1.cpp" />
+    <ClCompile Include="src\Enemy2.cpp" />
+    <ClCompile Include="src\Enemy3.cpp" />
+    <ClCompile Include="src\Enemy4.cpp" />
+    <ClCompile Include="src\Enemy5.cpp" />
+    <ClCompile Include="src\Enemy6.cpp" />
+    <ClCompile Include="src\Enemy7.cpp" />
+    <ClCompile Include="src\EnemyBoar.cpp" />
+    <ClCompile Include="src\EnemyBoss.cpp" />
+    <ClCompile Include="src\EnemyMage.cpp" />
+    <ClCompile Include="src\EnemyMgr.cpp" />
+    <ClCompile Include="src\GameBack.cpp" />
+    <ClCompile Include="src\GameClear.cpp" />
+    <ClCompile Include="src\GameOver.cpp" />
+    <ClCompile Include="src\GameScene.cpp" />
+    <ClCompile Include="src\Item10.cpp" />
+    <ClCompile Include="src\Item11.cpp" />
+    <ClCompile Include="src\Item12.cpp" />
+    <ClCompile Include="src\Item13.cpp" />
+    <ClCompile Include="src\Item14.cpp" />
+    <ClCompile Include="src\Item5.cpp" />
+    <ClCompile Include="src\Item6.cpp" />
+    <ClCompile Include="src\Item7.cpp" />
+    <ClCompile Include="src\Item8.cpp" />
+    <ClCompile Include="src\Item9.cpp" />
+    <ClCompile Include="src\ItemBox.cpp" />
+    <ClCompile Include="src\MageFire.cpp" />
+    <ClCompile Include="src\PlayerHpGauge.cpp" />
+    <ClCompile Include="src\Item.cpp" />
+    <ClCompile Include="src\ItemGraphics.cpp" />
+    <ClCompile Include="src\ItemMgr.cpp" />
+    <ClCompile Include="src\Item1.cpp" />
+    <ClCompile Include="src\Item2.cpp" />
+    <ClCompile Include="src\Item3.cpp" />
+    <ClCompile Include="src\Item4.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MenuScene.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PlayerMgr.cpp" />
+    <ClCompile Include="src\Player1.cpp" />
+    <ClCompile Include="src\Player2.cpp" />
+    <ClCompile Include="src\Player3.cpp" />
+    <ClCompile Include="src\Player4.cpp" />
     <ClCompile Include="src\SceneMgr.cpp" />
+    <ClCompile Include="src\ScoreCounter.cpp" />
+    <ClCompile Include="src\Slash.cpp" />
+    <ClCompile Include="src\TimeCounter.cpp" />
     <ClCompile Include="src\UpdateKey.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Arrow.h" />
     <ClInclude Include="src\BaseScene.h" />
     <ClInclude Include="src\BasicFunc.h" />
+    <ClInclude Include="src\BossFire.h" />
+    <ClInclude Include="src\Chara.h" />
+    <ClInclude Include="src\CharaGraphics.h" />
     <ClInclude Include="src\ConfigScene.h" />
+    <ClInclude Include="src\EffectGraphics.h" />
+    <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\Enemy1.h" />
+    <ClInclude Include="src\Enemy2.h" />
+    <ClInclude Include="src\Enemy3.h" />
+    <ClInclude Include="src\Enemy4.h" />
+    <ClInclude Include="src\Enemy5.h" />
+    <ClInclude Include="src\Enemy6.h" />
+    <ClInclude Include="src\Enemy7.h" />
+    <ClInclude Include="src\EnemyBoar.h" />
+    <ClInclude Include="src\EnemyBoss.h" />
+    <ClInclude Include="src\EnemyChanger.h" />
+    <ClInclude Include="src\EnemyMage.h" />
+    <ClInclude Include="src\EnemyMgr.h" />
+    <ClInclude Include="src\GameBack.h" />
+    <ClInclude Include="src\GameClear.h" />
+    <ClInclude Include="src\GameOver.h" />
+    <ClInclude Include="src\GameScene.h" />
+    <ClInclude Include="src\Item10.h" />
+    <ClInclude Include="src\Item11.h" />
+    <ClInclude Include="src\Item12.h" />
+    <ClInclude Include="src\Item13.h" />
+    <ClInclude Include="src\Item14.h" />
+    <ClInclude Include="src\Item5.h" />
+    <ClInclude Include="src\Item6.h" />
+    <ClInclude Include="src\Item7.h" />
+    <ClInclude Include="src\Item8.h" />
+    <ClInclude Include="src\Item9.h" />
+    <ClInclude Include="src\ItemBox.h" />
+    <ClInclude Include="src\MageFire.h" />
+    <ClInclude Include="src\PlayerHpGauge.h" />
+    <ClInclude Include="src\Item.h" />
+    <ClInclude Include="src\ItemChanger.h" />
+    <ClInclude Include="src\ItemGraphics.h" />
+    <ClInclude Include="src\ItemMgr.h" />
+    <ClInclude Include="src\Item1.h" />
+    <ClInclude Include="src\Item2.h" />
+    <ClInclude Include="src\Item3.h" />
+    <ClInclude Include="src\Item4.h" />
     <ClInclude Include="src\MenuScene.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\PlayerChanger.h" />
+    <ClInclude Include="src\PlayerMgr.h" />
+    <ClInclude Include="src\Player1.h" />
+    <ClInclude Include="src\Player2.h" />
+    <ClInclude Include="src\Player3.h" />
+    <ClInclude Include="src\Player4.h" />
     <ClInclude Include="src\SceneChanger.h" />
     <ClInclude Include="src\SceneMgr.h" />
+    <ClInclude Include="src\ScoreCounter.h" />
+    <ClInclude Include="src\Slash.h" />
+    <ClInclude Include="src\TimeCounter.h" />
     <ClInclude Include="src\UpdateKey.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -105,13 +207,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,7 +224,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -130,7 +232,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,13 +241,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,7 +258,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -164,7 +266,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\kazuki\programming\ゲーム制作\NENEQUEST_MODOKI\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
