@@ -29,10 +29,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// フォントの削除
 	RemoveFontResource("fonts/HGRSGU.TTC");
-	RemoveFontResource("fonts/BROADW.TTC");
-	RemoveFontResource("fonts/SHOWG.TTC");
-	RemoveFontResource("fonts/RAVIE.TTC");
-	RemoveFontResource("fonts/msgothic.TTC");
+	RemoveFontResource("fonts/BROADW.TTF");
+	RemoveFontResource("fonts/SHOWG.TTF");
+	RemoveFontResource("fonts/RAVIE.TTF");
+	RemoveFontResource("fonts/msgothic.ttc");
 
 	// DXライブラリ終了処理
 	DxLib_End(); 
