@@ -1,6 +1,6 @@
 # NENEQUEST_MODOKI
 # ※(Important Note) You aren't able to play this game.
-&emsp;I can't put the images and sound data for this game due to copyright. 
+&emsp;I can't put images and sound data for this game due to copyright.
 <br><br>
 &emsp;I created this game based on the game "NENE QUEST". "NENE QUEST" is the game created by the character "Nene Sakura" in the Japanese cartoon "NEW GAME!!". This game is a little different from "NENE QUEST", and I implemented scores, additional items and enemies, and so on.
 <br><br>
